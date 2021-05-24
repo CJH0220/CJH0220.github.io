@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>Hexo测试效果</title>
+      <link href="posts/a23a6825/"/>
+      <url>posts/a23a6825/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span>(你看到了这里):</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;打赏点money吧QAQ&quot;</span>)</span><br><span class="line"><span class="keyword">if</span>(你有任何想吐槽的事情):</span><br><span class="line"><span class="built_in">print</span>(<span class="string">&quot;下面评论区等你来战!&quot;</span>)</span><br></pre></td></tr></table></figure><div class="note default modern"><p>default 提示标签</p></div><div class="note primary no-icon modern"><p>primary 提示标签</p></div><div class="note success modern"><p>success 提示标签</p></div><div class="note info modern"><p>info 提示标签</p></div><div class="note warning modern"><p>warning 提示标签</p></div><div class="note danger modern"><p>danger 提示标签</p></div>]]></content>
+      
+      
+      <categories>
+          
+          <category> Hexo教程 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Hexo </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>数据结构(1)</title>
       <link href="posts/e6e77112/"/>
       <url>posts/e6e77112/</url>
