@@ -1,13 +1,13 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matlab基础语法-四 | CJH_blog</title><meta name="keywords" content="数学建模"><meta name="author" content="陈劲铧,1005741898@qq.com"><meta name="copyright" content="陈劲铧"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="MATLAB数据类型分类、转化、确定">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Matlab基础语法-四 | CJH_blog</title><meta name="keywords" content="数学建模"><meta name="author" content="陈劲铧,1005741898@qq.com"><meta name="copyright" content="陈劲铧"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="MATLAB数据类型分类、转化、确定；运算符，位运算，集合操作">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Matlab基础语法-四">
 <meta property="og:url" content="http://cjh0220.github.io/posts/f687abec/index.html">
 <meta property="og:site_name" content="CJH_blog">
-<meta property="og:description" content="MATLAB数据类型分类、转化、确定">
+<meta property="og:description" content="MATLAB数据类型分类、转化、确定；运算符，位运算，集合操作">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg">
 <meta property="article:published_time" content="2021-06-09T12:36:05.000Z">
-<meta property="article:modified_time" content="2021-06-09T13:10:30.870Z">
+<meta property="article:modified_time" content="2021-06-09T15:25:46.923Z">
 <meta property="article:author" content="陈劲铧">
 <meta property="article:tag" content="数学建模">
 <meta name="twitter:card" content="summary">
@@ -65,7 +65,7 @@
   isHome: false,
   isHighlightShrink: false,
   isToc: true,
-  postUpdate: '2021-06-09 21:10:30'
+  postUpdate: '2021-06-09 23:25:46'
 }</script><noscript><style type="text/css">
   #nav {
     opacity: 1
@@ -152,7 +152,7 @@
     if (fontSizeVal !== undefined) {
       document.documentElement.style.setProperty('--global-font-size', fontSizeVal + 'px')
     }
-    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://ftp.bmp.ovh/imgs/2021/05/f1366f1c7176d0e0.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 龟档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page child" href="/Picture/"><i class="fa-fw fas fa-images"></i><span> Picture</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH_blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 龟档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page child" href="/Picture/"><i class="fa-fw fas fa-images"></i><span> Picture</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Matlab基础语法-四<a class="post-edit-link" href="null_posts/Matlab基础语法-四.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-06-09T12:36:05.000Z" title="发表于 2021-06-09 20:36:05">2021-06-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-09T13:10:30.870Z" title="更新于 2021-06-09 21:10:30">2021-06-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%93%E4%B8%9A%E7%9F%A5%E8%AF%86/">专业知识</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.1k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>3分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Matlab基础语法-四"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="MATLAB数据类型"><a href="#MATLAB数据类型" class="headerlink" title="MATLAB数据类型"></a>MATLAB数据类型</h2><p>MATLAB提供<code>15</code>种基本数据类型。每种数据类型存储矩阵或数组形式的数据。矩阵或数组的最小值是<code>0</code>到<code>0</code>，并且是可以到任何大小的矩阵或数组。</p>
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="author-avatar"><img class="avatar-img" src="https://ftp.bmp.ovh/imgs/2021/05/f1366f1c7176d0e0.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 龟档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page child" href="/Picture/"><i class="fa-fw fas fa-images"></i><span> Picture</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH_blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 目录</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 龟档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fas fa-list"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page child" href="/music/"><i class="fa-fw fas fa-music"></i><span> Music</span></a></li><li><a class="site-page child" href="/movies/"><i class="fa-fw fas fa-video"></i><span> Movie</span></a></li><li><a class="site-page child" href="/Picture/"><i class="fa-fw fas fa-images"></i><span> Picture</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Matlab基础语法-四<a class="post-edit-link" href="null_posts/Matlab基础语法-四.md" title="编辑" target="_blank"><i class="fas fa-pencil-alt"></i></a></h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-06-09T12:36:05.000Z" title="发表于 2021-06-09 20:36:05">2021-06-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-06-09T15:25:46.923Z" title="更新于 2021-06-09 23:25:46">2021-06-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%93%E4%B8%9A%E7%9F%A5%E8%AF%86/">专业知识</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">2.9k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>9分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Matlab基础语法-四"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="MATLAB数据类型"><a href="#MATLAB数据类型" class="headerlink" title="MATLAB数据类型"></a>MATLAB数据类型</h2><p>MATLAB提供<code>15</code>种基本数据类型。每种数据类型存储矩阵或数组形式的数据。矩阵或数组的最小值是<code>0</code>到<code>0</code>，并且是可以到任何大小的矩阵或数组。</p>
 <p>下表显示了MATLAB中最常用的数据类型 -</p>
 <table>
 <thead>
@@ -442,9 +442,233 @@
 <p>运行文件后，产生以下结果 -</p>
 <figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">x = <span class="number">3</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line">x = <span class="number">1177</span>/<span class="number">50</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line">x =</span><br><span class="line"></span><br><span class="line">          <span class="number">1</span>          <span class="number">2</span>          <span class="number">3</span></span><br><span class="line"></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line">x = Hello</span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">1</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br><span class="line"><span class="built_in">ans</span> = <span class="number">0</span></span><br></pre></td></tr></table></figure>
 
+<h2 id="Matlab运算符"><a href="#Matlab运算符" class="headerlink" title="Matlab运算符"></a>Matlab运算符</h2><p>运算符是一个符号，它告诉编译器执行特定的数学或逻辑操作。 MATLAB主要用于整个矩阵和阵列的操作。因此，MATLAB中的运算符既可用于标量数据也可用于非标量数据。MATLAB允许以下类型的基本操作 -</p>
+<ul>
+<li>算术运算符</li>
+<li>关系运算符</li>
+<li>逻辑运算符</li>
+<li>按位运算符</li>
+<li>集合运算符</li>
+</ul>
+<h3 id="算术运算符"><a href="#算术运算符" class="headerlink" title="算术运算符"></a>算术运算符</h3><p>MATLAB允许两种不同类型的算术运算 -</p>
+<ul>
+<li>矩阵算术运算</li>
+<li>数组算术运算</li>
+</ul>
+<p>矩阵算术运算与线性代数中定义的相同。在一维和多维数组中，逐个元素执行数组运算。<br>矩阵运算符和数组运算符由句点符号(<code>.</code>)区分。 然而，由于对于矩阵和阵列的加减运算是相同的，因此对于这两种情况，运算符相同。下表简要说明了算术运算符 -</p>
+<table>
+<thead>
+<tr>
+<th>运算符</th>
+<th>描述说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>+</code></td>
+<td>加法或一元加法运算。<code>A + B</code>表示相加存储在变量<code>A</code>和<code>B</code>中的值。<code>A</code>和<code>B</code>必须具有相同的大小，除非是标量。 标量可以添加到任何大小的矩阵。</td>
+</tr>
+<tr>
+<td><code>-</code></td>
+<td>减法或一元减法运算。 <code>A-B</code>表示从<code>A</code>中减去<code>B</code>的值。<code>A</code>和<code>B</code>必须具有相同的大小，除非是标量。可以从任何大小的矩阵中减去标量。</td>
+</tr>
+<tr>
+<td><code>*</code></td>
+<td>矩阵乘法。 <code>C = A * B</code>是矩阵<code>A</code>和<code>B</code>的线性代数乘积。更准确地说，执行公式：<img src="http://www.yiibai.com/uploads/images/201709/3009/741170918_87743.jpg" alt=""> ，对于非标量<code>A</code>和<code>B</code>，<code>A</code>的列数必须等于<code>B</code>的行数。标量可以乘以任何大小的矩阵。</td>
+</tr>
+<tr>
+<td><code>.*</code></td>
+<td>阵列乘法。 <code>A .* B</code>是数组<code>A</code>和<code>B</code>的逐个元素乘积。<code>A</code>和<code>B</code>必须具有相同的大小，除非它们之一是标量。</td>
+</tr>
+<tr>
+<td><code>/</code></td>
+<td>数组乘法。<code>A .* B</code>是数组<code>A</code>和<code>B</code>的逐个元素乘积。<code>A</code>和<code>B</code>必须具有相同的大小，除非它们之一是标量。</td>
+</tr>
+<tr>
+<td><code>./</code></td>
+<td>数组右除。<code>A./B</code>是具有元素<code>A(i，j)/ B(i，j)</code>的矩阵。 <code>A</code>和<code>B</code>必须具有相同的大小，除非它们之一是标量。</td>
+</tr>
+<tr>
+<td><code>\</code></td>
+<td>反斜杠或数组左除。如果<code>A</code>是一个方阵，<code>A \ B</code>与<code>inv(A)* B</code>大致相同，除了以不同的方式计算。如果<code>A</code>是<code>n×n</code>矩阵，<code>B</code>是具有<code>n</code>个分量的列向量或具有若干这样的列的矩阵，则<code>X = A \ B</code>是方程<code>AX = B</code>的解。如果A是不规则或几乎单数，将显示警告消息。</td>
+</tr>
+<tr>
+<td><code>.\</code></td>
+<td>阵列左除。<code>A .\ B</code>是具有元素<code>B(i，j)/ A(i，j)</code>的矩阵。<code>A</code>和<code>B</code>必须具有相同的大小，除非它们之一是标量。</td>
+</tr>
+<tr>
+<td><code>^</code></td>
+<td>矩阵 <code>X ^ p</code>是<code>X</code>的<code>P</code>次幂，如果<code>p</code>是标量。 如果<code>p</code>是整数，则通过重复平方来计算幂值。 如果整数为负，则<code>X</code>首先倒置。 对于<code>p</code>的其他值，计算涉及特征值和特征向量，使得如果<code>[V，D] = eig(X)</code>，则<code>X ^ p = V * D. ^ p / V</code>。</td>
+</tr>
+<tr>
+<td><code>.^</code></td>
+<td>阵列幂值， <code>A ^ B</code>是<code>B(i，j)</code>到<code>A(i，j)</code>的幂矩阵。<code>A</code>和<code>B</code>必须具有相同的大小，除非它们之一是标量。</td>
+</tr>
+<tr>
+<td><code>'</code></td>
+<td>矩阵转置。 <code>'</code>是<code>A</code>的线性代数转置。对于复数矩阵，这是复共轭转置。</td>
+</tr>
+<tr>
+<td><code>.'</code></td>
+<td>数组转置。<code>.'</code>是<code>A</code>的数组转置。对于复数矩阵，这不涉及共轭。</td>
+</tr>
+</tbody>
+</table>
 
+<h3 id="关系运算符"><a href="#关系运算符" class="headerlink" title="关系运算符"></a>关系运算符</h3><p>关系运算符也可以用于标量和非标量数据。数组的关系运算符在两个数组之间执行逐个元素的比较，并返回相同大小的逻辑数组，如果为真，则元素设置为逻辑<code>1(true)</code>，如果为假，则元素设置为逻辑<code>0(false)</code>。</p>
+<p>下表显示了MATLAB中可用的关系运算符：</p>
+<table>
+<thead>
+<tr>
+<th>操作符</th>
+<th>说明描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>&lt;</code></td>
+<td>小于</td>
+</tr>
+<tr>
+<td><code>&lt;=</code></td>
+<td>小于或等于</td>
+</tr>
+<tr>
+<td><code>&gt;</code></td>
+<td>大于</td>
+</tr>
+<tr>
+<td><code>&gt;=</code></td>
+<td>大于或等于</td>
+</tr>
+<tr>
+<td><code>==</code></td>
+<td>等于</td>
+</tr>
+<tr>
+<td><code>~=</code></td>
+<td>不等于</td>
+</tr>
+</tbody>
+</table>
 
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:1005741898@qq.com">陈劲铧</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/posts/f687abec/">http://cjh0220.github.io/posts/f687abec/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://CJH0220.gitHub.io" target="_blank">CJH_blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/">数学建模</a></div><div class="post_share"><div class="social-share" data-image="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WX.png" target="_blank"><img class="post-qr-code-img" src="/img/WX.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/ZFB.png" target="_blank"><img class="post-qr-code-img" src="/img/ZFB.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/posts/ba55c7f2/"><img class="next-cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Matlab基础语法-三</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/ba55c7f2/" title="Matlab基础语法-三"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-09</div><div class="title">Matlab基础语法-三</div></div></a></div><div><a href="/posts/f80951ff/" title="Matlab基础语法-二"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-09</div><div class="title">Matlab基础语法-二</div></div></a></div><div><a href="/posts/da9b852f/" title="Matlab基础语法(一)"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-08</div><div class="title">Matlab基础语法(一)</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://ftp.bmp.ovh/imgs/2021/05/f1366f1c7176d0e0.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">陈劲铧</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">16</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CJH0220"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://www.zhihu.com/people/shou-xi-de-mo-sheng-ren-71-80" target="_blank" title="zhihu"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="https://github.com/CJH0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://weibo.com/u/7484291268" target="_blank" title="weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://blog.csdn.net/weixin_52648187" target="_blank" title="csdn"><i class="fab fa-cuttlefish"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">本人个人博客,还有很多内容需要实现~~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MATLAB%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">MATLAB数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-number">2.</span> <span class="toc-text">数据类型转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%A1%AE%E5%AE%9A"><span class="toc-number">3.</span> <span class="toc-text">数据类型确定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.</span> <span class="toc-text">示例</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/f687abec/" title="Matlab基础语法-四"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-四"/></a><div class="content"><a class="title" href="/posts/f687abec/" title="Matlab基础语法-四">Matlab基础语法-四</a><time datetime="2021-06-09T12:36:05.000Z" title="发表于 2021-06-09 20:36:05">2021-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ba55c7f2/" title="Matlab基础语法-三"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-三"/></a><div class="content"><a class="title" href="/posts/ba55c7f2/" title="Matlab基础语法-三">Matlab基础语法-三</a><time datetime="2021-06-09T11:36:48.000Z" title="发表于 2021-06-09 19:36:48">2021-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/c429031e/" title="前端学习6"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端学习6"/></a><div class="content"><a class="title" href="/posts/c429031e/" title="前端学习6">前端学习6</a><time datetime="2021-06-09T08:21:13.000Z" title="发表于 2021-06-09 16:21:13">2021-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/f80951ff/" title="Matlab基础语法-二"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-二"/></a><div class="content"><a class="title" href="/posts/f80951ff/" title="Matlab基础语法-二">Matlab基础语法-二</a><time datetime="2021-06-08T16:21:29.000Z" title="发表于 2021-06-09 00:21:29">2021-06-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/da9b852f/" title="Matlab基础语法(一)"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法(一)"/></a><div class="content"><a class="title" href="/posts/da9b852f/" title="Matlab基础语法(一)">Matlab基础语法(一)</a><time datetime="2021-06-08T12:36:34.000Z" title="发表于 2021-06-08 20:36:34">2021-06-08</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 陈劲铧</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Would rather regret, never regret</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+<h3 id="逻辑运算符"><a href="#逻辑运算符" class="headerlink" title="逻辑运算符"></a>逻辑运算符</h3><p>MATLAB提供两种类型的逻辑运算符和函数：</p>
+<ul>
+<li>逐元素 - 这些运算符对逻辑阵列的相应元素。</li>
+<li>短路 - 这些运算符在标量和逻辑表达式上运行。</li>
+</ul>
+<p>元素逻辑运算符在逻辑数组上运行逐个元素。号<code>＆</code>，<code>|</code>和<code>〜</code>是逻辑数组运算符<code>AND</code>，<code>OR</code>和<code>NOT</code>。</p>
+<p>短路逻辑运算符允许逻辑运算短路。符号<code>&amp;&amp;</code>和<code>||</code>是逻辑短路运算符<code>AND</code>和<code>OR</code>。</p>
+<h3 id="位运算"><a href="#位运算" class="headerlink" title="位运算"></a>位运算</h3><p>按位运算符对位执行，并执行逐位运算。<code>＆</code>，<code>|</code>和<code>^</code>的真值表如下 -</p>
+<p><img src="http://www.yiibai.com/uploads/images/201709/3009/523170950_45908.png"></p>
+<p>假设<code>A = 60</code>和<code>B = 13</code>; 现在以二进制格式，它们将如下所示：</p>
+<figure class="highlight matlab"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">A = <span class="number">0011</span> <span class="number">1100</span></span><br><span class="line"></span><br><span class="line">B = <span class="number">0000</span> <span class="number">1101</span></span><br><span class="line"></span><br><span class="line">-----------------</span><br><span class="line"></span><br><span class="line">A&amp;B = <span class="number">0000</span> <span class="number">1100</span></span><br><span class="line"></span><br><span class="line">A|B = <span class="number">0011</span> <span class="number">1101</span></span><br><span class="line"></span><br><span class="line">A^B = <span class="number">0011</span> <span class="number">0001</span></span><br><span class="line"></span><br><span class="line">~A  = <span class="number">1100</span> <span class="number">0011</span></span><br></pre></td></tr></table></figure>
+
+<p>MATLAB提供了诸如“按位与”和“按位或”以及“按位非”操作，移位操作等位操作的各种功能。</p>
+<p>下表显示了常用的按位操作：</p>
+<table>
+<thead>
+<tr>
+<th>方法</th>
+<th>目的</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>bitand(a, b)</td>
+<td>整数<code>a</code>和<code>b</code>的位与<code>AND</code>操作</td>
+</tr>
+<tr>
+<td>bitcmp(a)</td>
+<td><code>a</code>的比特补码</td>
+</tr>
+<tr>
+<td>bitget(a,pos)</td>
+<td>在整数数组<code>a</code>中，获取指定的位置<code>pos</code>位字节</td>
+</tr>
+<tr>
+<td>bitor(a, b)</td>
+<td>整数<code>a</code>和<code>b</code>的逐位<code>OR</code>操作</td>
+</tr>
+<tr>
+<td>bitset(a, pos)</td>
+<td>设置在指定<code>pos</code>处的位字节</td>
+</tr>
+<tr>
+<td>bitshift(a, k)</td>
+<td>返回向左移位<code>k</code>字节，相当于乘以<code>2^k</code>。 <code>k</code>的负值对应于向右移位或除以`2^</td>
+<td>k</td>
+<td>` 并舍入到最接近的整数到负无穷大。任何溢出位都被截断。</td>
+</tr>
+<tr>
+<td>bitxor(a, b)</td>
+<td>整数<code>a</code>和<code>b</code>的逐字节位<code>XOR</code>操作</td>
+</tr>
+<tr>
+<td>swapbytes</td>
+<td>交换字节排序</td>
+</tr>
+</tbody>
+</table>
+
+<h3 id="集合操作"><a href="#集合操作" class="headerlink" title="集合操作"></a>集合操作</h3><p>MATLAB为集合操作提供了各种功能，如联合，交集和集合成员的测试等。</p>
+<p>下表显示了一些常用的集合操作 - </p>
+<table>
+<thead>
+<tr>
+<th>函数</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>intersect(A,B)</td>
+<td>设置两个阵列的交集; 也就是返回<code>A</code>和<code>B</code>共同的值。返回的值按排序顺序排列。</td>
+</tr>
+<tr>
+<td>intersect(A,B,’rows’)</td>
+<td>将<code>A</code>的每一行和<code>B</code>的每一行视为单个实体，并返回<code>A</code>和<code>B</code>两者共同的行。返回矩阵的行按排序顺序排列。</td>
+</tr>
+<tr>
+<td>ismember(A,B)</td>
+<td>返回与<code>A</code>相同大小的数组，其中包含<code>1(true)</code>，其中<code>A</code>的元素位于<code>B</code>中。其他地方返回<code>0(false)</code>。</td>
+</tr>
+<tr>
+<td>ismember(A,B,’rows’)</td>
+<td>将<code>A</code>的每行和<code>B</code>的每一行视为单个实体，并返回一个包含<code>1(true)</code>的向量，其中矩阵<code>A</code>的行也是<code>B</code>行。其他返回<code>0(false)</code>。</td>
+</tr>
+<tr>
+<td>issorted(A)</td>
+<td>如果<code>A</code>的元素按排序顺序返回逻辑<code>1</code>(真)，否则返回逻辑<code>0</code>(假)。输入<code>A</code>可以是一个向量，也可以是<code>N-by-1</code>或<code>1-by-N</code>的字符串数组。 如果<code>A</code>和<code>sort(A)</code>的输出相等，则认为<code>A</code>被排序。</td>
+</tr>
+<tr>
+<td>issorted(A, ‘rows’)</td>
+<td>如果二维矩阵<code>A</code>的行按排序顺序返回逻辑<code>1</code>(真)，否则返回逻辑<code>0</code>(假)。 如果<code>A</code>和排序<code>(A)</code>的输出相等，则认为矩阵<code>A</code>被排序。</td>
+</tr>
+<tr>
+<td>setdiff(A,B)</td>
+<td>设置两个数组的差异; 返回<code>A</code>中不在<code>B</code>中的值。返回的数组中的值按排序顺序排列。</td>
+</tr>
+<tr>
+<td>setdiff(A,B,’rows’)</td>
+<td>将<code>A</code>的每一行和<code>B</code>的每一行视为单个实体，并从不在<code>B</code>中的<code>A</code>返回行。返回的矩阵的行按排序顺序排列。<code>'rows'</code>选项不支持单元格数组。</td>
+</tr>
+<tr>
+<td>setxor</td>
+<td>设置两个数组的异或</td>
+</tr>
+<tr>
+<td>union</td>
+<td>设置两个数组的并集</td>
+</tr>
+<tr>
+<td>unique</td>
+<td>使数组中的值唯一</td>
+</tr>
+</tbody>
+</table>
+
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:1005741898@qq.com">陈劲铧</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/posts/f687abec/">http://cjh0220.github.io/posts/f687abec/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://CJH0220.gitHub.io" target="_blank">CJH_blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E5%AD%A6%E5%BB%BA%E6%A8%A1/">数学建模</a></div><div class="post_share"><div class="social-share" data-image="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button button--animated"><i class="fas fa-qrcode"></i> 打赏</div><div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/WX.png" target="_blank"><img class="post-qr-code-img" src="/img/WX.png" alt="wechat"/></a><div class="post-qr-code-desc">wechat</div></li><li class="reward-item"><a href="/img/ZFB.png" target="_blank"><img class="post-qr-code-img" src="/img/ZFB.png" alt="alipay"/></a><div class="post-qr-code-desc">alipay</div></li></ul></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/posts/b32e3388/"><img class="prev-cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">前端学习7</div></div></a></div><div class="next-post pull-right"><a href="/posts/ba55c7f2/"><img class="next-cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Matlab基础语法-三</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/posts/eb65c9a9/" title="Matlab基础语法-五"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-10</div><div class="title">Matlab基础语法-五</div></div></a></div><div><a href="/posts/ba55c7f2/" title="Matlab基础语法-三"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-09</div><div class="title">Matlab基础语法-三</div></div></a></div><div><a href="/posts/f80951ff/" title="Matlab基础语法-二"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-09</div><div class="title">Matlab基础语法-二</div></div></a></div><div><a href="/posts/da9b852f/" title="Matlab基础语法(一)"><img class="cover" src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-06-08</div><div class="title">Matlab基础语法(一)</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="card-info-avatar is-center"><img class="avatar-img" src="https://ftp.bmp.ovh/imgs/2021/05/f1366f1c7176d0e0.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">陈劲铧</div><div class="author-info__description"></div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">20</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">7</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/CJH0220"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://www.zhihu.com/people/shou-xi-de-mo-sheng-ren-71-80" target="_blank" title="zhihu"><i class="fab fa-zhihu"></i></a><a class="social-icon" href="https://github.com/CJH0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="https://weibo.com/u/7484291268" target="_blank" title="weibo"><i class="fab fa-weibo"></i></a><a class="social-icon" href="https://blog.csdn.net/weixin_52648187" target="_blank" title="csdn"><i class="fab fa-cuttlefish"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">本人个人博客,还有很多内容需要实现~~</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#MATLAB%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.</span> <span class="toc-text">MATLAB数据类型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E8%BD%AC%E6%8D%A2"><span class="toc-number">2.</span> <span class="toc-text">数据类型转换</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%95%B0%E6%8D%AE%E7%B1%BB%E5%9E%8B%E7%A1%AE%E5%AE%9A"><span class="toc-number">3.</span> <span class="toc-text">数据类型确定</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B-1"><span class="toc-number">3.1.</span> <span class="toc-text">示例</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Matlab%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">4.</span> <span class="toc-text">Matlab运算符</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%AE%97%E6%9C%AF%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">4.1.</span> <span class="toc-text">算术运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%B3%E7%B3%BB%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">4.2.</span> <span class="toc-text">关系运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%80%BB%E8%BE%91%E8%BF%90%E7%AE%97%E7%AC%A6"><span class="toc-number">4.3.</span> <span class="toc-text">逻辑运算符</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%8D%E8%BF%90%E7%AE%97"><span class="toc-number">4.4.</span> <span class="toc-text">位运算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%9B%86%E5%90%88%E6%93%8D%E4%BD%9C"><span class="toc-number">4.5.</span> <span class="toc-text">集合操作</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/posts/23912e19/" title="前端学习8"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端学习8"/></a><div class="content"><a class="title" href="/posts/23912e19/" title="前端学习8">前端学习8</a><time datetime="2021-06-11T05:27:43.000Z" title="发表于 2021-06-11 13:27:43">2021-06-11</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/ed7c01aa/" title="Matlab基础语法-六"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-六"/></a><div class="content"><a class="title" href="/posts/ed7c01aa/" title="Matlab基础语法-六">Matlab基础语法-六</a><time datetime="2021-06-10T07:39:56.000Z" title="发表于 2021-06-10 15:39:56">2021-06-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/eb65c9a9/" title="Matlab基础语法-五"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-五"/></a><div class="content"><a class="title" href="/posts/eb65c9a9/" title="Matlab基础语法-五">Matlab基础语法-五</a><time datetime="2021-06-10T07:39:21.000Z" title="发表于 2021-06-10 15:39:21">2021-06-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/b32e3388/" title="前端学习7"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="前端学习7"/></a><div class="content"><a class="title" href="/posts/b32e3388/" title="前端学习7">前端学习7</a><time datetime="2021-06-10T03:06:08.000Z" title="发表于 2021-06-10 11:06:08">2021-06-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/posts/f687abec/" title="Matlab基础语法-四"><img src="https://ftp.bmp.ovh/imgs/2021/05/9dff96e0b8a62a81.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Matlab基础语法-四"/></a><div class="content"><a class="title" href="/posts/f687abec/" title="Matlab基础语法-四">Matlab基础语法-四</a><time datetime="2021-06-09T12:36:05.000Z" title="发表于 2021-06-09 20:36:05">2021-06-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 陈劲铧</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">Would rather regret, never regret</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="font-plus" type="button" title="放大字体"><i class="fas fa-plus"></i></button><button id="font-minus" type="button" title="缩小字体"><i class="fas fa-minus"></i></button><button id="translateLink" type="button" title="简繁转换">繁</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
   endLoading: () => {
     document.body.style.overflow = 'auto';
     document.getElementById('loading-box').classList.add("loaded")
