@@ -4,6 +4,119 @@
   
     
     <entry>
+      <title>GBDT算法</title>
+      <link href="posts/13e6bbef/"/>
+      <url>posts/13e6bbef/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="GBDT算法"><a href="#GBDT算法" class="headerlink" title="GBDT算法"></a>GBDT算法</h1><h2 id="1-GBDT算法的过程"><a href="#1-GBDT算法的过程" class="headerlink" title="1.GBDT算法的过程"></a>1.GBDT算法的过程</h2><h3 id="1-1Boosting思想"><a href="#1-1Boosting思想" class="headerlink" title="1.1Boosting思想"></a>1.1Boosting思想</h3><p>Boosting方法训练基分类器时采用<strong>串行</strong>的方式，各个基分类器之间有依赖。它的基本思路是将<strong>基分类器层层叠加，每一层在训练的时候，对前一层基分类器分错的样本，给予更高的权重。</strong>测试时，根据各层分类器的结果的加权得到最终结果。</p><p>Bagging与Boosting的串行训练方式不同，Bagging方法在训练过程中，各基分类器之间无强依赖，可以进行并行训练。</p><h3 id="1-2GBDT原理"><a href="#1-2GBDT原理" class="headerlink" title="1.2GBDT原理"></a>1.2GBDT原理</h3><p>GBDT的原理很简单，就是所有弱分类器的结果相加等于预测值，然后下一个弱分类器去拟合误差函数对预测值的残差(这个残差就是预测值与真实值之间的误差)。当然了，它里面的弱分类器的表现形式就是各棵树。</p><p>举一个非常简单的例子，比如我今年30岁了，但计算机或者模型GBDT并不知道我今年多少岁，那GBDT咋办呢？</p><ul><li>它会在第一个弱分类器（或第一棵树中）随便用一个年龄比如20岁来拟合，然后发现误差有10岁；</li><li>接下来在第二棵树中，用6岁去拟合剩下的损失，发现差距还有4岁；</li><li>接着在第三棵树中用3岁拟合剩下的差距，发现差距只有1岁了；</li><li>最后在第四课树中用1岁拟合剩下的残差，完美。</li><li>最终，四棵树的结论加起来，就是真实年龄30岁（实际工程中，gbdt是计算负梯度，用负梯度近似残差）。</li></ul><p><strong>为何gbdt可以用用负梯度近似残差呢？</strong></p><p>回归任务下，GBDT 在每一轮的迭代时对每个样本都会有一个预测值，此时的损失函数为均方差损失函数，<br>$$<br>l\left( y_{i},y^{i}\right) =\dfrac{1}{2}\left( y_{i}-y^{i}\right) ^{2}<br>$$<br>那此时的负梯度是这样计算的</p><p><img src="https://camo.githubusercontent.com/c09291f07c59de9cde4eb4010af4268eb8c0f80f4995d178c4d338553802362d/68747470733a2f2f6a756c796564752d696d672e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f717565736261736536343135353231343936323431363637303937332e676966"></p><p>所以，当损失函数选用均方损失函数是时，每一次拟合的值就是（真实值 - 当前模型预测的值），即残差。此时的变量是y^{i}，即“当前预测模型的值，也就是对它求负梯度。</p><p><strong>训练过程</strong></p><p>简单起见，假定训练集只有4个人：A,B,C,D，他们的年龄分别是14,16,24,26。其中A、B分别是高一和高三学生；C,D分别是应届毕业生和工作两年的员工。如果是用一棵传统的回归决策树来训练，会得到如下图所示结果：</p><p><img src="https://camo.githubusercontent.com/953440eddbcf317f67227aaa04818347d653dc12b80fe339d88a93b35854440e/68747470733a2f2f6a756c796564752d696d672e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f717565736261736536343135333433383536383139313330333935382e706e67"></p><p>现在我们使用GBDT来做这件事，由于数据太少，我们限定叶子节点做多有两个，即每棵树都只有一个分枝，并且限定只学两棵树。我们会得到如下图所示结果：</p><p><img src="https://camo.githubusercontent.com/d2687e29c0958e01420a6cabac90b3678a94dcc7e15713cd41229624b3b74d69/68747470733a2f2f6a756c796564752d696d672e6f73732d636e2d6265696a696e672e616c6979756e63732e636f6d2f717565736261736536343135333433383537303532393235363839352e706e67"></p><p>在第一棵树分枝和图1一样，由于A,B年龄较为相近，C,D年龄较为相近，他们被分为左右两拨，每拨用平均年龄作为预测值。</p><ul><li>此时计算残差（残差的意思就是：A的实际值 - A的预测值 = A的残差），所以A的残差就是实际值14 - 预测值15 = 残差值-1。</li><li>注意，A的预测值是指前面所有树累加的和，这里前面只有一棵树所以直接是15，如果还有树则需要都累加起来作为A的预测值。</li></ul><p>然后拿它们的残差-1、1、-1、1代替A B C D的原值，到第二棵树去学习，第二棵树只有两个值1和-1，直接分成两个节点，即A和C分在左边，B和D分在右边，经过计算（比如A，实际值-1 - 预测值-1 = 残差0，比如C，实际值-1 - 预测值-1 = 0），此时所有人的残差都是0。残差值都为0，相当于第二棵树的预测值和它们的实际值相等，则只需把第二棵树的结论累加到第一棵树上就能得到真实年龄了，即每个人都得到了真实的预测值。</p><p>换句话说，现在A,B,C,D的预测值都和真实年龄一致了。Perfect！</p><ul><li>A: 14岁高一学生，购物较少，经常问学长问题，预测年龄A = 15 – 1 = 14</li><li>B: 16岁高三学生，购物较少，经常被学弟问问题，预测年龄B = 15 + 1 = 16</li><li>C: 24岁应届毕业生，购物较多，经常问师兄问题，预测年龄C = 25 – 1 = 24</li><li>D: 26岁工作两年员工，购物较多，经常被师弟问问题，预测年龄D = 25 + 1 = 26</li></ul><p>所以，GBDT需要将多棵树的得分累加得到最终的预测得分，且每一次迭代，都在现有树的基础上，增加一棵树去拟合前面树的预测结果与真实值之间的残差。</p><h2 id="2-梯度提升和梯度下降的区别和联系是什么？"><a href="#2-梯度提升和梯度下降的区别和联系是什么？" class="headerlink" title="2.梯度提升和梯度下降的区别和联系是什么？"></a>2.梯度提升和梯度下降的区别和联系是什么？</h2><p>下表是梯度提升算法和梯度下降算法的对比情况。可以发现，两者都是在每 一轮迭代中，利用损失函数相对于模型的负梯度方向的信息来对当前模型进行更 新，只不过在梯度下降中，模型是以参数化形式表示，从而模型的更新等价于参 数的更新。而在梯度提升中，模型并不需要进行参数化表示，而是直接定义在函 数空间中，从而大大扩展了可以使用的模型种类。</p><p><img src="https://camo.githubusercontent.com/17b8382a7346470c9f203f29843ccfc99c1016eb4c963ffbe4d0bc6dd1b2b457/687474703a2f2f7778332e73696e61696d672e636e2f6d773639302f3030363330446566677931673474647768717a73646a3330727030616664686f2e6a7067"></p><h2 id="3-GBDT的优点和局限性有哪些？"><a href="#3-GBDT的优点和局限性有哪些？" class="headerlink" title="3.GBDT的优点和局限性有哪些？"></a>3.<strong>GBDT</strong>的优点和局限性有哪些？</h2><h3 id="3-1-优点"><a href="#3-1-优点" class="headerlink" title="3.1 优点"></a>3.1 优点</h3><ol><li>预测阶段的计算速度快，树与树之间可并行化计算。</li><li>在分布稠密的数据集上，泛化能力和表达能力都很好，这使得GBDT在Kaggle的众多竞赛中，经常名列榜首。</li><li>采用决策树作为弱分类器使得GBDT模型具有较好的解释性和鲁棒性，能够自动发现特征间的高阶关系。</li></ol><h3 id="3-2-局限性"><a href="#3-2-局限性" class="headerlink" title="3.2 局限性"></a>3.2 局限性</h3><ol><li>GBDT在高维稀疏的数据集上，表现不如支持向量机或者神经网络。</li><li>GBDT在处理文本分类特征问题上，相对其他模型的优势不如它在处理数值特征时明显。</li><li>训练过程需要串行训练，只能在决策树内部采用一些局部并行的手段提高训练速度。</li></ol><h2 id="4-RF-随机森林-与GBDT之间的区别与联系"><a href="#4-RF-随机森林-与GBDT之间的区别与联系" class="headerlink" title="4. RF(随机森林)与GBDT之间的区别与联系"></a>4. RF(随机森林)与GBDT之间的区别与联系</h2><p><strong>相同点</strong>：</p><ul><li>都是由多棵树组成，最终的结果都是由多棵树一起决定。</li><li>RF和GBDT在使用CART树时，可以是分类树或者回归树。</li></ul><p><strong>不同点</strong>：</p><ul><li>组成随机森林的树可以并行生成，而GBDT是串行生成</li><li>随机森林的结果是多数表决表决的，而GBDT则是多棵树累加之和</li><li>随机森林对异常值不敏感，而GBDT对异常值比较敏感</li><li>随机森林是减少模型的方差，而GBDT是减少模型的偏差</li><li>随机森林不需要进行特征归一化。而GBDT则需要进行特征归一化</li></ul><h1 id="原文转自：https-github-com-NLP-LOVE-ML-NLP-blob-master-Machine-20Learning-3-2-20GBDT-3-2-20GBDT-md"><a href="#原文转自：https-github-com-NLP-LOVE-ML-NLP-blob-master-Machine-20Learning-3-2-20GBDT-3-2-20GBDT-md" class="headerlink" title="原文转自：https://github.com/NLP-LOVE/ML-NLP/blob/master/Machine%20Learning/3.2%20GBDT/3.2%20GBDT.md"></a>原文转自：<a href="https://github.com/NLP-LOVE/ML-NLP/blob/master/Machine%20Learning/3.2%20GBDT/3.2%20GBDT.md">https://github.com/NLP-LOVE/ML-NLP/blob/master/Machine%20Learning/3.2%20GBDT/3.2%20GBDT.md</a></h1>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 机器学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>XGboost</title>
+      <link href="posts/f4d920f/"/>
+      <url>posts/f4d920f/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="XGBoost"><a href="#XGBoost" class="headerlink" title="XGBoost"></a>XGBoost</h1><h2 id="1-什么是XGBoost"><a href="#1-什么是XGBoost" class="headerlink" title="1. 什么是XGBoost"></a>1. 什么是XGBoost</h2><p><strong>XGBoost</strong>是陈天奇等人开发的一个开源机器学习项目，高效地实现了GBDT算法并进行了算法和工程上的许多改进，被广泛应用在Kaggle竞赛及其他许多机器学习竞赛中并取得了不错的成绩。</p><p>说到XGBoost，不得不提GBDT(Gradient Boosting Decision Tree)。因为XGBoost本质上还是一个GBDT，但是力争把速度和效率发挥到极致，所以叫X (Extreme) GBoosted。包括前面说过，两者都是boosting方法。</p><h3 id="1-1-XGBoost树的定义"><a href="#1-1-XGBoost树的定义" class="headerlink" title="1.1 XGBoost树的定义"></a>1.1 XGBoost树的定义</h3><p>先来举个<strong>例子</strong>，我们要预测一家人对电子游戏的喜好程度，考虑到年轻和年老相比，年轻更可能喜欢电子游戏，以及男性和女性相比，男性更喜欢电子游戏，故先根据年龄大小区分小孩和大人，然后再通过性别区分开是男是女，逐一给各人在电子游戏喜好程度上打分，如下图所示。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODU3NzIzMjUxNjgwMC5wbmc"></p><p>就这样，训练出了2棵树tree1和tree2，类似之前gbdt的原理，两棵树的结论累加起来便是最终的结论，所以小孩的预测分数就是两棵树中小孩所落到的结点的分数相加：2 + 0.9 = 2.9。爷爷的预测分数同理：-1 + （-0.9）= -1.9。具体如下图所示：</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODU3ODczOTE5ODQzMy5wbmc"></p><p>恩，你可能要拍案而起了，惊呼，这不是跟上文介绍的GBDT乃异曲同工么？</p><p>事实上，如果不考虑工程实现、解决问题上的一些差异，XGBoost与GBDT比较大的不同就是目标函数的定义。XGBoost的目标函数如下图所示：</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODU4MDEzOTE1OTU5My5wbmc"></p><p>其中：</p><ul><li>红色箭头所指向的L 即为损失函数（比如平方损失函数：</li></ul><ul><li>红色方框所框起来的是正则项（包括L1正则、L2正则）</li><li>红色圆圈所圈起来的为常数项</li><li>对于f(x)，XGBoost利用泰勒展开三项，做一个近似。f(x)表示的是其中一颗回归树。</li></ul><p>XGBoost的核心算法思想不难，基本就是：</p><ul><li>不断地添加树，不断地进行特征分裂来生长一棵树，每次添加一个树，其实是学习一个新函数f(x)，去拟合上次预测的残差。</li><li>当我们训练完成得到k棵树，我们要预测一个样本的分数，其实就是根据这个样本的特征，在每棵树中会落到对应的一个叶子节点，每个叶子节点就对应一个分数</li><li>最后只需要将每棵树对应的分数加起来就是该样本的预测值。</li></ul><p>显然，我们的目标是要使得树群的预测值尽量接近真实值，而且有尽量大的泛化能力。类似之前GBDT的套路，XGBoost也是需要将多棵树的得分累加得到最终的预测得分（每一次迭代，都在现有树的基础上，增加一棵树去拟合前面树的预测结果与真实值之间的残差）。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODY1NzI2MTgzMzQ5My5wbmc"></p><p>那接下来，我们如何选择每一轮加入什么 f 呢？答案是非常直接的，选取一个 f 来使得我们的目标函数尽量最大地降低。这里 f 可以使用泰勒展开公式近似。</p><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODY1ODY3NTMwMTIwLnBuZw"></p><p>实质是把样本分配到叶子结点会对应一个obj，优化过程就是obj优化。也就是分裂节点到叶子不同的组合，不同的组合对应不同obj，所有的优化围绕这个思想展开。到目前为止我们讨论了目标函数中的第一个部分：训练误差。接下来我们讨论目标函数的第二个部分：正则项，即如何定义树的复杂度。</p><h3 id="1-2-正则项：树的复杂度"><a href="#1-2-正则项：树的复杂度" class="headerlink" title="1.2 正则项：树的复杂度"></a>1.2 正则项：树的复杂度</h3><p>XGBoost对树的复杂度包含了两个部分：</p><ul><li>一个是树里面叶子节点的个数T</li><li>一个是树上叶子节点的得分w的L2模平方（对w进行L2正则化，相当于针对每个叶结点的得分增加L2平滑，目的是为了避免过拟合）</li></ul><p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9qdWx5ZWR1LWltZy5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vcXVlc2Jhc2U2NDE1MzQzODY3NDE5OTQ3MTQ4My5wbmc"></p><p>我们再来看一下XGBoost的目标函数（损失函数揭示训练误差 + 正则化定义复杂度）：</p><p><img src="https://ftp.bmp.ovh/imgs/2021/07/4ade7a318e325195.png"></p><p>正则化公式也就是目标函数的后半部分，对于上式而言， 整个累加模型的输出，正则化项∑kΩ(ft)是则表示树的复杂度的函数，值越小复杂度越低，泛化能力越强。</p><h3 id="1-3-树该怎么长"><a href="#1-3-树该怎么长" class="headerlink" title="1.3 树该怎么长"></a>1.3 树该怎么长</h3><p>很有意思的一个事是，我们从头到尾了解了xgboost如何优化、如何计算，但树到底长啥样，我们却一直没看到。很显然，一棵树的生成是由一个节点一分为二，然后不断分裂最终形成为整棵树。那么树怎么分裂的就成为了接下来我们要探讨的关键。对于一个叶子节点如何进行分裂，XGBoost作者在其原始论文中给出了一种分裂节点的方法：枚举所有不同树结构的贪心法</p><p>不断地枚举不同树的结构，然后利用打分函数来寻找出一个最优结构的树，接着加入到模型中，不断重复这样的操作。这个寻找的过程使用的就是<strong>贪心算法</strong>。选择一个feature分裂，计算loss function最小值，然后再选一个feature分裂，又得到一个loss function最小值，你枚举完，找一个效果最好的，把树给分裂，就得到了小树苗。</p><p>总而言之，XGBoost使用了和CART回归树一样的想法，利用贪婪算法，遍历所有特征的所有特征划分点，不同的是使用的目标函数不一样。具体做法就是分裂后的目标函数值比单子叶子节点的目标函数的增益，同时为了限制树生长过深，还加了个阈值，只有当增益大于该阈值才进行分裂。从而继续分裂，形成一棵树，再形成一棵树，每次在上一次的预测基础上取最优进一步分裂/建树。</p><h3 id="1-4如何停止树的循环生成"><a href="#1-4如何停止树的循环生成" class="headerlink" title="1.4如何停止树的循环生成"></a>1.4如何停止树的循环生成</h3><p>凡是这种循环迭代的方式必定有停止条件，什么时候停止呢？简言之，设置树的最大深度、当样本权重和小于设定阈值时停止生长以防止过拟合。具体而言，则</p><ul><li><p>当引入的分裂带来的增益小于设定阀值的时候，我们可以忽略掉这个分裂，所以并不是每一次分裂loss function整体都会增加的，有点预剪枝的意思，阈值参数为（即正则项里叶子节点数T的系数）；</p></li><li><p>当树达到最大深度时则停止建立决策树，设置一个超参数max_depth，避免树太深导致学习局部样本，从而过拟合；</p></li><li><p>样本权重和小于设定阈值时则停止建树。什么意思呢，即涉及到一个超参数-最小的样本权重和min_child_weight，和GBM的 min_child_leaf 参数类似，但不完全一样。大意就是一个叶子节点样本太少了，也终止同样是防止过拟合；</p></li></ul><h2 id="2-XGBoost与GBDT有什么不同"><a href="#2-XGBoost与GBDT有什么不同" class="headerlink" title="2.XGBoost与GBDT有什么不同"></a>2.XGBoost与GBDT有什么不同</h2><p>除了算法上与传统的GBDT有一些不同外，XGBoost还在工程实现上做了大量的优化。总的来说，两者之间的区别和联系可以总结成以下几个方面。</p><ul><li>GBDT是机器学习算法，XGBoost是该算法的工程实现。</li><li>在使用CART作为基分类器时，XGBoost显式地加入了正则项来控制模 型的复杂度，有利于防止过拟合，从而提高模型的泛化能力。</li><li>GBDT在模型训练时只使用了代价函数的一阶导数信息，XGBoost对代 价函数进行二阶泰勒展开，可以同时使用一阶和二阶导数。</li><li>传统的GBDT采用CART作为基分类器，XGBoost支持多种类型的基分类 器，比如线性分类器。</li><li>传统的GBDT在每轮迭代时使用全部的数据，XGBoost则采用了与随机 森林相似的策略，支持对数据进行采样。</li><li>传统的GBDT没有设计对缺失值进行处理，XGBoost能够自动学习出缺 失值的处理策略。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 机器学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>灰色关联系分析与预测模型</title>
+      <link href="posts/1f37f8b6/"/>
+      <url>posts/1f37f8b6/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h2 id="预备知识"><a href="#预备知识" class="headerlink" title="预备知识"></a>预备知识</h2><h3 id="关联度"><a href="#关联度" class="headerlink" title="关联度"></a>关联度</h3><p>对于两个系统之间的因素，其随时间或不同对象而变化的关联性大小的量度，称为<strong>关联度</strong>。在系统发展过程中，若两个因素变化的趋势具有一致性，即同步变化程度较高，即可谓二者关联程度较高；反之，则较低。</p><h3 id="黑白灰系统"><a href="#黑白灰系统" class="headerlink" title="黑白灰系统"></a>黑白灰系统</h3><p><strong>白色系统</strong>是指一个系统的内部特征是完全已知的，即系统的信息是完全充分的。比如一个力学系统，元素之间的关系都是能够确定的，这就是一个白色系统。</p><p><strong>黑色系统</strong>是指一个系统的内部信息对外界来说是一无所知的，只能通过它与外界的联系来加以观测研究。通常叫做黑箱或黑盒。</p><p><strong>灰色系统</strong>介于黑白系统之间，一部分信息已知，另一部分信息是未知的，系统内各因素间有不确定的关系。</p><h3 id="归一化-无量纲化"><a href="#归一化-无量纲化" class="headerlink" title="归一化(无量纲化)"></a>归一化(无量纲化)</h3><p>因为我们的这些要素是不同质的东西的指标，因此可能会有的数字很大有的数字很小，但是这并不是由于它们内禀的性质决定的，而只是由于量纲不同导致的，因此我们需要对它们进行无量纲化。这个操作一般在数据处理领域叫做<strong>归一化</strong>（normalization），也就是减少数据的绝对数值的差异，将它们统一到近似的范围内，然后重点关注其变化和趋势。</p><p>主要方法如下：</p><h4 id="1、初值化"><a href="#1、初值化" class="headerlink" title="1、初值化"></a><strong>1、初值化</strong></h4><p>顾名思义，就是把这一个序列的数据统一除以最开始的值，由于同一个因素的序列的量级差别不大，所以通过除以初值就能将这些值都整理到1这个量级附近。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">公式： x_i(k)<span class="string">&#x27; = x_i(k) / x_i(1)   i = 1,...,m, k = 1,...,n </span></span><br><span class="line"><span class="string">(m为因素个数，n为每个因素的数据维度，仍如上栗，n=5，m=3（我们只看前三个因素，就是曲线图里画的这三种，和旅游总收入的关联，数据维度为5，即五年）)</span></span><br></pre></td></tr></table></figure><h4 id="2、均值化"><a href="#2、均值化" class="headerlink" title="2、均值化"></a>2、均值化</h4><p>顾名思义，就是把这个序列的数据除以均值，由于数量级大的序列均值比较大，所以除掉以后就能归一化到1的量级附近。</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">公式： x_i(k)<span class="string">&#x27; = x_i(k) / ( mean(x_i) )        （除以均值）</span></span><br><span class="line"><span class="string">其中 ： mean(x_i) = (1/n) sum_k=1^n (x_i(k))     （求第i个因素序列的均值）</span></span><br></pre></td></tr></table></figure><h4 id="3、区间化"><a href="#3、区间化" class="headerlink" title="3、区间化"></a>3、区间化</h4><p>序列的值规范到一个区间，比如[0, 1]。</p><h2 id="灰色关联度分析（Grey-Relation-Analysis，GRA）"><a href="#灰色关联度分析（Grey-Relation-Analysis，GRA）" class="headerlink" title="灰色关联度分析（Grey Relation Analysis，GRA）"></a>灰色关联度分析（Grey Relation Analysis，GRA）</h2><h3 id="基本思想"><a href="#基本思想" class="headerlink" title="基本思想"></a>基本思想</h3><p>灰色关联分析的基本思想是根据<strong>序列曲线几何形状的相似程度</strong>来判断其联系是否紧密。曲线越接近，相应序列之间的关联度就越大，反之就越小。</p><h3 id="基本步骤"><a href="#基本步骤" class="headerlink" title="基本步骤"></a>基本步骤</h3><h4 id="确定分析（参考）数列"><a href="#确定分析（参考）数列" class="headerlink" title="确定分析（参考）数列"></a>确定分析（参考）数列</h4><p><img src="https://ftp.bmp.ovh/imgs/2021/07/b0594d4fa8be789a.png"></p><p><img src="https://ftp.bmp.ovh/imgs/2021/07/3c4ad25899c9c99f.png"></p><h4 id="确定关联函数及分辨系数"><a href="#确定关联函数及分辨系数" class="headerlink" title="确定关联函数及分辨系数"></a>确定关联函数及分辨系数</h4><p><img src="https://ftp.bmp.ovh/imgs/2021/07/e9057356a6da90dc.png"></p><p>其中ρ∈[0,+∞]为<strong>分辨系数</strong>。一般来说ρ∈[0,1]（常取0.5）。ρ越大，分辨率越大。</p><h4 id="确定比较数列对于参考数列的关联度"><a href="#确定比较数列对于参考数列的关联度" class="headerlink" title="确定比较数列对于参考数列的关联度"></a>确定比较数列对于参考数列的关联度</h4><p><img src="https://ftp.bmp.ovh/imgs/2021/07/fe6ab7b8acb721b8.png"></p><h4 id="确定正负关联"><a href="#确定正负关联" class="headerlink" title="确定正负关联"></a>确定正负关联</h4><p><img src="https://ftp.bmp.ovh/imgs/2021/07/15a00e852053aae0.png"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 数学建模算法与模型 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Matlab链接指南</title>
+      <link href="posts/3d8da19a/"/>
+      <url>posts/3d8da19a/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>re正则表达式</title>
+      <link href="posts/c2fb5aeb/"/>
+      <url>posts/c2fb5aeb/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="re正则表达式"><a href="#re正则表达式" class="headerlink" title="re正则表达式"></a>re正则表达式</h1><ul><li>正则表达式是用来简洁表达一组字符串的表达式</li><li>通用的字符串表达框架</li><li>正则表达式的优势：使用特征来表达字符串，非常简洁“一行胜千言”</li><li>正则表达式可以用来判断某字符串的特征归属，在文本处理中十分常用，主要应用在字符串的匹配中</li></ul><h2 id="作用"><a href="#作用" class="headerlink" title="作用"></a>作用</h2><ul><li>表达文本类型的特征（病毒、入侵等）</li><li>同时查找或替换一组字符串</li><li>匹配字符串的全部或部分</li></ul><h2 id="使用"><a href="#使用" class="headerlink" title="使用"></a>使用</h2><ul><li>编译：将符合正则表达式的字符串转换成正则表达式特征。</li></ul><h2 id="语法"><a href="#语法" class="headerlink" title="语法"></a>语法</h2><p><img src="http://m.qpic.cn/psc?/V12XQ1QV3cpyPD/45NBuzDIW489QBoVep5mcYiEY7dlXE*lrBq3jkDF3*hlyJ7mCGEC2529o3yV3NkV22Yy.4IQy9qc10lGQkx6tmdHgZnsw.besbi*4m8mw90!/b&bo=UwRSAlMEUgIDKQw!&rf=viewer_4"></p><p><img src="http://m.qpic.cn/psc?/V12XQ1QV3cpyPD/45NBuzDIW489QBoVep5mcYiEY7dlXE*lrBq3jkDF3*iBhvhRGtDKiAPLeNrCylBnfcNEahOdgWdhkivdp*bQxy*gvwiqEJzjFHZhumgy6j8!/b&bo=TwRpAk8EaQIDKQw!&rf=viewer_4"></p><p><img src="http://m.qpic.cn/psc?/V12XQ1QV3cpyPD/45NBuzDIW489QBoVep5mcYiEY7dlXE*lrBq3jkDF3*gXMeqWdJH2Pv9NqmuIACYFg*pn*f10HwDzGg4ZjUXRwYl9JjGwBVXaBfiH1BFlyQY!/b&bo=HgRcAh4EXAIDGTw!&rf=viewer_4"></p><p><img src="http://m.qpic.cn/psc?/V12XQ1QV3cpyPD/45NBuzDIW489QBoVep5mcfXH.U3WdPHorVpDWM0gJb2kQJcZbOd8GPRZeBNYkMl20WSo7NptZZziFPzVjdkLuhD3OvgwUshUMT3*VP*lg7c!/b&bo=CgRhAgoEYQIDKQw!&rf=viewer_4"></p><p><img src="http://m.qpic.cn/psc?/V12XQ1QV3cpyPD/45NBuzDIW489QBoVep5mcfXH.U3WdPHorVpDWM0gJb1EtATPSxNCiOg6bhLNTpoC9I8O.8M8jzpbf7YY76kuNPKwo0xaAos.uoMvxNxe.FU!/b&bo=GgRfAhoEXwIDGTw!&rf=viewer_4"></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 正则表达式 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Matlab进阶操作-四</title>
       <link href="posts/1be5bcf4/"/>
       <url>posts/1be5bcf4/</url>
