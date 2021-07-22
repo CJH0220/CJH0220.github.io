@@ -4,6 +4,56 @@
   
     
     <entry>
+      <title>认识神经网络</title>
+      <link href="posts/d431c35b/"/>
+      <url>posts/d431c35b/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script><h1 id="神经网络"><a href="#神经网络" class="headerlink" title="神经网络"></a>神经网络</h1><h2 id="什么是神经网络"><a href="#什么是神经网络" class="headerlink" title="什么是神经网络"></a>什么是神经网络</h2><p><a href="https://baike.baidu.com/item/%E4%BA%BA%E5%B7%A5%E7%A5%9E%E7%BB%8F%E7%BD%91%E7%BB%9C/382460">人工神经网络</a>：是一种应用类似于大脑神经突触联接的结构进行信息处理的数学模型。在工程与学术界也常直接简称为“神经网络”或类神经网络。（百度百科）</p><p><strong>神经网络</strong>是一门重要的机器学习技术。它是目前最为火热的研究方向–深度学习的基础。</p><p>单层神经网络-感知器</p><p>两层神经网络-多层感知器</p><p>多层神经网络-深度学习</p><h2 id="神经网络结构"><a href="#神经网络结构" class="headerlink" title="神经网络结构"></a>神经网络结构</h2><p>这是一个包含三个层次的神经网络。红色的是<strong>输入层</strong>，绿色的是<strong>输出层</strong>，紫色的是<strong>中间层</strong>（也叫<strong>隐藏层</strong>）。输入层有3个输入单元，隐藏层有4个单元，输出层有2个单元。后文中，我们统一使用这种颜色来表达神经网络的结构。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMTkxNTE2MDQzMTgtMTU1NzczNzI4OS5qcGc?x-oss-process=image/format,png" style="zoom:50%;" /><p>神经网络结构图</p><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>、设计一个神经网络时，输入层与输出层的节点数往往是固定的，中间层则可以自由指定；</span><br><span class="line"><span class="number">2</span>、神经网络结构图中的拓扑与箭头代表着预测过程时数据的流向，跟训练时的数据流有一定的区别；</span><br><span class="line"><span class="number">3</span>、结构图里的关键不是圆圈（代表“神经元”），而是连接线（代表“神经元”之间的连接）。每个连接线对应一个不同的权重（其值称为权值），这是需要训练得到的。  </span><br></pre></td></tr></table></figure><p>除了从左到右的形式表达的结构图，还有一种常见的表达形式是从下到上来表示一个神经网络。这时候，输入层在图的最下方。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMTkxNzQ2MzE2OTMtNzc1MTgxOTMwLmpwZw?x-oss-process=image/format,png" style="zoom:50%;" /><p>从下到上的神经网络结构图</p><h2 id="神经元模型"><a href="#神经元模型" class="headerlink" title="神经元模型"></a>神经元模型</h2><p><strong>神经元模型</strong>是一个包含输入，输出与计算功能的模型。输入可以类比为神经元的树突，而输出可以类比为神经元的轴突，计算则可以类比为细胞核。</p><p>下图是一个典型的神经元模型：包含有3个输入，1个输出，以及2个计算功能。</p><p>注意中间的箭头线。这些线称为“连接”。每个上有一个“权值”。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMTkxNTM4NTY4MDItMzA3NzMyNjIxLmpwZw?x-oss-process=image/format,png" style="zoom:50%;" /><p>连接是神经元中最重要的东西。每一个连接上都有一个权重。</p><p>　　一个神经网络的训练算法就是让权重的值调整到最佳，以使得整个网络的预测效果最好。</p><p>　　我们使用a来表示输入，用w来表示权值。一个表示连接的有向箭头可以这样理解：在初端，传递的信号大小仍然是a，端中间有加权参数w，经过这个加权后的信号会变成a<em>w，因此在连接的末端，信号的大小就变成了a</em>w。</p><p>　　在其他绘图模型里，有向箭头可能表示的是值的不变传递。而在神经元模型里，每个有向箭头表示的是值的加权传递。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMTkxODA2MTQ4MTktMTY1MjU3NDIzNS5qcGc?x-oss-process=image/format,png" style="zoom:50%;" /><p>将神经元图中的所有变量用符号表示，并且写出输出的计算公式的话，就是下图。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMzAyMDE0NDE3OTItMTUwNTI4MzkyMC5qcGc?x-oss-process=image/format,png" style="zoom:50%;" /><p>　可见z是在输入和权值的线性加权和叠加了一个<strong>函数g</strong>的值。在MP模型里，函数g是sgn函数，也就是取符号函数。这个函数当输入大于0时，输出1，否则输出0。</p><p>　　下面对神经元模型的图进行一些扩展。首先将sum函数与sgn函数合并到一个圆圈里，代表神经元的内部计算。其次，把输入a与输出z写到连接线的左上方，便于后面画复杂的网络。最后说明，一个神经元可以引出多个代表输出的有向箭头，但值都是一样的。</p><p>　　神经元可以看作一个计算与存储单元。计算是神经元对其的输入进行计算功能。存储是神经元会暂存计算结果，并传递到下一层。</p><img src="https://imgconvert.csdnimg.cn/aHR0cHM6Ly9pbWFnZXMyMDE1LmNuYmxvZ3MuY29tL2Jsb2cvNjczNzkzLzIwMTUxMi82NzM3OTMtMjAxNTEyMzAyMDQwMzY0NzktNDYxNDQwOTQ4LmpwZw?x-oss-process=image/format,png" style="zoom:50%;" /><p>神经元扩展</p><p>当我们用“神经元”组成网络以后，描述网络中的某个“神经元”时，我们更多地会用“<strong>单元</strong>”（unit）来指代。同时由于神经网络的表现形式是一个有向图，有时也会用“<strong>节点</strong>”（node）来表达同样的意思。</p><p>神经元的输出是a = g（Wx + b），其中g是激活函数（sigmoid，tanh，ReLU，…）</p><p><strong>效果</strong> </p><p>　　神经元模型的使用可以这样理解：</p><p>　　我们有一个数据，称之为样本。样本有四个属性，其中三个属性已知，一个属性未知。我们需要做的就是通过三个已知属性<strong>预测</strong>未知属性。</p><p>　　具体办法就是使用神经元的公式进行计算。三个已知属性的值是a1，a2，a3，未知属性的值是z。z可以通过公式计算出来。</p><p>　　这里，已知的属性称之为<strong>特征</strong>，未知的属性称之为<strong>目标</strong>。假设特征与目标之间确实是线性关系，并且我们已经得到表示这个关系的权值w1，w2，w3。那么，我们就可以通过神经元模型预测新样本的目标。</p><p>“cache”记录来自正向传播单元的值并将其发送到反向传播单元，因为需要链式计算导数。</p><p>我们用“cache”传递前向传播中计算的变量到相应的反向传播步骤，它包含用于计算导数的反向传播的有用值。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 深度学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>各类优化算法</title>
+      <link href="posts/bfe81aef/"/>
+      <url>posts/bfe81aef/</url>
+      
+        <content type="html"><![CDATA[<link rel="stylesheet" class="aplayer-secondary-style-marker" href="\assets\css\APlayer.min.css"><script src="\assets\js\APlayer.min.js" class="aplayer-secondary-script-marker"></script><script class="meting-secondary-script-marker" src="\assets\js\Meting.min.js"></script>]]></content>
+      
+      
+      <categories>
+          
+          <category> 专业知识 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 深度学习 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>GBDT算法</title>
       <link href="posts/13e6bbef/"/>
       <url>posts/13e6bbef/</url>
