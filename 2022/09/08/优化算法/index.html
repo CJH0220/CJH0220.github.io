@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>优化算法 | CJH's blog</title><meta name="keywords" content="优化算法"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="SGD、BGD、MBGD 现在所说的SGD一般都指MBGD(小批量梯度下降法Mini-batch Gradient Descent)。 三种梯度下降的方法用于更新参数，也就是当前参数等于上一时刻参数减去学习率乘以梯度。  三种方法的不同体现在计算梯度上  假设损失函数为二次函数，那么参数θ的更新公式为  SGD（随机梯度下降法Stochastic Gradient Descent） SGD：min">
+<meta property="og:type" content="article">
+<meta property="og:title" content="优化算法">
+<meta property="og:url" content="http://cjh0220.github.io/2022/09/08/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="SGD、BGD、MBGD 现在所说的SGD一般都指MBGD(小批量梯度下降法Mini-batch Gradient Descent)。 三种梯度下降的方法用于更新参数，也就是当前参数等于上一时刻参数减去学习率乘以梯度。  三种方法的不同体现在计算梯度上  假设损失函数为二次函数，那么参数θ的更新公式为  SGD（随机梯度下降法Stochastic Gradient Descent） SGD：min">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/09/08/vqpCng.jpg">
+<meta property="article:published_time" content="2022-09-08T12:59:40.000Z">
+<meta property="article:modified_time" content="2022-09-08T13:00:38.307Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="优化算法">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/09/08/vqpCng.jpg"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2022/09/08/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '优化算法',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: true,
+  isToc: true,
+  postUpdate: '2022-09-08 21:00:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">42</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">优化算法</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-08T12:59:40.000Z" title="发表于 2022-09-08 20:59:40">2022-09-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-08T13:00:38.307Z" title="更新于 2022-09-08 21:00:38">2022-09-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="优化算法"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>SGD、BGD、MBGD</h1>
+<p>现在所说的SGD一般都指MBGD(小批量梯度下降法Mini-batch Gradient Descent)。</p>
+<p>三种梯度下降的方法用于更新参数，也就是当前参数等于上一时刻参数减去学习率乘以梯度。</p>
+<img src="https://ftp.bmp.ovh/imgs/2021/07/492f6351931a562b.png" style="zoom: 67%;" />
+三种方法的不同体现在计算梯度上 
+假设损失函数为二次函数，那么参数θ的更新公式为
+<img src="https://ftp.bmp.ovh/imgs/2021/07/7fe288e86ec0010c.png" style="zoom: 67%;" />
+<h2 id="SGD（随机梯度下降法Stochastic-Gradient-Descent）">SGD（随机梯度下降法Stochastic Gradient Descent）</h2>
+<p>SGD：mini-batch gradient descent（随机梯度下降）<br>
+SGD就是每一次迭代每次只用<strong>一个样本</strong>计算mini-batch的梯度，然后对参数进行更新，是最常见的优化方法了。</p>
+<p>&lt;img src=“<a target="_blank" rel="noopener" href="https://ftp.bmp.ovh/imgs/2021/07/742b1819c08ba909.png">https://ftp.bmp.ovh/imgs/2021/07/742b1819c08ba909.png</a>” style=“zoom: 67%;” /</p>
+<p>优点是速度快，缺点是可能陷入局部最优，搜索起来比较盲目，并不是每次都朝着最优的方向（因为单个样本可能噪音比较多），走的路径比较曲折（震荡）。</p>
+<img src="https://img-blog.csdnimg.cn/20190625080633780.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RwZW5nd2FuZw==,size_16,color_FFFFFF,t_70" style="zoom:67%;" />
+<p><img src="https://s3.bmp.ovh/imgs/2021/11/d225c73325ad2cd0.png" alt=""></p>
+<h2 id="BGD-批梯度下降算法-Batch-Gradient-Descent）">BGD (批梯度下降算法 Batch Gradient Descent）</h2>
+<p>计算梯度时候使用<strong>所有的数据</strong>来计算，取平均值（最原始的梯度下降算法）。</p>
+<p>BGD算法，每走一步（更新模型参数），为了计算original-loss上的梯度，就需要遍历整个数据集，在一般深度学习任务中，这是很不现实的。</p>
+<p>好处在于收敛次数少，坏处就是每次迭代需要用到所有数据，占用内存大耗时大。<img src="https://ftp.bmp.ovh/imgs/2021/07/8ea7df3d437d0423.png" style="zoom:67%;" /></p>
+<img src="https://img-blog.csdnimg.cn/20190625080220317.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2RwZW5nd2FuZw==,size_16,color_FFFFFF,t_70" style="zoom:67%;" />
+<h2 id="MBGD-小批量梯度下降法Mini-batch-Gradient-Descent">MBGD (小批量梯度下降法Mini-batch Gradient Descent)</h2>
+<p>SGD和BGD是两个极端， 而MBGD是两种方法的折中，每次选择<strong>一批数据</strong>(不是全部，也不是单个)来求梯度。<br>
+该方法也容易陷入局部最优。</p>
+<p><strong>现在所说的SGD基本都是MBGD。</strong></p>
+<p><img src="https://private.codecogs.com/gif.latex?g_%7Bt%7D%3D%20%5Ctriangledown%20_%7B%5Ctheta_%7Bt-1%7D%7DJ%28%5Ctheta_%7Bt-1%7D%29" alt="g_{t}= \triangledown {\theta{t-1}}J(\theta_{t-1})"></p>
+<p>​        <img src="https://private.codecogs.com/gif.latex?%5Ctriangle%20%5Ctheta%20_t%20%3D%20-%5Ceta%20%5Cast%20g_t" alt="\triangle \theta _t = -\eta \ast g_t"></p>
+<p>​       <img src="https://private.codecogs.com/gif.latex?%5Ctheta%20_t%20%3D%20%5Ctheta%20_%7Bt-1%7D+%5Ctriangle%20%5Ctheta%20_t" alt="\theta _t = \theta _{t-1}+\triangle \theta _t"></p>
+<p>其中<img src="https://private.codecogs.com/gif.latex?%5Ctheta%20_t" alt="\theta _t">是模型参数，<img src="https://private.codecogs.com/gif.latex?J%28%5Ctheta%20_%7Bt-1%7D%29" alt="J(\theta _{t-1})">是模型目标函数，<img src="https://private.codecogs.com/gif.latex?g_t" alt="g_t">是目标函数的梯度，<img src="https://private.codecogs.com/gif.latex?%5Ceta" alt="\eta">是学习率。</p>
+<p>SGD完全依赖于当前batch的梯度，所以η可理解为允许当前batch的梯度多大程度影响参数更新。</p>
+<p>缺点：（正因为有这些缺点才让这么多大神发展出了后续的各种算法）</p>
+<ul>
+<li>选择合适的learning rate比较困难。</li>
+<li>对所有的参数更新使用同样的learning rate。对于稀疏数据或者特征，有时我们可能想更新快一些对于不经常出现的特征，对于常出现的特征更新慢一些，这时候SGD就不太能满足要求了。</li>
+<li>SGD容易收敛到局部最优，在某些情况下可能被困在鞍点。【但是在合适的初始化和学习率设置下，鞍点的影响其实没这么大】</li>
+<li>“之字形”的出现，即在陡谷（一种在一个方向的弯曲程度远大于其他方向的表面弯曲情况）处震荡。如下图所示</li>
+</ul>
+<p><img src="https://img-blog.csdn.net/20181015224812323?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L21hbm1hbnhpYW93dWd1bg==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<h1>NAG（牛顿动量 Nesterov accelerated gradient）</h1>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">1.Nesterov是Momentum的变种。</span><br><span class="line">2.与Momentum唯一区别就是，计算梯度的不同，Nesterov先用当前的速度v更新一遍参数，在用更新的临时参数计算梯度。</span><br><span class="line">3.相当于添加了矫正因子的Momentum。</span><br><span class="line">4.在GD下，Nesterov将误差收敛从O（1/k），改进到O(1/k^2)</span><br><span class="line">5.然而在SGD下，Nesterov并没有任何改进</span><br></pre></td></tr></table></figure>
+<p>在小球向下滚动的过程中，我们希望小球能够提前知道在哪些地方坡面会上升，这样在遇到上升坡面之前，小球就开始减速。这方法就是Nesterov Momentum，其在凸优化中有较强的理论保证收敛。并且，在实践中Nesterov Momentum也比单纯的 Momentum 的效果好：</p>
+<p><img src="https://ftp.bmp.ovh/imgs/2021/07/e589016396e64320.png" alt="img"></p>
+<p>其核心思想是：注意到 momentum 方法，如果只看 γ * v 项，那么当前的 θ经过 momentum 的作用会变成 θ-γ * v。因此可以把 θ-γ * v这个位置看做是当前优化的一个”展望”位置。所以，可以在 θ-γ * v求导, 而不是原始的θ。</p>
+<p><img src="https://img-blog.csdn.net/20170805212728775?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdTAxMDA4OTQ0NA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="img"></p>
+<p>我们使用<img src="https://private.codecogs.com/gif.latex?%5Cmu%20%5Cast%20m_%7Bt-1%7D" alt="img">来移动，通过计算<img src="https://private.codecogs.com/gif.latex?%5Ctheta_%7Bt-1%7D+%5Cmu%20%5Cast%20m_%7Bt-1%7D" alt="img">，我们能够得到一个下次参数位置的近似值——也就是能告诉我们参数大致会变为多少。那么，通过基于未来参数的近似值（站的更远看看）而非当前的参数值计算相得应罚函数<img src="https://private.codecogs.com/gif.latex?J%28%5Ctheta_%7Bt-1%7D+%5Cmu%20%5Cast%20m_%7Bt-1%7D%29" alt="img">并求偏导数，我们能让优化器高效地「前进」并收敛：</p>
+<p><img src="https://private.codecogs.com/gif.latex?m_t%3D%5Cmu%20%5Cast%20m_%7Bt-1%7D-%5Ceta%20%5Ctriangledown%20J%28%5Ctheta%20_%7Bt-1%7D+%5Cmu%20%5Cast%20m_%7Bt-1%7D%29" alt="img"></p>
+<p><img src="https://private.codecogs.com/gif.latex?%5Ctheta%20_t%20%3D%20%5Ctheta%20_%7Bt-1%7D+m_t" alt="img"></p>
+<img src="https://img-blog.csdn.net/20170521225135450?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvQlZMMTAxMDExMTE=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" style="zoom:50%;" />
+<p><img src="https://img-blog.csdn.net/20170728165011954?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdHN5Y2NuaA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="img"></p>
+<p><img src="https://img-blog.csdn.net/20170803165730092?watermark/2/text/aHR0cDovL2Jsb2cuY3Nkbi5uZXQvdHN5Y2NuaA==/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70/gravity/SouthEast" alt="img"></p>
+<p><strong>优点：</strong><br>
+这种基于预测的更新方法，使我们避免过快地前进，并提高了算法地响应能力，大大改进了 RNN 在一些任务上的表现【为什么对RNN好呢，不懂啊】<br>
+没有对比就没有伤害，NAG方法收敛速度明显加快。波动也小了很多。实际上NAG方法用到了二阶信息，所以才会有这么好的结果。<em>先按照原来的梯度走一步的时候已经求了一次梯度，后面再修正的时候又求了一次梯度，所以是二阶信息。</em></p>
+<h1>AdaGrad</h1>
+<p>AdaGrad 算法根据自变量在每个维度的梯度值调整各个维度的学习率，从而避免统一的维度难以适应所有维度的问题。</p>
+<p>adagrad 方法是将每一个参数的每一次迭代的梯度取平方累加再开方，用基础学习率除以这个数，来做学习率的动态更新。【这样每一个参数的学习率就与他们的梯度有关系了，那么每一个参数的学习率就不一样了！也就是所谓的<strong>自适应学习率</strong>】。</p>
+<p>Adagrad其实是对学习率进行了一个约束。即：</p>
+<p><img src="https://www.zhihu.com/equation?tex=n_t%3Dn_%7Bt-1%7D%2Bg_t%5E2" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5CDelta%7B%5Ctheta_t%7D%3D-%5Cfrac%7B%5Ceta%7D%7B%5Csqrt%7Bn_t%2B%5Cepsilon%7D%7D%2Ag_t" alt="[公式]"></p>
+<p>此处，对<img src="https://www.zhihu.com/equation?tex=g_t" alt="[公式]">从1到<img src="https://www.zhihu.com/equation?tex=t" alt="[公式]">进行一个递推形成一个约束项regularizer，<img src="https://www.zhihu.com/equation?tex=-%5Cfrac%7B1%7D%7B%5Csqrt%7B%5Csum_%7Br%3D1%7D%5Et%28g_r%29%5E2%2B%5Cepsilon%7D%7D" alt="[公式]">，<img src="https://www.zhihu.com/equation?tex=%5Cepsilon" alt="[公式]">用来保证分母非0</p>
+<p><img src="https://s3.bmp.ovh/imgs/2021/11/693003f60385bdf2.png" alt=""></p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>前期<img src="https://www.zhihu.com/equation?tex=g_t" alt="[公式]">较小的时候， regularizer较大，能够放大梯度</li>
+<li>后期<img src="https://www.zhihu.com/equation?tex=g_t" alt="[公式]">较大的时候，regularizer较小，能够约束梯度</li>
+<li>适合处理稀疏梯度</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li>由公式可以看出，仍依赖于人工设置一个全局学习率</li>
+<li><img src="https://www.zhihu.com/equation?tex=%5Ceta" alt="[公式]">设置过大的话，会使regularizer过于敏感，对梯度的调节太大</li>
+<li>中后期，分母上梯度平方的累加将会越来越大，使<img src="https://www.zhihu.com/equation?tex=gradient%5Cto0" alt="[公式]">，使得训练提前结束</li>
+</ul>
+<h1>Adadelta</h1>
+<p>Adagrad会累加之前所有的梯度平方，而Adadelta只累加固定大小的项【其实就是相当于指数滑动平均，只用了前多少步的梯度平方平均值】，并且也不直接存储这些项，仅仅是近似计算对应的平均值【这也就是指数滑动平均的优点】</p>
+<p>RMSprop依然需要自己设定全局学习率，因此Adadelta在RMSprop的基础上，用参数更新的平方来替代全局学习率的位置，这样就可以省略全局学习率了。</p>
+<p><img src="https://img-blog.csdn.net/20180703191607972?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzIzMjY5NzYx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>训练初中期，加速效果不错，很快</li>
+<li>训练后期，反复在局部最小值附近抖动</li>
+</ul>
+<h1>momentum（动量梯度下降 Gradient Descent With Momentum）</h1>
+<img src="https://img-blog.csdn.net/20180703160108872?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzIzMjY5NzYx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img" style="zoom:50%;" />
+<p><img src="https://s3.bmp.ovh/imgs/2021/11/18fbba011e3b53d3.png" alt=""></p>
+<h1>RMSProp</h1>
+<p><img src="https://i.bmp.ovh/imgs/2021/07/5a6b98969620d257.png" alt=""></p>
+<p><img src="https://s3.bmp.ovh/imgs/2021/11/79d795a8c621eeed.png" alt=""></p>
+<p>由于AdaGrad单调递减的学习率变化过于激进，RMSprop只关注过去一段时间的梯度平均值，离的时间越远越不重要。</p>
+<p><img src="https://img-blog.csdn.net/2018070319350422?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzIzMjY5NzYx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>其实RMSprop依然依赖于全局学习率</li>
+<li>RMSprop算是Adagrad的一种发展，和Adadelta的变体，效果趋于二者之间</li>
+<li>适合处理非平稳目标（也就是与时间有关的）</li>
+<li>对于RNN效果很好，因为RMSprop的更新只依赖于上一时刻的更新，所以适合。？？？</li>
+</ul>
+<h1>Adam(Adaptive Moment Estimation)</h1>
+<p>Adam(Adaptive Moment Estimation)本质上是带有动量项的RMSprop，它利用梯度的一阶矩估计和二阶矩估计动态调整每个参数的学习率。Adam的优点主要在于经过偏置校正后，每一次迭代学习率都有个确定范围，使得参数比较平稳。公式如下：</p>
+<p><img src="https://www.zhihu.com/equation?tex=m_t%3D%5Cmu%2Am_%7Bt-1%7D%2B%281-%5Cmu%29%2Ag_t" alt="img"></p>
+<p><img src="https://www.zhihu.com/equation?tex=n_t%3D%5Cnu%2An_%7Bt-1%7D%2B%281-%5Cnu%29%2Ag_t%5E2" alt="img"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5Chat%7Bm_t%7D%3D%5Cfrac%7Bm_t%7D%7B1-%5Cmu%5Et%7D" alt="img"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5Chat%7Bn_t%7D%3D%5Cfrac%7Bn_t%7D%7B1-%5Cnu%5Et%7D" alt="img"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5CDelta%7B%5Ctheta_t%7D%3D-%5Cfrac%7B%5Chat%7Bm_t%7D%7D%7B%5Csqrt%7B%5Chat%7Bn_t%7D%7D%2B%5Cepsilon%7D%2A%5Ceta" alt="img"></p>
+<p>其中，<img src="https://www.zhihu.com/equation?tex=m_t" alt="[公式]">，<img src="https://www.zhihu.com/equation?tex=n_t" alt="[公式]">分别是对梯度的一阶矩估计和二阶矩估计，可以看作对期望<img src="https://www.zhihu.com/equation?tex=E%7Cg_t%7C" alt="[公式]">，<img src="https://www.zhihu.com/equation?tex=E%7Cg_t%5E2%7C" alt="[公式]">的估计；<img src="https://www.zhihu.com/equation?tex=%5Chat%7Bm_t%7D" alt="[公式]">，<img src="https://www.zhihu.com/equation?tex=%5Chat%7Bn_t%7D" alt="[公式]">是对<img src="https://www.zhihu.com/equation?tex=m_t" alt="[公式]">，<img src="https://www.zhihu.com/equation?tex=n_t" alt="[公式]">的校正，这样可以近似为对期望的无偏估计。 可以看出，直接对梯度的矩估计对内存没有额外的要求，而且可以根据梯度进行动态调整，而<img src="https://www.zhihu.com/equation?tex=-%5Cfrac%7B%5Chat%7Bm_t%7D%7D%7B%5Csqrt%7B%5Chat%7Bn_t%7D%7D%2B%5Cepsilon%7D" alt="[公式]">对学习率形成一个动态约束，而且有明确的范围。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2021/11/12494375d9ed0ab7.png" alt=""></p>
+<p><strong>特点：</strong></p>
+<ul>
+<li>结合了Adagrad善于处理稀疏梯度和RMSprop善于处理非平稳目标的优点</li>
+<li>对内存需求较小</li>
+<li>为不同的参数计算不同的自适应学习率</li>
+<li>也适用于大多非凸优化 - 适用于大数据集和高维空间</li>
+</ul>
+<h1>Adamax</h1>
+<p>Adamax是Adam的一种变体，此方法对学习率的上限提供了一个更简单的范围。公式上的变化如下：</p>
+<p><img src="https://www.zhihu.com/equation?tex=n_t%3Dmax%28%5Cnu%2An_%7Bt-1%7D%2C%7Cg_t%7C%29" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5CDelta%7Bx%7D%3D-%5Cfrac%7B%5Chat%7Bm_t%7D%7D%7Bn_t%2B%5Cepsilon%7D%2A%5Ceta" alt="[公式]"></p>
+<p>可以看出，Adamax学习率的边界范围更简单</p>
+<h1>Nadam</h1>
+<p>Nadam类似于带有Nesterov动量项的Adam。公式如下：</p>
+<p><img src="https://www.zhihu.com/equation?tex=%5Chat%7Bg_t%7D%3D%5Cfrac%7Bg_t%7D%7B1-%5CPi_%7Bi%3D1%7D%5Et%5Cmu_i%7D" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=m_t%3D%5Cmu_t%2Am_%7Bt-1%7D%2B%281-%5Cmu_t%29%2Ag_t" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5Chat%7Bm_t%7D%3D%5Cfrac%7Bm_t%7D%7B1-%5CPi_%7Bi%3D1%7D%5E%7Bt%2B1%7D%5Cmu_i%7D" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=n_t%3D%5Cnu%2An_%7Bt-1%7D%2B%281-%5Cnu%29%2Ag_t%5E2" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5Chat%7Bn_t%7D%3D%5Cfrac%7Bn_t%7D%7B1-%5Cnu%5Et%7D" alt="[公式]"><img src="https://www.zhihu.com/equation?tex=%5Cbar%7Bm_t%7D%3D%281-%5Cmu_t%29%2A%5Chat%7Bg_t%7D%2B%5Cmu_%7Bt%2B1%7D%2A%5Chat%7Bm_t%7D" alt="[公式]"></p>
+<p><img src="https://www.zhihu.com/equation?tex=%5CDelta%7B%5Ctheta_t%7D%3D-%5Ceta%2A%5Cfrac%7B%5Cbar%7Bm_t%7D%7D%7B%5Csqrt%7B%5Chat%7Bn_t%7D%7D%2B%5Cepsilon%7D" alt="[公式]"></p>
+<p>可以看出，Nadam对学习率有了更强的约束，同时对梯度的更新也有更直接的影响。一般而言，在想使用带动量的RMSprop，或者Adam的地方，大多可以使用Nadam取得更好的效果。</p>
+<h1>优化动画图</h1>
+<p><img src="https://img-blog.csdn.net/20160824161755284" alt=""></p>
+<p><img src="https://img-blog.csdn.net/20160824161815758" alt=""></p>
+<h1>附录</h1>
+<p><img src="https://img-blog.csdn.net/20180703200322455?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3FxXzIzMjY5NzYx/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="img"></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/08/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">http://cjh0220.github.io/2022/09/08/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E4%BC%98%E5%8C%96%E7%AE%97%E6%B3%95/">优化算法</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/08/Batch-Size%E8%A7%A3%E6%9E%90/"><img class="prev-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Batch-Size解析</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/08/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%A1%B6%E7%BA%A7%E6%9C%9F%E5%88%8A%E4%BC%9A%E8%AE%AE%E5%8F%8A%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%9D%80/"><img class="next-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">计算机顶级期刊会议及学习网址</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">47</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">42</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">7</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">SGD、BGD、MBGD</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#SGD%EF%BC%88%E9%9A%8F%E6%9C%BA%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95Stochastic-Gradient-Descent%EF%BC%89"><span class="toc-number">1.1.</span> <span class="toc-text">SGD（随机梯度下降法Stochastic Gradient Descent）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#BGD-%E6%89%B9%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%AE%97%E6%B3%95-Batch-Gradient-Descent%EF%BC%89"><span class="toc-number">1.2.</span> <span class="toc-text">BGD (批梯度下降算法 Batch Gradient Descent）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#MBGD-%E5%B0%8F%E6%89%B9%E9%87%8F%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E6%B3%95Mini-batch-Gradient-Descent"><span class="toc-number">1.3.</span> <span class="toc-text">MBGD (小批量梯度下降法Mini-batch Gradient Descent)</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">NAG（牛顿动量 Nesterov accelerated gradient）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">AdaGrad</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">Adadelta</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">momentum（动量梯度下降 Gradient Descent With Momentum）</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">RMSProp</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">Adam(Adaptive Moment Estimation)</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">8.</span> <span class="toc-text">Adamax</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">9.</span> <span class="toc-text">Nadam</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">10.</span> <span class="toc-text">优化动画图</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">11.</span> <span class="toc-text">附录</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E6%8E%92%E9%98%9F%E8%AE%BA/" title="排队论"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="排队论"/></a><div class="content"><a class="title" href="/2022/09/08/%E6%8E%92%E9%98%9F%E8%AE%BA/" title="排队论">排队论</a><time datetime="2022-09-08T15:17:01.000Z" title="发表于 2022-09-08 23:17:01">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" title="遗传算法"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="遗传算法"/></a><div class="content"><a class="title" href="/2022/09/08/%E9%81%97%E4%BC%A0%E7%AE%97%E6%B3%95/" title="遗传算法">遗传算法</a><time datetime="2022-09-08T15:10:47.000Z" title="发表于 2022-09-08 23:10:47">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E6%B3%95/" title="主成分分析法"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="主成分分析法"/></a><div class="content"><a class="title" href="/2022/09/08/%E4%B8%BB%E6%88%90%E5%88%86%E5%88%86%E6%9E%90%E6%B3%95/" title="主成分分析法">主成分分析法</a><time datetime="2022-09-08T15:09:44.000Z" title="发表于 2022-09-08 23:09:44">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E6%A8%A1%E7%B3%8A%E7%BB%BC%E5%90%88%E8%AF%84%E4%BB%B7/" title="模糊综合评价"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="模糊综合评价"/></a><div class="content"><a class="title" href="/2022/09/08/%E6%A8%A1%E7%B3%8A%E7%BB%BC%E5%90%88%E8%AF%84%E4%BB%B7/" title="模糊综合评价">模糊综合评价</a><time datetime="2022-09-08T15:08:12.000Z" title="发表于 2022-09-08 23:08:12">2022-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/08/%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95/" title="规划算法"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="规划算法"/></a><div class="content"><a class="title" href="/2022/09/08/%E8%A7%84%E5%88%92%E7%AE%97%E6%B3%95/" title="规划算法">规划算法</a><time datetime="2022-09-08T15:07:15.000Z" title="发表于 2022-09-08 23:07:15">2022-09-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
