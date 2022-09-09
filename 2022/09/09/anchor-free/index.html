@@ -1,0 +1,279 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>anchor-free | CJH's blog</title><meta name="keywords" content="目标检测"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Anchor-Free 自从去年8月CornerNet开始，Anchor-Free的目标检测模型层出不穷，最近达到了井喷的状态，宣告着目标检测迈入了Anchor-Free时代。 其实Anchor-Free并不是一个新概念了，大火的YOLO算是目标检测领域最早的Anchor-Free模型，而最近的Anchor-Free模型如FASF、FCOS、FoveaBox都能看到DenseBox的影子。 下面主">
+<meta property="og:type" content="article">
+<meta property="og:title" content="anchor-free">
+<meta property="og:url" content="http://cjh0220.github.io/2022/09/09/anchor-free/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="Anchor-Free 自从去年8月CornerNet开始，Anchor-Free的目标检测模型层出不穷，最近达到了井喷的状态，宣告着目标检测迈入了Anchor-Free时代。 其实Anchor-Free并不是一个新概念了，大火的YOLO算是目标检测领域最早的Anchor-Free模型，而最近的Anchor-Free模型如FASF、FCOS、FoveaBox都能看到DenseBox的影子。 下面主">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/09/08/vqpCng.jpg">
+<meta property="article:published_time" content="2022-09-09T06:40:04.000Z">
+<meta property="article:modified_time" content="2022-09-09T06:40:58.874Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="目标检测">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/09/08/vqpCng.jpg"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2022/09/09/anchor-free/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'anchor-free',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-09-09 14:40:58'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">anchor-free</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-09T06:40:04.000Z" title="发表于 2022-09-09 14:40:04">2022-09-09</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-09T06:40:58.874Z" title="更新于 2022-09-09 14:40:58">2022-09-09</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="anchor-free"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Anchor-Free</h1>
+<p>自从去年8月CornerNet开始，Anchor-Free的目标检测模型层出不穷，最近达到了井喷的状态，宣告着目标检测迈入了Anchor-Free时代。</p>
+<p>其实Anchor-Free并不是一个新概念了，大火的YOLO算是目标检测领域最早的Anchor-Free模型，而最近的Anchor-Free模型如FASF、FCOS、FoveaBox都能看到DenseBox的影子。</p>
+<p>下面主要讲一下有代表性的Anchor-Free模型(包括DenseBox、YOLO、CornerNet、ExtremeNet、FSAF、FCOS、FoveaBox)，分成3个部分来介绍(早期探索、基于关键点、密集预测)，具体细节就不展开了~</p>
+<h2 id="早期探索">早期探索</h2>
+<h3 id="1-DenseBox">1.DenseBox</h3>
+<p>最早知道这篇文章，是在去年刚接触目标检测的时候，看了一篇地平线对DenseBox作者的采访，当时因为刚接触感触不深，但是从当前的时间节点回头看，DenseBox的想法是多么的超前啊。采访中说道，当年DenseBox其实早在2015年初就已经开发出来了，这比同期的Faster-RCNN系列提前数月，但是论文直到9月才在arxiv上发布。如果DenseBox能在2015年初就发表，那么最近几年目标检测的发展会不会是另外一番景象呢~~</p>
+<p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/24350950">地平线HorizonRobotics：黄李超：让算法成为一种生活方式 | 地平线算法工程师特稿zhuanlan.zhihu.com/p/24350950<img src="https://pic2.zhimg.com/v2-24cdfcc331a83a7dafda94ebb42fbf11_180x120.jpg" alt="img"></a></p>
+<p><strong>两点贡献：</strong></p>
+<p>1.证明单个FCN可以检测出遮挡严重、不同尺度的目标。</p>
+<p>2.通过多任务引入landmark localization，能进一步提升性能。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-1a418dfed7c6d450a6ee81ae61010039_720w.jpg" alt="img"></p>
+<p>如图1所示，单个FCN同时产生多个预测bbox和置信分数的输出。测试时，整个系统将图片作为输入，输出5个通道的feature map。每个pixel的输出feature map得到5维的向量，包括一个置信分数和bbox边界到该pixel距离的4个值。最后输出feature map的每个pixel转化为带分数的bbox，然后经过NMS后处理。</p>
+<p><strong>Ground Truth Generation</strong></p>
+<p><img src="https://pic2.zhimg.com/80/v2-e3f1853b90df41caa4cdd681548ced81_720w.jpg" alt="img"></p>
+<p>第一个通道ground truth map的正标签区域由半径为r的圆填充，圆的中心点位于bbox的中点。而剩下的4个通道由bbox的2个角点决定。</p>
+<p><strong>Refine with Landmark Localization</strong></p>
+<p><img src="https://pic3.zhimg.com/80/v2-4f972a359f43187c73b380f6c77e494a_720w.jpg" alt="img"></p>
+<p>在FCN结构中添加少量层能够实现landmark localization，然后通过融合landmark heatmaps和score map可以进一步提升检测结果。</p>
+<h3 id="2-YOLO">2.YOLO</h3>
+<p>YOLO将目标检测作为一个空间分离的边界框和相关的类概率的回归问题。可以直接从整张图片预测出边界框和分类分数。</p>
+<p><strong>三个优点：</strong></p>
+<p>1.速度快</p>
+<p>2.通过整幅图进行推理得到预测结果</p>
+<p>3.能学到目标的一般特征</p>
+<p><img src="https://pic3.zhimg.com/80/v2-f9e5151dbc6dc9c48e6fce637a377d82_720w.jpg" alt="img"></p>
+<p><strong>Unified Detection</strong></p>
+<p><img src="https://pic2.zhimg.com/80/v2-652c18c78002bb8667f20268d01d0ab5_720w.jpg" alt="img"></p>
+<p>YOLO将输入图片分成SXS个网格，如果某个目标的中心点落到其中一个格点，那么该格点就负责该目标的检测。每个格点预测出B个bbox和每个bbox的置信分数。</p>
+<p>定义置信度为：</p>
+<p><img src="https://pic1.zhimg.com/80/v2-6c83ceb0c48d6f669116929ee20c3340_720w.jpg" alt="img"></p>
+<p>每个bbox由5个预测值组成：x，y，w，h 和 置信度。每个格点也预测C个类概率</p>
+<p><img src="https://pic3.zhimg.com/80/v2-58c5de02cd12cfbe0b1db52bcb45e3b2_720w.png" alt="img"></p>
+<p>测试的时候，将类概率和置信分数相乘，得到类置信分数</p>
+<p><img src="https://pic4.zhimg.com/80/v2-8c79ba04aa36132b7f140b9bbb5efe47_720w.png" alt="img"></p>
+<p>举个例子，在Pascal VOC数据集上评估YOLO，使用S=7，B=2，VOC有20类，所以C=20，那么最终的预测结果是7x7x30的向量。</p>
+<p><strong>DenseBox和YOLO的区别：</strong></p>
+<p>1.DenseBox应用于人脸检测，相当于只有两类，而YOLO是通用检测，通常大于两类。</p>
+<p>2.DenseBox是密集预测，对每个pixel进行预测，而YOLO先将图片进行网格化，对每个grid cell进行预测。</p>
+<p>3.DenseBox的gt通过bbox中心圆形区域确定的，而YOLO的gt由bbox中心点落入的grid cell确定的。</p>
+<h2 id="基于关键点">基于关键点</h2>
+<h3 id="3-CornerNet">3.CornerNet</h3>
+<p><strong>两点贡献：</strong></p>
+<p>1.通过检测bbox的一对角点来检测出目标。</p>
+<p>2.提出corner pooling，来更好的定位bbox的角点。</p>
+<p><img src="https://pic2.zhimg.com/80/v2-964a810d6bc468a5e71eb8baca089ffd_720w.jpg" alt="img"></p>
+<p><strong>Detecting Corners</strong></p>
+<p><img src="https://pic4.zhimg.com/80/v2-1f42c69604f932f8c6c9983fec46b58b_720w.jpg" alt="img"></p>
+<p>首先预测出两组heatmaps，一组为top-left角点，另一组为bottom-right角点。每组heatmaps有C个通道，表示C个类别，尺寸为HxW。每个通道是一个binary mask，表示一个类的角点位置。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-0a93427bc7d569753cef72317278f1d3_720w.jpg" alt="img"></p>
+<p>对于每个角点来说，只有一个gt正例位置，其他都为负例位置。训练时，以正例位置为圆心，设置半径为r的范围内，减少负例位置的惩罚(采用二维高斯的形式)，如上图所示。</p>
+<p><strong>Grouping Corners</strong></p>
+<p>受到多人姿态估计论文的启发，基于角点embedding之间的距离来对角点进行分组。</p>
+<p><strong>Corner Pooling</strong></p>
+<p><img src="https://pic1.zhimg.com/80/v2-0caf3b8130420dbb5279a43dbdc10d0c_720w.jpg" alt="img"></p>
+<p>在每个pixel位置，最大池化第一个feature map右方的所有特征向量，最大池第二个feature map下方的所有特征向量，然后将两个池化结果相加。</p>
+<h3 id="4-ExtremeNet">4.ExtremeNet</h3>
+<p><strong>两个贡献：</strong></p>
+<p>1.将关键点定义为极值点。</p>
+<p>2.根据几何结构对关键点进行分组。</p>
+<p><img src="https://pic1.zhimg.com/80/v2-93b0b62f02af9d126c6b5953c0199460_720w.jpg" alt="img"></p>
+<p>作者使用了最佳的关键点估计框架，通过对每个目标类预测4个多峰值的heatmaps来寻找极值点。另外，作者使用每个类center heatmap来预测目标中心。仅通过基于几何的方法来对极值点分组，如果4个极值点的几何中点在center map上对应的分数高于阈值，则这4个极值点分为一组。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-5f2eb6e6cbfef24ac17be31dd84f3d2a_720w.jpg" alt="img"></p>
+<p>offset的预测是类别无关的，而极值点的预测是类别相关的。center map没有offset预测。网络的输出是5xC heatmaps和4x2offset maps，C是类别数。</p>
+<p><strong>Center Grouping</strong></p>
+<p><img src="https://pic1.zhimg.com/80/v2-7a59bf5ac141593d3e49200a9f3e6f74_720w.jpg" alt="img"></p>
+<p>分组算法的输入是每个类的5个heatmaps，一个center heatmap和4个extreme heatmaps，通过检测所有的峰值来提取出5个heatmaps的关键点。给出4个极值点，计算几何中心，如果几何中心在center map上对应高响应，那么这4个极值点为有效检测。作者使用暴力枚举的方式来得到所有有效的4个关键点。</p>
+<p><strong>CornerNet和ExtremeNet的区别：</strong></p>
+<p>1.CornerNet通过预测角点来检测目标的，而ExtremeNet通过预测极值点和中心点来检测目标的。</p>
+<p>2.CornerNet通过角点embedding之间的距离来判断是否为同一组关键点，而ExtremeNet通过暴力枚举极值点、经过中心点判断4个极值点是否为一组。</p>
+<h2 id="密集预测">密集预测</h2>
+<h3 id="5-FSAF">5.FSAF</h3>
+<p><strong>Motivation</strong></p>
+<p>让每个实例选择最好的特征层来优化网络，因此不需要anchor来限制特征的选择。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-34e3d353e34c9b346def51e6888cd94b_720w.jpg" alt="img"></p>
+<p>一个anchor-free的分支在每个特征金字塔层构建，独立于anchor-based的分支。和anchor-based分支相似，anchor-free分支由分类子网络和回归子网络。一个实例能够被安排到任意层的anchor-free分支。训练期间，基于实例的信息而不是实例box的尺寸来动态地为每个实例选择最合适的特征层。选择的特征层学会检测安排的实例。推理阶段，FSAF模块和anchor-based分支独立或者联合运行。</p>
+<p><strong>Feature Selective Anchor-Free Module</strong></p>
+<p><img src="https://pic2.zhimg.com/80/v2-955713880baa77cc6387d4d889dfef79_720w.jpg" alt="img"></p>
+<p>在RetinaNet的基础上，FSAF模块引入了2个额外的卷积层，这两个卷积层各自负责anchor-free分支的分类和回归预测。具体的，在分类子网络中，feature map后面跟着K个3x3的卷积层和sigmoid，在回归子网络中，feature map后面跟着4个3x3的卷积层和ReLU。</p>
+<p><strong>Ground-truth</strong></p>
+<p><img src="https://pic2.zhimg.com/80/v2-91c6a3195f246c1a369db14b9d8724d5_720w.jpg" alt="img"></p>
+<p>白色为有效区域，灰色为忽略区域，黑色为负样本区域。</p>
+<p><strong>Online Feature Selection</strong></p>
+<p><img src="https://pic1.zhimg.com/80/v2-73c19e4881f431644049df2d2e2cf154_720w.jpg" alt="img"></p>
+<p>实例输入到特征金字塔的所有层，然后求得所有anchor-free分支focal loss和IoU loss的和，选择loss和最小的特征层来学习实例。训练时，特征根据安排的实例进行更新。推理时，不需要进行特征更新，因为最合适的特征金字塔层自然地输出高置信分数。</p>
+<h3 id="6-FCOS">6.FCOS</h3>
+<p><strong>四个优点：</strong></p>
+<p>1.将检测和其他使用FCN的任务统一起来，容易重用这些任务的思想。</p>
+<p>2.proposal free和anchor free，减少了超参的设计。</p>
+<p>3.不使用trick，达到了单阶段检测的最佳性能。</p>
+<p>4.经过小的修改，可以立即拓展到其他视觉任务上。</p>
+<p><img src="https://pic4.zhimg.com/80/v2-26bae7ae323345a16fa4b6b72853427b_720w.jpg" alt="img"></p>
+<p>和语义分割相同，检测器直接将位置作为训练样本而不是anchor。具体的，如果某个位置落入了任何gt中，那么该位置就被认为是正样本，并且类别为该gt的类别。基于anchor的检测器，根据不同尺寸安排anchor到不同的特征层，而FCOS直接限制边界框回归的范围(即每个feature map负责一定尺度的回归框)。</p>
+<p><strong>Center-ness</strong></p>
+<p><img src="https://pic3.zhimg.com/80/v2-203aef714dd276cd19e1f87218ddf1fe_720w.jpg" alt="img"></p>
+<p>为了剔除远离目标中心的低质量预测bbox，作者提出了添加center-ness分支，和分类分支并行。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-2729a7d55dc2a266a2e04d922a95d61a_720w.jpg" alt="img"></p>
+<p>开根号使center-ness衰退缓慢。center-ness范围为0-1之间，通过BCE训练。测试时，最终分数由center-ness预测结果和分类分数乘积得到。</p>
+<h3 id="7-FoveaBox">7.FoveaBox</h3>
+<p><strong>Motivation</strong></p>
+<p>人类眼睛的中央凹：视野(物体)的中心具有最高的视觉敏锐度。FoveaBox联合预测对象中心区域可能存在的位置以及每个有效位置的边界框。由于特征金字塔的特征表示，不同尺度的目标可以从多个特征层中检测到。</p>
+<p><img src="https://pic3.zhimg.com/80/v2-46e2ac9214429b1b6f9478d7f54548be_720w.jpg" alt="img"></p>
+<p>FoveaBox添加了2个子网络，一个子网络预测分类，另一个子网络预测bbox。</p>
+<p><strong>Object Fovea</strong></p>
+<p><img src="https://pic4.zhimg.com/80/v2-f90d6abb905c7c638aa36700a9c316ef_720w.jpg" alt="img"></p>
+<p>目标的中央凹如上图所示。目标中央凹只编码目标对象存在的概率。为了确定位置，模型要预测每个潜在实例的边界框。</p>
+<p><strong>FSAF、FCOS、FoveaBox的异同点：</strong></p>
+<p>1.都利用FPN来进行多尺度目标检测。</p>
+<p>2.都将分类和回归解耦成2个子网络来处理。</p>
+<p>3.都是通过密集预测进行分类和回归的。</p>
+<p>4.FSAF和FCOS的回归预测的是到4个边界的距离，而FoveaBox的回归预测的是一个坐标转换。</p>
+<p>5.FSAF通过在线特征选择的方式，选择更加合适的特征来提升性能，FCOS通过center-ness分支剔除掉低质量bbox来提升性能，FoveaBox通过只预测目标中心区域来提升性能。</p>
+<p><strong>(DenseBox、YOLO)和(FSAF、FCOS、FoveaBox)的异同点：</strong></p>
+<p>1.都是通过密集预测进行分类和回归的。</p>
+<p>2.(FSAF、FCOS、FoveaBox)利用FPN进行多尺度目标检测，而(DenseBox、YOLO)只有单尺度目标检测。</p>
+<p>3.(DenseBox、FSAF、FCOS、FoveaBox)将分类和回归解耦成2个子网络来得到，而(YOLO)分类和定位统一得到。</p>
+<h3 id="总结：">总结：</h3>
+<p>1.各种方法的关键在于gt如何定义</p>
+<p>**ps：**关于这一点我稍加一点补充，目标检测的gt是一个矩形框，然而用这个矩形框信息来检测目标显然是不合理的，因为矩形框内只有一小部分是目标，而剩下的是背景，这可能会导致检测器的精度下降，而最近的一些anchor-free模型其实是改变了gt的定义，比如cornernet定义为角点，extremenet定义为极值点和中心点，FSAF、FoveaBox定义为矩形框的中间区域，FCOS虽然是矩形框，但是经过center-ness抑制掉低质量的框，其实也是一种变相的将gt定义为矩形框中心区域。gt重新定义之后，需要检测的目标语义变得更加明确了，有利于分类和回归。</p>
+<p><strong>所以，我认为设计合适的gt，是提升目标检测速度和精度的关键！(回过头来看，当年说的gt定义就是后来的label assign)</strong></p>
+<p>2.主要是基于关键点检测的方法和密集预测的方法来做Anchor-Free</p>
+<p>3.本质上是将基于anchor转换成了基于point/region</p>
+<p><strong>Reference</strong></p>
+<p>1.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1509.04874">DenseBox: Unifying Landmark Localization with End to End Object Detection</a></p>
+<p>2.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1506.02640">You Only Look Once: Unified, Real-Time Object Detection</a></p>
+<p>3.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1808.01244">CornerNet: Detecting Objects as Paired Keypoints</a></p>
+<p>4.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1901.08043">Bottom-up Object Detection by Grouping Extreme and Center Points</a></p>
+<p>5.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1903.00621">Feature Selective Anchor-Free Module for Single-Shot Object Detection</a></p>
+<p>6.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1904.01355">FCOS: Fully Convolutional One-Stage Object Detection</a></p>
+<p>7.<a href="https://link.zhihu.com/?target=https%3A//arxiv.org/abs/1904.03797v1">FoveaBox: Beyond Anchor-based Object Detector</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/09/anchor-free/">http://cjh0220.github.io/2022/09/09/anchor-free/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B/">目标检测</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/"><img class="prev-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">深度学习相关知识</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/09/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE/"><img class="next-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">马尔可夫链</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/09/08/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D/" title="目标检测介绍"><img class="cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">目标检测介绍</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">55</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">49</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">8</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Anchor-Free</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%97%A9%E6%9C%9F%E6%8E%A2%E7%B4%A2"><span class="toc-number">1.1.</span> <span class="toc-text">早期探索</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-DenseBox"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.DenseBox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-YOLO"><span class="toc-number">1.1.2.</span> <span class="toc-text">2.YOLO</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9F%BA%E4%BA%8E%E5%85%B3%E9%94%AE%E7%82%B9"><span class="toc-number">1.2.</span> <span class="toc-text">基于关键点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-CornerNet"><span class="toc-number">1.2.1.</span> <span class="toc-text">3.CornerNet</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-ExtremeNet"><span class="toc-number">1.2.2.</span> <span class="toc-text">4.ExtremeNet</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%AF%86%E9%9B%86%E9%A2%84%E6%B5%8B"><span class="toc-number">1.3.</span> <span class="toc-text">密集预测</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-FSAF"><span class="toc-number">1.3.1.</span> <span class="toc-text">5.FSAF</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-FCOS"><span class="toc-number">1.3.2.</span> <span class="toc-text">6.FCOS</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-FoveaBox"><span class="toc-number">1.3.3.</span> <span class="toc-text">7.FoveaBox</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="toc-number">1.3.4.</span> <span class="toc-text">总结：</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/09/09/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%AC%94%E8%AE%B01/" title="数据分析笔记1"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据分析笔记1"/></a><div class="content"><a class="title" href="/2022/09/09/%E6%95%B0%E6%8D%AE%E5%88%86%E6%9E%90%E7%AC%94%E8%AE%B01/" title="数据分析笔记1">数据分析笔记1</a><time datetime="2022-09-09T07:20:50.000Z" title="发表于 2022-09-09 15:20:50">2022-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/" title="深度学习相关知识"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深度学习相关知识"/></a><div class="content"><a class="title" href="/2022/09/09/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86/" title="深度学习相关知识">深度学习相关知识</a><time datetime="2022-09-09T06:42:26.000Z" title="发表于 2022-09-09 14:42:26">2022-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/09/anchor-free/" title="anchor-free"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="anchor-free"/></a><div class="content"><a class="title" href="/2022/09/09/anchor-free/" title="anchor-free">anchor-free</a><time datetime="2022-09-09T06:40:04.000Z" title="发表于 2022-09-09 14:40:04">2022-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/09/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE/" title="马尔可夫链"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="马尔可夫链"/></a><div class="content"><a class="title" href="/2022/09/09/%E9%A9%AC%E5%B0%94%E5%8F%AF%E5%A4%AB%E9%93%BE/" title="马尔可夫链">马尔可夫链</a><time datetime="2022-09-09T05:00:24.000Z" title="发表于 2022-09-09 13:00:24">2022-09-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/09/09/%E8%B5%84%E6%9C%AC%E7%A6%80%E8%B5%8B/" title="资本禀赋"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="资本禀赋"/></a><div class="content"><a class="title" href="/2022/09/09/%E8%B5%84%E6%9C%AC%E7%A6%80%E8%B5%8B/" title="资本禀赋">资本禀赋</a><time datetime="2022-09-09T01:54:14.000Z" title="发表于 2022-09-09 09:54:14">2022-09-09</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
