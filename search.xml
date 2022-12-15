@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>图片爬取</title>
+      <link href="/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/"/>
+      <url>/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/</url>
+      
+        <content type="html"><![CDATA[<h1>图片爬取</h1><p>在爬得书本数据后，不是有一个图片的img地址嘛~</p><p>我们还可以把他保存至本地，本次就教大家将网上的图片，批量拉进自己的电脑</p><h2 id="1-库与数据的导入">1 库与数据的导入</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> pandas <span class="keyword">as</span> pd</span><br><span class="line"><span class="keyword">import</span> requests</span><br><span class="line"><span class="keyword">import</span> time</span><br><span class="line">data = pd.read_csv(<span class="string">&quot;book_data_2.csv&quot;</span>)</span><br></pre></td></tr></table></figure><p>其中国<code>data.iloc[0][4]</code>为图片地址</p><p>类似:</p><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&#x27;https://img2.doubanio.com/view/subject/s/public/s34327482.jpg&#x27;</span><br></pre></td></tr></table></figure><h2 id="2-爬取并转换为二进制保存">2 爬取并转换为二进制保存</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> <span class="built_in">range</span> (<span class="number">0</span>,<span class="built_in">len</span>(data)):</span><br><span class="line">    url = data.iloc[i][<span class="number">4</span>]</span><br><span class="line">    r = requests.get(url)</span><br><span class="line">    time.sleep(<span class="number">0.2</span>) <span class="comment"># 防止被捕</span></span><br><span class="line">    path = <span class="string">&quot;./image/&quot;</span> + <span class="built_in">str</span>(data.iloc[i][<span class="number">0</span>]) + <span class="string">&quot;.jpg&quot;</span> <span class="comment"># 名字与地址</span></span><br><span class="line">    <span class="keyword">with</span> <span class="built_in">open</span>(path,<span class="string">&#x27;wb&#x27;</span>) <span class="keyword">as</span> f:</span><br><span class="line">        f.write(r.content)<span class="comment">##二进制形式</span></span><br><span class="line">        f.close()</span><br><span class="line">    <span class="keyword">continue</span></span><br></pre></td></tr></table></figure>]]></content>
+      
+      
+      <categories>
+          
+          <category> 数据挖掘 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 图片爬取 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>腾讯云从业者认证学习笔记</title>
       <link href="/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/"/>
       <url>/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</url>
