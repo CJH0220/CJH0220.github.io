@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>YOLO学习笔记 | CJH's blog</title><meta name="keywords" content="YOLO"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="推荐博客从yolov1至yolov4的进阶之路 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (上) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (中) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (下) 写给小白的Yolo介绍 比较流行的算法可以分为两类，一类是基于Region Proposal的R-CNN系算法（R-CNN，Fas">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>YOLO学习笔记 | CJH's blog</title><meta name="keywords" content="YOLO"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="推荐博客 从yolov1至yolov4的进阶之路 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (上) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (中) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (下) 写给小白的Yolo介绍 比较流行的算法可以分为两类，一类是基于Region Proposal的R-CNN系算法（R-CNN，Fa">
 <meta property="og:type" content="article">
 <meta property="og:title" content="YOLO学习笔记">
 <meta property="og:url" content="http://cjh0220.github.io/2022/09/08/YOLO%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
 <meta property="og:site_name" content="CJH&#39;s blog">
-<meta property="og:description" content="推荐博客从yolov1至yolov4的进阶之路 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (上) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (中) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (下) 写给小白的Yolo介绍 比较流行的算法可以分为两类，一类是基于Region Proposal的R-CNN系算法（R-CNN，Fas">
+<meta property="og:description" content="推荐博客 从yolov1至yolov4的进阶之路 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (上) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (中) 你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (下) 写给小白的Yolo介绍 比较流行的算法可以分为两类，一类是基于Region Proposal的R-CNN系算法（R-CNN，Fa">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s1.ax1x.com/2022/09/08/vqpCng.jpg">
 <meta property="article:published_time" content="2022-09-08T14:25:58.000Z">
@@ -142,24 +142,28 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">YOLO学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-08T14:25:58.000Z" title="发表于 2022-09-08 22:25:58">2022-09-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-08T14:40:45.307Z" title="更新于 2022-09-08 22:40:45">2022-09-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="YOLO学习笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="推荐博客"><a href="#推荐博客" class="headerlink" title="推荐博客"></a>推荐博客</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wjinjie/article/details/107509243?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163249930316780271530764%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=163249930316780271530764&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-107509243.pc_search_result_cache&amp;utm_term=yolo&amp;spm=1018.2226.3001.4187">从yolov1至yolov4的进阶之路</a></p>
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">YOLO学习笔记</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-09-08T14:25:58.000Z" title="发表于 2022-09-08 22:25:58">2022-09-08</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-09-08T14:40:45.307Z" title="更新于 2022-09-08 22:40:45">2022-09-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="YOLO学习笔记"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>推荐博客</h1>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/wjinjie/article/details/107509243?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522163249930316780271530764%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=163249930316780271530764&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~top_positive~default-1-107509243.pc_search_result_cache&amp;utm_term=yolo&amp;spm=1018.2226.3001.4187">从yolov1至yolov4的进阶之路</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/183261974">你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (上)</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/183781646">你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (中)</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/186014243">你一定从未看过如此通俗易懂的YOLO系列(从v1到v5)模型解读 (下)</a></p>
 <p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/94986199">写给小白的Yolo介绍</a></p>
 <p>比较流行的算法可以分为两类，一类是基于Region Proposal的R-CNN系算法（R-CNN，Fast R-CNN, Faster R-CNN），它们是two-stage的，需要先使用启发式方法（selective search）或者CNN网络（RPN）产生Region Proposal，然后再在Region Proposal上做分类与回归。</p>
-<h1 id="YOLO（You-Only-Look-Once）"><a href="#YOLO（You-Only-Look-Once）" class="headerlink" title="YOLO（You Only Look Once）"></a>YOLO（You Only Look Once）</h1><p><img src="https://pjreddie.com/media/image/yologo_2.png" alt="img" style="zoom: 25%;" /></p>
+<h1>YOLO（You Only Look Once）</h1>
+<img src="https://pjreddie.com/media/image/yologo_2.png" alt="img" style="zoom: 25%;" />
 <p><strong>YOLO v1：直接回归出位置。</strong></p>
 <p><strong>YOLO v2：全流程多尺度方法。</strong></p>
 <p><strong>YOLO v3：多尺度检测头，resblock darknet53</strong></p>
 <p><strong>YOLO v4：cspdarknet53，spp，panet，tricks</strong></p>
-<h2 id="0-前言"><a href="#0-前言" class="headerlink" title="0 前言"></a>0 前言</h2><p>本文目的是用尽量浅显易懂的语言让零基础小白能够理解什么是YOLO系列模型，以及他们的设计思想和改进思路分别是什么。我不会把YOLO的论文给你用软件翻译一遍，这样做毫无意义；也不会使用太专业晦涩的名词和表达，对于每一个新的概念都会解释得尽量通俗一些，目的是使得你能像看故事一样学习YOLO模型，我觉得这样的学习方式才是知乎博客的意义所在。</p>
+<h2 id="0-前言">0 前言</h2>
+<p>本文目的是用尽量浅显易懂的语言让零基础小白能够理解什么是YOLO系列模型，以及他们的设计思想和改进思路分别是什么。我不会把YOLO的论文给你用软件翻译一遍，这样做毫无意义；也不会使用太专业晦涩的名词和表达，对于每一个新的概念都会解释得尽量通俗一些，目的是使得你能像看故事一样学习YOLO模型，我觉得这样的学习方式才是知乎博客的意义所在。</p>
 <p>为了使本文<strong>尽量生动有趣</strong>，我用葫芦娃作为例子展示YOLO的过程(真的是尽力了。。。)。</p>
 <p><img src="https://pic2.zhimg.com/80/v2-6f33f7b365e952d0cb1436c540135a0d_720w.jpg" alt="img"></p>
 <p>葫芦娃</p>
 <p>同时，会对<strong>YOLO v1和YOLOv5</strong>的代码进行解读，其他的版本就只介绍改进了。</p>
 <hr>
-<h2 id="1-先从一款强大的app说起"><a href="#1-先从一款强大的app说起" class="headerlink" title="1 先从一款强大的app说起"></a>1 先从一款强大的app说起</h2><p><img src="https://pic1.zhimg.com/80/v2-6821e6ed09cedb367cde596fbfcb4328_720w.jpg" alt="img">i detection APP</p>
+<h2 id="1-先从一款强大的app说起">1 先从一款强大的app说起</h2>
+<p><img src="https://pic1.zhimg.com/80/v2-6821e6ed09cedb367cde596fbfcb4328_720w.jpg" alt="img">i detection APP</p>
 <p><strong>YOLO v5</strong>其实一开始是以一款<strong>app</strong>进入人们的视野的，就是上图的这个，叫：<strong>i detection</strong>(图上标的是YOLO v4，但其实算法是YOLO v5)，使用<strong>iOS</strong>系列的小伙伴呢，就可以立刻<strong>点赞后</strong>关掉我这篇文章，去下载这个app玩一玩。在任何场景下(工业场景，生活场景等等)都可以试试这个app和这个算法，这个app中间还有一个<strong>button</strong>，来调节app使用的模型的大小，更大的模型实时性差但精度高，更小的模型实时性好但精度差。</p>
 <p>值得一提的是，这款app就是<strong>YOLO v5的作者</strong>亲自完成的。而且，我写这篇文章的时候YOLO v5的论文还没有出来，还在实验中，等论文出来应该是2020年底或者2021年初了。</p>
 <p><strong>读到这里，你觉得YOLO v5的最大特点是什么？</strong></p>
@@ -172,15 +176,17 @@
 </ul>
 <p>其中前向传播部分占用的时间应该在90%左右，即搞清楚前向传播部分也就搞清楚了这模型的实现流程和细节。本着这一原则，我们开始YOLO系列模型的解读：</p>
 <hr>
-<h2 id="2-不得不谈的分类模型"><a href="#2-不得不谈的分类模型" class="headerlink" title="2 不得不谈的分类模型"></a>2 不得不谈的分类模型</h2><p>在进入目标检测任务之前首先得学会图像分类任务，这个任务的特点是输入一张图片，输出是它的类别。</p>
+<h2 id="2-不得不谈的分类模型">2 不得不谈的分类模型</h2>
+<p>在进入目标检测任务之前首先得学会图像分类任务，这个任务的特点是输入一张图片，输出是它的类别。</p>
 <p>对于<strong>输入图片</strong>，我们一般用一个矩阵表示。</p>
 <p>对于<strong>输出结果</strong>，我们一般用一个one-hot vector表示： <img src="https://www.zhihu.com/equation?tex=%5B0%2C0%2C1%2C0%2C0%2C0%5D" alt="[公式]"> ，哪一维是1，就代表图片属于哪一类。</p>
 <p>所以，在设计神经网络时，结构大致应该长这样：</p>
 <p>img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[10]</p>
 <p>这里的cbrp指的是conv，bn，relu，pooling的串联。</p>
-<p>由于输入要是one-hot形式，所以最后我们设计了2个fc层(fully connencted layer)，我们称之为<strong>“分类头”</strong>或者<strong>“决策层”</strong>。</p>
+<p>由于输入要是one-hot形式，所以最后我们设计了2个fc层(fully connencted layer)，我们称之为**“分类头”<strong>或者</strong>“决策层”**。</p>
 <hr>
-<h2 id="3-YOLO系列思想的雏形：YOLO-v0"><a href="#3-YOLO系列思想的雏形：YOLO-v0" class="headerlink" title="3 YOLO系列思想的雏形：YOLO v0"></a>3 YOLO系列思想的雏形：YOLO v0</h2><p>有了上面的分类器，我们能不能用它来做检测呢？</p>
+<h2 id="3-YOLO系列思想的雏形：YOLO-v0">3 YOLO系列思想的雏形：YOLO v0</h2>
+<p>有了上面的分类器，我们能不能用它来做检测呢？</p>
 <p>要回答这个问题，首先得看看检测器和分类器的输入输出有什么不一样。首先他们的输入都是image，但是分类器的输出是一个one-hot vector，而检测器的输出是一个框(Bounding Box)。</p>
 <p><strong>框</strong>，该怎么表示？</p>
 <p>在一个图片里面表示一个框，有很多种方法，比如：</p>
@@ -190,12 +196,12 @@
 <li><strong>p1,p2,p3,p4</strong>(4个点坐标)</li>
 <li><strong>cx,cy,w,h</strong>(cx,cy为中心点坐标)</li>
 <li><strong>x,y,w,h</strong>,<strong>angle</strong>(还有的目标是有角度的，这时叫做Rotated Bounding Box)</li>
-<li>……</li>
+<li>…</li>
 </ul>
 <p>所以表示的方法不是一成不变的，但你会发现：不管你用什么形式去表达这个Bounding Box，你模型输出的结果一定是一个vector，那这个vector和分类模型输出的vector本质上有什么区别吗？</p>
 <p><strong>答案是：没有</strong>，都是向量而已，只是分类模型输出是one-hot向量，检测模型输出是我们标注的结果。</p>
 <p>所以你应该会发现，检测的方法呼之欲出了。<strong>那分类模型可以用来做检测吗？</strong></p>
-<p><strong>当然可以，</strong>这时，你可以把检测的任务当做是<strong>遍历性的分类任务。</strong></p>
+<p><strong>当然可以，<strong>这时，你可以把检测的任务当做是</strong>遍历性的分类任务。</strong></p>
 <p><strong>如何遍历？</strong></p>
 <p><strong>我们的目标是一个个框，那就用这个框去遍历所有的位置，所有的大小。</strong></p>
 <p>比如下面这张图片，我需要你检测葫芦娃的脸，如图1所示：</p>
@@ -227,9 +233,9 @@
 <li>操作复杂，需要手动生成大量的样本。</li>
 </ul>
 <p><strong>到现在为止，我们用分类的算法设计了一个检测器，它存在着各种各样的问题，现在是优化的时候了(接下来正式进入YOLO系列方法了)：</strong></p>
-<p>YOLO的作者当时是这么想的：你分类器输出一个one-hot vector，那我把它换成<strong>(x,y,w,h,c)</strong>，c表示confidence置信度，把问题转化成一个回归问题，直接回归出Bounding Box的位置不就好了吗？</p>
+<p>YOLO的作者当时是这么想的：你分类器输出一个one-hot vector，那我把它换成**(x,y,w,h,c)**，c表示confidence置信度，把问题转化成一个回归问题，直接回归出Bounding Box的位置不就好了吗？</p>
 <p>刚才的分类器是：img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[10]</p>
-<p>现在我变成：img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[5]，这个输出是<strong>(x,y,w,h,c)</strong>，不就变成了一个检测器吗？</p>
+<p>现在我变成：img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[5]，这个输出是**(x,y,w,h,c)**，不就变成了一个检测器吗？</p>
 <p><strong>本质上都是矩阵映射到矩阵，只是代表的意义不一样而已。</strong></p>
 <blockquote>
 <p>传统的方法为什么没有这么做呢？我想肯定是效果不好，终其原因是算力不行，conv操作还没有推广。</p>
@@ -240,7 +246,8 @@
 <p>那如何组织训练呢？找1000张图片，把label设置为 <img src="https://www.zhihu.com/equation?tex=%281%2Cx%5E%7B%2A%7D%2Cy%5E%7B%2A%7D%2Cw%5E%7B%2A%7D%2Ch%5E%7B%2A%7D%29" alt="[公式]"> 。这里 <img src="https://www.zhihu.com/equation?tex=x%5E%7B%2A%7D" alt="[公式]"> 代表真值。有了数据和标签，就完成了设计。</p>
 <p>我们会发现，这种方法比刚才的<strong>滑动窗口分类方法</strong>简单太多了。这一版的思路我把它叫做<strong>YOLO v0</strong>，因为它是<strong>You Only Look Once</strong>最简单的版本。</p>
 <hr>
-<h2 id="4-YOLO-v1终于诞生"><a href="#4-YOLO-v1终于诞生" class="headerlink" title="4 YOLO v1终于诞生"></a>4 YOLO v1终于诞生</h2><ul>
+<h2 id="4-YOLO-v1终于诞生">4 YOLO v1终于诞生</h2>
+<ul>
 <li><strong>需求1：YOLO v0只能输出一个目标，那比如下图4的多个目标怎么办呢？</strong></li>
 </ul>
 <p><img src="https://pic1.zhimg.com/80/v2-bdf872e1bc2ac749425d3e45b123b3ec_720w.jpg" alt="img"></p>
@@ -257,7 +264,7 @@
 <p>就可以一次输出16个框，每个框是1个(c,x,y,w,h)，如图6所示。</p>
 <p>为什么这样子更优？因为conv操作是位置强相关的，就是原来的目标在哪里，你conv之后的feature map上还在哪里，所以图片划分为16个区域，结果也应该分布在16个区域上，所以我们的<strong>结果(Tensor)的维度size是：(5,4,4)</strong>。</p>
 <p>那现在你可能会问：<strong>c的真值该怎么设置呢？</strong></p>
-<p><strong>答：</strong>看葫芦娃的大娃，他的脸跨了4个区域(grid)，但只能某一个grid的c=1，其他的c=0。那么该让哪一个grid的c=1呢？就看他的脸的中心落在了哪个grid里面。根据这一原则，c的真值为下图7所示：</p>
+<p>**答：**看葫芦娃的大娃，他的脸跨了4个区域(grid)，但只能某一个grid的c=1，其他的c=0。那么该让哪一个grid的c=1呢？就看他的脸的中心落在了哪个grid里面。根据这一原则，c的真值为下图7所示：</p>
 <p><img src="https://pic4.zhimg.com/80/v2-02a45bc027de8ff65693bcf1ae21c2e3_720w.jpg" alt="img">图7：c的label值</p>
 <p>但是你发现7个葫芦娃只有6个1，原因是某一个grid里面有2个目标，确实如此，第三行第三列的grid既有<strong>水娃</strong>又有<strong>隐身娃</strong>。这种一个区域有多个目标的情况我们<strong>目前没法解决，因为我们的模型现在能力就这么大，只能在一个区域中检测出一个目标，如何改进我们马上就讨论，你可以现在先自己想一想。</strong></p>
 <p>总之现在我们设计出了模型的输出结果，那距离完成模型的设计还差一个损失函数，那Loss咋设计呢？看下面的伪代码：</p>
@@ -268,28 +275,28 @@
 <ul>
 <li>好现在模型设计完了，回到刚才的问题：模型现在能力就这么大，只能在一个区域中检测出一个目标，如何改进？</li>
 </ul>
-<p><strong>答：</strong>刚才区域是 <img src="https://www.zhihu.com/equation?tex=4%5Ctimes4" alt="[公式]"> ，现在变成 <img src="https://www.zhihu.com/equation?tex=40%5Ctimes40" alt="[公式]"> ，或者更大，使区域更密集，就可以缓解多个目标的问题，但无法从根本上去解决。</p>
+<p>**答：**刚才区域是 <img src="https://www.zhihu.com/equation?tex=4%5Ctimes4" alt="[公式]"> ，现在变成 <img src="https://www.zhihu.com/equation?tex=40%5Ctimes40" alt="[公式]"> ，或者更大，使区域更密集，就可以缓解多个目标的问题，但无法从根本上去解决。</p>
 <ul>
 <li>另一个问题，按上面的设计你检测得到了16个框，可是图片上只有7个葫芦娃的脸，怎么从16个结果中筛选出7个我们要的呢？</li>
 </ul>
 <p><strong>答：</strong></p>
-<p><strong>法1：聚类。</strong>聚成7类，在这7个类中，选择confidence最大的框。听起来挺好。</p>
-<p><strong>法1的bug：</strong>2个目标本身比较近聚成了1个类怎么办？如果不知道到底有几个目标呢？为何聚成7类？不是3类？</p>
-<p><strong>法2：NMS(非极大值抑制)。</strong>2个框重合度很高，大概率是一个目标，那就只取一个框。</p>
+<p>**法1：聚类。**聚成7类，在这7个类中，选择confidence最大的框。听起来挺好。</p>
+<p>**法1的bug：**2个目标本身比较近聚成了1个类怎么办？如果不知道到底有几个目标呢？为何聚成7类？不是3类？</p>
+<p>**法2：NMS(非极大值抑制)。**2个框重合度很高，大概率是一个目标，那就只取一个框。</p>
 <p>重合度的计算方法：交并比IoU=两个框的交集面积/两个框的并集面积。</p>
 <p>具体算法：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-f2cf821fc64f14d2b60ae2f61409e3f5_720w.jpg" alt="img"></p>
 <p>面试必考的NMS</p>
-<p><strong>法1的bug：</strong>2个目标本身比较近怎么办？依然没有解决。</p>
+<p>**法1的bug：**2个目标本身比较近怎么办？依然没有解决。</p>
 <p>如果不知道到底有几个目标呢？NMS自动解决了这个问题。</p>
-<p><strong>面试的时候会问这样一个问题：</strong>NMS的适用情况是什么？</p>
-<p><strong>答：</strong>1图多目标检测时用NMS。</p>
+<p>**面试的时候会问这样一个问题：**NMS的适用情况是什么？</p>
+<p>**答：**1图多目标检测时用NMS。</p>
 <p>到现在为止我们终于解决了第4节开始提出的多个目标的问题，现在又有了新的需求：</p>
 <ul>
 <li><strong>需求2：多类的目标怎么办呢？</strong></li>
 </ul>
 <p>比如说我现在既要你检测<strong>葫芦娃的脸</strong>，又要你检测<strong>葫芦娃的葫芦</strong>，怎么设计？</p>
-<p>img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[5+2]<em>N <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> [c,x,y,w,h,one-hot]</em>N</p>
+<p>img <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp16<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp32<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp64<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> cbrp128<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> …<img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> fc256-fc[5+2]*N <img src="https://www.zhihu.com/equation?tex=%5Crightarrow" alt="[公式]"> [c,x,y,w,h,one-hot]*N</p>
 <p>2个类，one-hot就是[0,1],[1,0]这样子，如下图8所示：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-38ce7b4f57bc0833a66a6baf5559da99_720w.jpg" alt="img"></p>
 <p>图8：多类的目标的label</p>
@@ -357,18 +364,25 @@
 <p>input_process：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">def input_process(batch):</span><br><span class="line">    #import pdb</span><br><span class="line">    #pdb.set_trace()</span><br><span class="line">    batch_size=len(batch[0])</span><br><span class="line">    input_batch= torch.zeros(batch_size,3,448,448)</span><br><span class="line">    for i in range(batch_size):</span><br><span class="line">        inputs_tmp = Variable(batch[0][i])</span><br><span class="line">        inputs_tmp1=cv2.resize(inputs_tmp.permute([1,2,0]).numpy(),(448,448))</span><br><span class="line">        inputs_tmp2=torch.tensor(inputs_tmp1).permute([2,0,1])</span><br><span class="line">        input_batch[i:i+1,:,:,:]= torch.unsqueeze(inputs_tmp2,0)</span><br><span class="line">    return input_batch </span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>batch[0]为image，batch[1]为label，batch_size为1个batch的图片数量。<br>batch[0][i]为这个batch的第i张图片，inputs_tmp2为尺寸变成了3,448,448之后的图片，再经过unsqueeze操作拓展1维，size=[1,3,448,448]，存储在input_batch中。</p>
+<p>batch[0]为image，batch[1]为label，batch_size为1个batch的图片数量。<br>
+batch[0][i]为这个batch的第i张图片，inputs_tmp2为尺寸变成了3,448,448之后的图片，再经过unsqueeze操作拓展1维，size=[1,3,448,448]，存储在input_batch中。</p>
 </blockquote>
 <p>最后，返回的是size=[batch_size,3,448,448]的输入数据。</p>
 <p>target_process：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">def target_process(batch,grid_number=7):</span><br><span class="line">    # batch[1]表示label</span><br><span class="line">    # batch[0]表示image</span><br><span class="line">    batch_size=len(batch[0])</span><br><span class="line">    target_batch= torch.zeros(batch_size,grid_number,grid_number,30)</span><br><span class="line">    #import pdb</span><br><span class="line">    #pdb.set_trace()</span><br><span class="line">    for i in range(batch_size):</span><br><span class="line">        labels = batch[1]</span><br><span class="line">        batch_labels = labels[i]</span><br><span class="line">        #import pdb</span><br><span class="line">        #pdb.set_trace()</span><br><span class="line">        number_box = len(batch_labels[&#x27;boxes&#x27;])</span><br><span class="line">        for wi in range(grid_number):</span><br><span class="line">            for hi in range(grid_number):</span><br><span class="line">                # 遍历每个标注的框</span><br><span class="line">                for bi in range(number_box):</span><br><span class="line">                    bbox=batch_labels[&#x27;boxes&#x27;][bi]</span><br><span class="line">                    _,himg,wimg = batch[0][i].numpy().shape</span><br><span class="line">                    bbox = bbox/ torch.tensor([wimg,himg,wimg,himg])</span><br><span class="line">                    #import pdb</span><br><span class="line">                    #pdb.set_trace()</span><br><span class="line">                    center_x= (bbox[0]+bbox[2])*0.5</span><br><span class="line">                    center_y= (bbox[1]+bbox[3])*0.5</span><br><span class="line">                    #print(&quot;[%s,%s,%s],[%s,%s,%s]&quot;%(wi/grid_number,center_x,(wi+1)/grid_number,hi/grid_number,center_y,(hi+1)/grid_number))</span><br><span class="line">                    if center_x&lt;=(wi+1)/grid_number and center_x&gt;=wi/grid_number and center_y&lt;=(hi+1)/grid_number and center_y&gt;= hi/grid_number:</span><br><span class="line">                        #pdb.set_trace()</span><br><span class="line">                        cbbox =  torch.cat([torch.ones(1),bbox])</span><br><span class="line">                        # 中心点落在grid内，</span><br><span class="line">                        target_batch[i:i+1,wi:wi+1,hi:hi+1,:] = torch.unsqueeze(cbbox,0)</span><br><span class="line">                    #else:</span><br><span class="line">                        #cbbox =  torch.cat([torch.zeros(1),bbox])</span><br><span class="line">                #import pdb</span><br><span class="line">                #pdb.set_trace()</span><br><span class="line">                #rint(target_batch[i:i+1,wi:wi+1,hi:hi+1,:])</span><br><span class="line">                #target_batch[i:i+1,wi:wi+1,hi:hi+1,:] = torch.unsqueeze(cbbox,0)</span><br><span class="line">    return target_batch</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>要从batch里面获得label，首先要想清楚label(就是bounding box)应该是什么size，输出的结果应该是 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes30" alt="[公式]"> 的，所以label的size应该是：[batch_size,7,7,30]。在这个程序里我们实现的是输出 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes5" alt="[公式]"> 。这个 <img src="https://www.zhihu.com/equation?tex=5" alt="[公式]"> 就是x,y,w,h，所以label的size应该是：[batch_size,7,7,5]<br>batch_labels表示这个batch的第i个图片的label，number_box表示这个图有几个真值框。<br>接下来3重循环遍历每个grid的每个框，bbox表示正在遍历的这个框。<br>bbox = bbox/ torch.tensor([wimg,himg,wimg,himg])表示对x,y,w,h进行归一化。<br>接下来if语句得到confidence的真值，存储在target_batch中返回。</p>
+<p>要从batch里面获得label，首先要想清楚label(就是bounding box)应该是什么size，输出的结果应该是 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes30" alt="[公式]"> 的，所以label的size应该是：[batch_size,7,7,30]。在这个程序里我们实现的是输出 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7%5Ctimes5" alt="[公式]"> 。这个 <img src="https://www.zhihu.com/equation?tex=5" alt="[公式]"> 就是x,y,w,h，所以label的size应该是：[batch_size,7,7,5]<br>
+batch_labels表示这个batch的第i个图片的label，number_box表示这个图有几个真值框。<br>
+接下来3重循环遍历每个grid的每个框，bbox表示正在遍历的这个框。<br>
+bbox = bbox/ torch.tensor([wimg,himg,wimg,himg])表示对x,y,w,h进行归一化。<br>
+接下来if语句得到confidence的真值，存储在target_batch中返回。</p>
 </blockquote>
 <p>最后是loss函数：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br></pre></td><td class="code"><pre><span class="line">def lossfunc_details(outputs,labels):</span><br><span class="line">    # 判断维度</span><br><span class="line">    assert ( outputs.shape == labels.shape),&quot;outputs shape[%s] not equal labels shape[%s]&quot;%(outputs.shape,labels.shape)</span><br><span class="line">    #import pdb</span><br><span class="line">    #pdb.set_trace()</span><br><span class="line">    b,w,h,c = outputs.shape</span><br><span class="line">    loss = 0</span><br><span class="line">    #import pdb</span><br><span class="line">    #pdb.set_trace()</span><br><span class="line">    conf_loss_matrix = torch.zeros(b,w,h)</span><br><span class="line">    geo_loss_matrix = torch.zeros(b,w,h)</span><br><span class="line">    loss_matrix = torch.zeros(b,w,h)</span><br><span class="line">    </span><br><span class="line">    for bi in range(b):</span><br><span class="line">        for wi in range(w):</span><br><span class="line">            for hi in range(h):</span><br><span class="line">                #import pdb</span><br><span class="line">                #pdb.set_trace()</span><br><span class="line">                # detect_vector=[confidence,x,y,w,h]</span><br><span class="line">                detect_vector = outputs[bi,wi,hi]</span><br><span class="line">                gt_dv = labels[bi,wi,hi]</span><br><span class="line">                conf_pred = detect_vector[0]</span><br><span class="line">                conf_gt = gt_dv[0]</span><br><span class="line">                x_pred = detect_vector[1]</span><br><span class="line">                x_gt = gt_dv[1]</span><br><span class="line">                y_pred = detect_vector[2]</span><br><span class="line">                y_gt = gt_dv[2]</span><br><span class="line">                w_pred = detect_vector[3]</span><br><span class="line">                w_gt = gt_dv[3]</span><br><span class="line">                h_pred = detect_vector[4]</span><br><span class="line">                h_gt = gt_dv[4]</span><br><span class="line">                loss_confidence = (conf_pred-conf_gt)**2 </span><br><span class="line">                #loss_geo = (x_pred-x_gt)**2 + (y_pred-y_gt)**2 + (w_pred**0.5-w_gt**0.5)**2 + (h_pred**0.5-h_gt**0.5)**2</span><br><span class="line">            </span><br><span class="line">                loss_geo = (x_pred-x_gt)**2 + (y_pred-y_gt)**2 + (w_pred-w_gt)**2 + (h_pred-h_gt)**2</span><br><span class="line">                loss_geo = conf_gt*loss_geo</span><br><span class="line">                loss_tmp = loss_confidence + 0.3*loss_geo</span><br><span class="line">                #print(&quot;loss[%s,%s] = %s,%s&quot;%(wi,hi,loss_confidence.item(),loss_geo.item()))</span><br><span class="line">                loss += loss_tmp</span><br><span class="line">                conf_loss_matrix[bi,wi,hi]=loss_confidence</span><br><span class="line">                geo_loss_matrix[bi,wi,hi]=loss_geo</span><br><span class="line">                loss_matrix[bi,wi,hi]=loss_tmp</span><br><span class="line">    #打印出batch中每张片的位置loss,和置信度输出</span><br><span class="line">    print(geo_loss_matrix)</span><br><span class="line">    print(outputs[0,:,:,0]&gt;0.5)</span><br><span class="line">    return loss,loss_matrix,geo_loss_matrix,conf_loss_matrix</span><br></pre></td></tr></table></figure>
 <blockquote>
-<p>首先需要注意：label和output的size应该是：[batch_size,7,7,5]。<br>outputs[bi,wi,hi]就是一个5位向量： <img src="https://www.zhihu.com/equation?tex=%28c%5E%7Bpred%7D%2Cx%5E%7Bpred%7D%2Cy%5E%7Bpred%7D%2Cw%5E%7Bpred%7D%2Ch%5E%7Bpred%7D%29" alt="[公式]"> 。<br>我们分别计算了loss_confidence和loss_geo，因为我们实现的这个模型只检测1个类，所以没有class_loss。</p>
+<p>首先需要注意：label和output的size应该是：[batch_size,7,7,5]。<br>
+outputs[bi,wi,hi]就是一个5位向量： <img src="https://www.zhihu.com/equation?tex=%28c%5E%7Bpred%7D%2Cx%5E%7Bpred%7D%2Cy%5E%7Bpred%7D%2Cw%5E%7Bpred%7D%2Ch%5E%7Bpred%7D%29" alt="[公式]"> 。<br>
+我们分别计算了loss_confidence和loss_geo，因为我们实现的这个模型只检测1个类，所以没有class_loss。</p>
 </blockquote>
 <p>为了使本文<strong>尽量生动有趣</strong>，我仍然用葫芦娃作为例子展示YOLO的过程(真的是尽力了。。。)。</p>
 <p><img src="https://pic2.zhimg.com/80/v2-6f33f7b365e952d0cb1436c540135a0d_720w.jpg" alt="img">葫芦娃</p>
@@ -378,7 +392,8 @@
 <p>我们认为，<strong>检测模型=特征提取器+检测头</strong></p>
 <p>在YOLO v1的模型中检测头就是最后的2个全连接层(Linear in PyTorch)，它们是参数量最大的2个层，也是最值得改进的2个层。后面的YOLO模型都对这里进行改进：</p>
 <p>YOLO v1一共预测49个目标，一共98个框。</p>
-<h2 id="5-YOLO-v2"><a href="#5-YOLO-v2" class="headerlink" title="5 YOLO v2"></a>5 YOLO v2</h2><ul>
+<h2 id="5-YOLO-v2">5 YOLO v2</h2>
+<ul>
 <li><strong>检测头的改进：</strong></li>
 </ul>
 <p>YOLO v1虽然快，但是预测的框不准确，很多目标找不到：</p>
@@ -416,7 +431,7 @@
 <p>归一化之后你会发现，要预测的值就变为了：</p>
 <p><img src="https://www.zhihu.com/equation?tex=t_%7Bx%7D%2Ct_%7By%7D%2Ct_%7Bw%7D%2Ct_%7Bh%7D%3D0.172%2C-0.148%2C-0.340%2C-0.326" alt="[公式]"></p>
 <p>这是一个偏移量，且值很小，有利于神经网络的学习。</p>
-<p><strong>你可能会有疑问：</strong>为什么YOLO v2改预测偏移量而不是直接去预测 <img src="https://www.zhihu.com/equation?tex=%28x%2Cy%2Cw%2Ch%29" alt="[公式]"> ？</p>
+<p>**你可能会有疑问：**为什么YOLO v2改预测偏移量而不是直接去预测 <img src="https://www.zhihu.com/equation?tex=%28x%2Cy%2Cw%2Ch%29" alt="[公式]"> ？</p>
 <p>上面我说了作者看到了同时代的R-CNN，人家预测的是偏移量。另一个重要的原因是：直接预测位置会导致神经网络在一开始训练时不稳定，使用偏移量会使得训练过程更加稳定，性能指标提升了5%左右。</p>
 <p>位置上不使用Anchor框，宽高上使用Anchor框。以上就是YOLO v2的一个改进。用了YOLO v2的改进之后确实是更准确了，但别激动，上面还有一个问题呢~</p>
 <ul>
@@ -428,7 +443,7 @@
 <p><img src="https://www.zhihu.com/equation?tex=125%3D5%5Ctimes5%28c%2Cx%2Cy%2Cw%2Ch%29%2B5%5Ctimes20+classes" alt="[公式]"></p>
 <p>这里面有个bug，就是YOLO v2先对每个区域得到了5个anchor作为参考，那你就会问2个问题：</p>
 <p><strong>1.为什么要用Anchor呢？</strong></p>
-<p><strong>答：一开始YOLO v1的初始训练过程很不稳定</strong>，在YOLO v2中，作者观察了很多图片的所有Ground Truth，发现：比如车，GT都是矮胖的长方形，再比如行人，GT都是瘦高的长方形，且宽高比具有相似性。那<strong>能不能根据这一点，从数据集中预先准备几个几率比较大的bounding box，再以它们为基准进行预测呢？</strong>这就是Anchor的初衷。</p>
+<p><strong>答：一开始YOLO v1的初始训练过程很不稳定</strong>，在YOLO v2中，作者观察了很多图片的所有Ground Truth，发现：比如车，GT都是矮胖的长方形，再比如行人，GT都是瘦高的长方形，且宽高比具有相似性。那**能不能根据这一点，从数据集中预先准备几个几率比较大的bounding box，再以它们为基准进行预测呢？**这就是Anchor的初衷。</p>
 <p><strong>2.每个区域的5个anchor是如何得到的？</strong></p>
 <p>下图可以回答你的问题：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-7e157d61f41ca02634f06b0b78c71684_720w.jpg" alt="img">methods to get the 5 anchor</p>
@@ -440,13 +455,21 @@
 </ul>
 <p><img src="https://pic1.zhimg.com/80/v2-faed5df5818795d5fc047815f0338768_720w.jpg" alt="img">YOLO v2损失函数</p>
 <blockquote>
-<p>这里的W=13,H=13,A=5。<br>每个 <img src="https://www.zhihu.com/equation?tex=%5Clambda" alt="[公式]"> 都是一个权重值。c表示类别，r表示rectangle，即(x,y,w,h)。<br>第1,4行是confidence<em>loss，注意这里的真值变成了0和IoU(GT, anchor)的值，你看看这些细节。。。<br>第5行是class_loss。<br>第2,3行：t是迭代次数，即前12800步我们计算这个损失，后面不计算了。这部分意义何在？<br>意思是：前12800步我们会优化<strong>预测的(x,y,w,h)与anchor的(x,y,w,h)的距离+预测的(x,y,w,h)与GT的(x,y,w,h)的距离</strong>，12800步之后就只优化<strong>预测的(x,y,w,h)与GT的(x,y,w,h)的距离，为啥？因为这时的预测结果已经较为准确了，anchor已经满足我了我们了，而在一开始预测不准的时候，用上anchor可以加速训练。</strong><br><strong>你看看这操作多么的细节。。。</strong><br>![[公式]](<a target="_blank" rel="noopener" href="https://www.zhihu.com/equation?tex=1">https://www.zhihu.com/equation?tex=1</a></em>%7Bk%7D%5E%7Btruth%7D) 是什么？第k个anchor与所有GT的IoU的maximum，如果大于一个阈值，就 <img src="https://www.zhihu.com/equation?tex=1_%7Bk%7D%5E%7Btruth%7D%3D1" alt="[公式]"> ，否则的话： <img src="https://www.zhihu.com/equation?tex=1_%7Bk%7D%5E%7Btruth%7D%3D0" alt="[公式]"> 。</p>
+<p>这里的W=13,H=13,A=5。<br>
+每个 <img src="https://www.zhihu.com/equation?tex=%5Clambda" alt="[公式]"> 都是一个权重值。c表示类别，r表示rectangle，即(x,y,w,h)。<br>
+第1,4行是confidence_loss，注意这里的真值变成了0和IoU(GT, anchor)的值，你看看这些细节。。。<br>
+第5行是class_loss。<br>
+第2,3行：t是迭代次数，即前12800步我们计算这个损失，后面不计算了。这部分意义何在？<br>
+意思是：前12800步我们会优化<strong>预测的(x,y,w,h)与anchor的(x,y,w,h)的距离+预测的(x,y,w,h)与GT的(x,y,w,h)的距离</strong>，12800步之后就只优化<strong>预测的(x,y,w,h)与GT的(x,y,w,h)的距离，为啥？因为这时的预测结果已经较为准确了，anchor已经满足我了我们了，而在一开始预测不准的时候，用上anchor可以加速训练。</strong><br>
+<strong>你看看这操作多么的细节。。。</strong><br>
+<img src="https://www.zhihu.com/equation?tex=1_%7Bk%7D%5E%7Btruth%7D" alt="[公式]"> 是什么？第k个anchor与所有GT的IoU的maximum，如果大于一个阈值，就 <img src="https://www.zhihu.com/equation?tex=1_%7Bk%7D%5E%7Btruth%7D%3D1" alt="[公式]"> ，否则的话： <img src="https://www.zhihu.com/equation?tex=1_%7Bk%7D%5E%7Btruth%7D%3D0" alt="[公式]"> 。</p>
 </blockquote>
 <p>好，到现在为止，YOLO v2做了这么多改进，整体性能大幅度提高，但是小目标检测仍然是YOLO v2的痛。直到kaiming大神的ResNet出现，backbone可以更深了，所以darknet53诞生。</p>
 <p>最后我们做个比较：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-e4dce0794b6d4aa5a67133633baed6b4_720w.jpg" alt="img">YOLO v1和v2的比较</p>
 <hr>
-<h2 id="6-YOLO-v3"><a href="#6-YOLO-v3" class="headerlink" title="6 YOLO v3"></a>6 YOLO v3</h2><ul>
+<h2 id="6-YOLO-v3">6 YOLO v3</h2>
+<ul>
 <li><strong>检测头的改进：</strong></li>
 </ul>
 <p>之前在说小目标检测仍然是YOLO v2的痛，YOLO v3是如何改进的呢？如下图所示。</p>
@@ -483,7 +506,7 @@
 <p><img src="https://www.zhihu.com/equation?tex=%2813%5Ctimes13%2B26%5Ctimes26%2B52%5Ctimes52%29%5Ctimes3%3D10467%28YOLO+v3%29%3E%3E845%28YOLO+v2%29%3D13%5Ctimes13%5Ctimes5" alt="[公式]"></p>
 <p>多了这么多可以预测的bounding box，模型的能力增强了。</p>
 <p><strong>为确定priors</strong>，YOLO v3 应用<strong>k均值聚类</strong>。然后它<strong>预先选择9个聚类簇</strong>。</p>
-<p>对于<strong>COCO数据集</strong>，锚定框的宽度和高为<strong>(10 ×13)，(16 ×30)，(33 ×23)，(30 ×61)，(62 ×45)，(59 ×119)，(116 × 90)，( 156 ×198)，(373373×326326)</strong>。这应该是按照输入图像的尺寸416×416 计算得到的。这 9个priors根据它们的尺度分为3个不同的组。在检测目标时，给一特定的特征图分配一个组。</p>
+<p>对于<strong>COCO数据集</strong>，锚定框的宽度和高为**(10 ×13)，(16 ×30)，(33 ×23)，(30 ×61)，(62 ×45)，(59 ×119)，(116 × 90)，( 156 ×198)，(373373×326326)**。这应该是按照输入图像的尺寸416×416 计算得到的。这 9个priors根据它们的尺度分为3个不同的组。在检测目标时，给一特定的特征图分配一个组。</p>
 <p>就对应了下面这个图：</p>
 <p><img src="https://pic4.zhimg.com/80/v2-24ff3cd5062021493490e28e7d73d6bf_720w.jpg" alt="img">YOLO v3</p>
 <p>检测头是<strong>DBL</strong>，定义在图上，没有了FC。</p>
@@ -496,7 +519,10 @@
 </ul>
 <p><img src="https://pic4.zhimg.com/80/v2-1714579e2a7f9ca88335bdaeae9e1c4f_720w.jpg" alt="img">YOLO v3损失函数</p>
 <blockquote>
-<p>第4行说明：loss分3部分组成：<br>第1行代表geo_loss，S代表13,26,52，就是grid是几乘几的。B=5。<br>第2行代表confidence_loss，和YOLO v2一模一样。<br>第3行代表class_loss，和YOLO v2的区别是改成了交叉熵。</p>
+<p>第4行说明：loss分3部分组成：<br>
+第1行代表geo_loss，S代表13,26,52，就是grid是几乘几的。B=5。<br>
+第2行代表confidence_loss，和YOLO v2一模一样。<br>
+第3行代表class_loss，和YOLO v2的区别是改成了交叉熵。</p>
 </blockquote>
 <ul>
 <li><strong>边界框预测和代价函数的计算：</strong></li>
@@ -504,7 +530,10 @@
 <p>YOLO v3使用多标签分类，用多个独立的logistic分类器代替softmax函数，以计算输入属于特定标签的可能性。在计算分类损失进行训练时，YOLO v3对每个标签使用二元交叉熵损失。</p>
 <p><strong>正负样本的确定：</strong></p>
 <blockquote>
-<p>如果<strong>边界框先验（锚定框）与 GT 目标比其他目标重叠多</strong>，则相应的<strong>目标性得分应为 1</strong>。<br>对于<strong>重叠大于等于0.5的其他先验框(anchor)</strong>，忽略，<strong>不算损失</strong>。<br>每个 GT 目标<strong>仅与一个先验边界框相关联</strong>。 如果没有分配先验边界框，则不会导致<strong>分类和定位损失，只会有目标性的置信度损失。</strong><br>使用<strong>tx和ty(</strong>而不是 bx 和by<strong>)</strong>来计算损失。</p>
+<p>如果<strong>边界框先验（锚定框）与 GT 目标比其他目标重叠多</strong>，则相应的<strong>目标性得分应为 1</strong>。<br>
+对于<strong>重叠大于等于0.5的其他先验框(anchor)</strong>，忽略，<strong>不算损失</strong>。<br>
+每个 GT 目标<strong>仅与一个先验边界框相关联</strong>。 如果没有分配先验边界框，则不会导致<strong>分类和定位损失，只会有目标性的置信度损失。</strong><br>
+使用**tx和ty(<strong>而不是 bx 和by</strong>)**来计算损失。</p>
 </blockquote>
 <p><img src="https://pic2.zhimg.com/80/v2-1e31f33f86d3f2bb9c7d516efd974765_720w.jpg" alt="img">使用tx和ty(而不是 bx 和by)来计算损失</p>
 <p><img src="https://pic1.zhimg.com/80/v2-5b4352b9a3138190717febf40e5f0384_720w.png" alt="img">交叉熵损失</p>
@@ -518,7 +547,8 @@
 <p>最后我们做个比较：</p>
 <p><img src="https://pic4.zhimg.com/80/v2-e35154c0fe812a210295ca8c3cd92df3_720w.jpg" alt="img">YOLO v1 v2和v3的比较</p>
 <hr>
-<h2 id="7-疫情都挡不住的YOLO-v4"><a href="#7-疫情都挡不住的YOLO-v4" class="headerlink" title="7 疫情都挡不住的YOLO v4"></a>7 疫情都挡不住的YOLO v4</h2><p>第一次看到YOLO v4公众号发文是在疫情期间，那时候还来不了学校。不得不说疫情也挡不住作者科研的动力。</p>
+<h2 id="7-疫情都挡不住的YOLO-v4">7 疫情都挡不住的YOLO v4</h2>
+<p>第一次看到YOLO v4公众号发文是在疫情期间，那时候还来不了学校。不得不说疫情也挡不住作者科研的动力。</p>
 <ul>
 <li><strong>检测头的改进：</strong></li>
 </ul>
@@ -530,14 +560,14 @@
 <p>还记得之前的YOLO v2的这幅图吗？YOLO v2，YOLO v3都是预测4个这样的偏移量</p>
 <p><img src="https://pic3.zhimg.com/80/v2-63ca4ed417c5db83b18c95a42a7f60f2_720w.jpg" alt="img">图3：YOLO v2，YOLO v3要预测的值</p>
 <p>这里其实还隐藏着一个问题：</p>
-<p>模型预测的结果是： <img src="https://www.zhihu.com/equation?tex=t_%7Bx%7D%2Ct_%7By%7D%2Ct_%7Bw%7D%2Ct_%7Bh%7D" alt="[公式]"> ，那么最终的结果是： <img src="https://www.zhihu.com/equation?tex=b_%7Bx%7D%2Cb_%7By%7D%2Cb_%7Bw%7D%2Cb_%7Bh%7D" alt="[公式]"> 。这个 <img src="https://www.zhihu.com/equation?tex=b" alt="[公式]"> 按理说应该能取到一个grid里面的任意位置。但是实际上边界的位置是取不到的，因为sigmoid函数的值域是： <img src="https://www.zhihu.com/equation?tex=%280%2C1%29" alt="[公式]"> ，它不是 <img src="https://www.zhihu.com/equation?tex=%5B0%2C1%5D" alt="[公式]"> 。所以作者提出的Eliminate<em>grid sensitivity的意思是：将 ![[公式]](<a target="_blank" rel="noopener" href="https://www.zhihu.com/equation?tex=b">https://www.zhihu.com/equation?tex=b</a></em>%7Bx%7D%2Cb_%7By%7D) 的计算公式改为：</p>
+<p>模型预测的结果是： <img src="https://www.zhihu.com/equation?tex=t_%7Bx%7D%2Ct_%7By%7D%2Ct_%7Bw%7D%2Ct_%7Bh%7D" alt="[公式]"> ，那么最终的结果是： <img src="https://www.zhihu.com/equation?tex=b_%7Bx%7D%2Cb_%7By%7D%2Cb_%7Bw%7D%2Cb_%7Bh%7D" alt="[公式]"> 。这个 <img src="https://www.zhihu.com/equation?tex=b" alt="[公式]"> 按理说应该能取到一个grid里面的任意位置。但是实际上边界的位置是取不到的，因为sigmoid函数的值域是： <img src="https://www.zhihu.com/equation?tex=%280%2C1%29" alt="[公式]"> ，它不是 <img src="https://www.zhihu.com/equation?tex=%5B0%2C1%5D" alt="[公式]"> 。所以作者提出的Eliminate_grid sensitivity的意思是：将 <img src="https://www.zhihu.com/equation?tex=b_%7Bx%7D%2Cb_%7By%7D" alt="[公式]"> 的计算公式改为：</p>
 <p><img src="https://www.zhihu.com/equation?tex=b_%7Bx%7D%3D1.1%5Ccdot%5Csigma%28t_%7Bx%7D%29%2Bc_%7Bx%7D" alt="[公式]"></p>
 <p><img src="https://www.zhihu.com/equation?tex=b_%7By%7D%3D1.1%5Ccdot%5Csigma%28t_%7By%7D%29%2Bc_%7By%7D" alt="[公式]"></p>
 <p>这里的1.1就是一个示例，你也可以是1.05,1.2等等，反正要乘上一个略大于1的数，作者发现经过这样的改动以后效果会再次提升。</p>
 <p><strong>3.CIoU-loss</strong></p>
 <p>之前的YOLO v2，YOLO v3在计算geo_loss时都是用的MSE Loss，之后人们开始使用IoU Loss。</p>
 <p><img src="https://www.zhihu.com/equation?tex=L_%7BIoU%7D%3D1-%5Cfrac%7B%7CB%5Ccap+B_%7Bgt%7D%7C%7D%7B%7CB%5Ccup+B_%7Bgt%7D%7C%7D" alt="[公式]"> 它可以反映预测检测框与真实检测框的检测效果。</p>
-<p>但是问题也很多：不能反映两者的距离大小（重合度）。同时因为loss=0，<strong>当GT和bounding box不挨着时，没有梯度回传，无法进行学习训练。</strong>如下图4所示，三种情况IoU都相等，但看得出来他们的重合度是不一样的，左边的图回归的效果最好，右边的最差：</p>
+<p>但是问题也很多：不能反映两者的距离大小（重合度）。同时因为loss=0，**当GT和bounding box不挨着时，没有梯度回传，无法进行学习训练。**如下图4所示，三种情况IoU都相等，但看得出来他们的重合度是不一样的，左边的图回归的效果最好，右边的最差：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-a52e8fc7166b29c08b80de1ead22ec79_720w.jpg" alt="img">图4：IoU Loss不能反映两者的距离大小</p>
 <ul>
 <li><strong>所以接下来的改进是：</strong></li>
@@ -583,7 +613,8 @@
 <p>所以基于上面的改进，YOLO v4的损失函数为：</p>
 <p><img src="https://pic3.zhimg.com/80/v2-310600feb7204188d9738fbd062567ca_720w.jpg" alt="img">YOLO v4的损失函数</p>
 <hr>
-<h2 id="8-代码比论文都早的YOLO-v5"><a href="#8-代码比论文都早的YOLO-v5" class="headerlink" title="8 代码比论文都早的YOLO v5"></a>8 代码比论文都早的YOLO v5</h2><ul>
+<h2 id="8-代码比论文都早的YOLO-v5">8 代码比论文都早的YOLO v5</h2>
+<ul>
 <li><strong>检测头的改进：</strong></li>
 </ul>
 <p><strong>head部分没有任何改动</strong>，和yolov3和yolov4完全相同，也是三个输出头，stride分别是8,16,32，大输出特征图检测小物体，小输出特征图检测大物体。</p>
@@ -602,37 +633,39 @@
 <p>下面进入正题，目标检测器模型的结构如下图1所示，之前看过了YOLO v2 v3 v4 v5对于检测头和loss函数的改进，如下图2所示，下面着重介绍backbone的改进：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-8c5bac2266cf9b9b857529805511221c_720w.jpg" alt="img">图1：检测器的结构</p>
 <p><img src="https://pic2.zhimg.com/80/v2-b641aebaf5d009504d30a1d17a5f7019_720w.jpg" alt="img">图2：YOLO系列比较</p>
-<p>我们发现YOLO v1只是把最后的特征分成了 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 个grid，到了YOLO v2就变成了 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13" alt="[公式]"> 个grid，再到YOLO v3 v4 v5就变成了多尺度的<strong>(strides=8,16,32)</strong>，更加复杂了。那<strong>为什么一代比一代检测头更加复杂呢？答案是：因为它们的提特征网络更加强大了，能够支撑起检测头做更加复杂的操作。</strong>换句话说，如果没有backbone方面的优化，你即使用这么复杂的检测头，可能性能还会更弱。所以引出了今天的话题：</p>
+<p>我们发现YOLO v1只是把最后的特征分成了 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 个grid，到了YOLO v2就变成了 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13" alt="[公式]"> 个grid，再到YOLO v3 v4 v5就变成了多尺度的**(strides=8,16,32)<strong>，更加复杂了。那</strong>为什么一代比一代检测头更加复杂呢？答案是：因为它们的提特征网络更加强大了，能够支撑起检测头做更加复杂的操作。**换句话说，如果没有backbone方面的优化，你即使用这么复杂的检测头，可能性能还会更弱。所以引出了今天的话题：</p>
 <ul>
 <li><strong>backbone的改进：</strong></li>
 </ul>
-<h2 id="YOLO-v1"><a href="#YOLO-v1" class="headerlink" title="YOLO v1"></a><strong>YOLO v1</strong></h2><p>我们先看看YOLO v1的backbone长什么样子：</p>
+<h2 id="YOLO-v1"><strong>YOLO v1</strong></h2>
+<p>我们先看看YOLO v1的backbone长什么样子：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-70005c21ddd8470ae5587b231987cb7d_720w.jpg" alt="img">YOLO v1 backbone</p>
 <p>最后2层是全连接层，其他使用了大量的卷积层，网络逐渐变宽，是非常标准化的操作。注意这里面试官可能会问你一个问题：为什么都是卷积，图上要分开画出来，不写在一起？答案是：按照feature map的分辨率画出来。分辨率A变化到分辨率B的所有卷积画在了一起。因为写代码时经常会这么做，所以问这个问题的意图是看看你是否经常写代码。</p>
 <p>然后我们看下检测类网络的结构，如下图3所示，这个图是YOLO v4中总结的：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-d2fb92212cbfb1d29bc395000602231c_720w.jpg" alt="img">图3：检测类网络的结构</p>
 <p>YOLO v1没有Neck，Backbone是GoogLeNet，属于Dense Prediction。<strong>1阶段的检测器属于Dense Prediction，而2阶段的检测器既有Dense Prediction，又有Sparse Prediction</strong>。</p>
 <hr>
-<h2 id="YOLO-v2"><a href="#YOLO-v2" class="headerlink" title="YOLO v2"></a><strong>YOLO v2</strong></h2><p>为了进一步提升性能，YOLO v2重新训练了一个darknet-19，如下图4所示：</p>
+<h2 id="YOLO-v2"><strong>YOLO v2</strong></h2>
+<p>为了进一步提升性能，YOLO v2重新训练了一个darknet-19，如下图4所示：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-3ea70cd81cb6103ad41e9bb01b3114e4_720w.jpg" alt="img">图4：darknet-19</p>
 <p>仔细观察上面的backbone的结构(双横线上方)，提出3个问题：</p>
 <ul>
 <li>为什么没有 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 卷积了？只剩下了 <img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积和 <img src="https://www.zhihu.com/equation?tex=1%5Ctimes1" alt="[公式]"> 卷积了？</li>
 </ul>
-<p><strong>答：</strong>vgg net论文得到一个结论，<img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 卷积可以用更小的卷积代替，且<img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积更加节约参数，使模型更小。</p>
+<p>**答：**vgg net论文得到一个结论，<img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 卷积可以用更小的卷积代替，且<img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积更加节约参数，使模型更小。</p>
 <p>网络可以做得更深，更好地提取到特征。为什么？因为每做一次卷积，后面都会接一个非线性的激活函数，更深意味着非线性的能力更强了。所以，你可能以后再也见不到 <img src="https://www.zhihu.com/equation?tex=7%5Ctimes7" alt="[公式]"> 卷积了。</p>
 <p>另外还用了bottleneck结构(红色框)：</p>
 <p><img src="https://www.zhihu.com/equation?tex=3%5Ctimes3" alt="[公式]"> 卷积负责扩大感受野， <img src="https://www.zhihu.com/equation?tex=1%5Ctimes1" alt="[公式]"> 卷积负责减少参数量。</p>
 <ul>
 <li>为什么没有FC层了？</li>
 </ul>
-<p><strong>答：</strong>使用了GAP(Global Average Pooling)层，把 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes7%5Ctimes7" alt="[公式]"> 映射为 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes1" alt="[公式]"> ，满足了输入不同尺度的image的需求。你不管输入图片是 <img src="https://www.zhihu.com/equation?tex=224%5Ctimes224" alt="[公式]"> 还是 <img src="https://www.zhihu.com/equation?tex=256%5Ctimes256" alt="[公式]"> ，最后都给你映射为 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes1" alt="[公式]">。</p>
+<p>**答：**使用了GAP(Global Average Pooling)层，把 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes7%5Ctimes7" alt="[公式]"> 映射为 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes1" alt="[公式]"> ，满足了输入不同尺度的image的需求。你不管输入图片是 <img src="https://www.zhihu.com/equation?tex=224%5Ctimes224" alt="[公式]"> 还是 <img src="https://www.zhihu.com/equation?tex=256%5Ctimes256" alt="[公式]"> ，最后都给你映射为 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes1" alt="[公式]">。</p>
 <p>这对提高检测器的性能有什么作用呢？</p>
 <p>对于小目标的检测，之前输入图片是固定的大小的，小目标很难被检测准确；现在允许多尺度输入图片了，只要把图片放大，小目标就变成了大目标，提高检测的精度。</p>
 <ul>
 <li>为什么最后一层是softmax？</li>
 </ul>
-<p><strong>答：</strong>因为backbone网络darknet-19是单独train的，是按照分类网络去train的，用的数据集是imagenet，是1000个classes，所以最后加了一个softmax层，使用cross entropy loss。</p>
+<p>**答：**因为backbone网络darknet-19是单独train的，是按照分类网络去train的，用的数据集是imagenet，是1000个classes，所以最后加了一个softmax层，使用cross entropy loss。</p>
 <p><strong>接下来总结下YOLO v2的网络结构：</strong></p>
 <ul>
 <li>图4中的双横线的上半部分(第0-22层)为backbone，train的方法如上文。</li>
@@ -640,7 +673,7 @@
 </ul>
 <p><img src="https://pic3.zhimg.com/80/v2-1498b3c3c5ebebbb31b871329bc97b2e_720w.jpg" alt="img">图5：YOLO v2网络结构</p>
 <ul>
-<li>从第23层开始为检测头，其实是3个 3 <em> 3 </em> 1024 的卷积层。</li>
+<li>从第23层开始为检测头，其实是3个 3 * 3 * 1024 的卷积层。</li>
 <li>同时增加了一个 passthrough 层(27层)，最后使用 1 * 1 卷积层输出预测结果，输出结果的size为 <img src="https://www.zhihu.com/equation?tex=13%5Ctimes13%5Ctimes125" alt="[公式]"> 。</li>
 <li>route层的作用是进行层的合并(concat)，后面的数字指的是合并谁和谁。</li>
 <li>passthrough 层可以把 <img src="https://www.zhihu.com/equation?tex=26%5Ctimes26%5Ctimes64%5Crightarrow13%5Ctimes13%5Ctimes256" alt="[公式]"> 。</li>
@@ -648,21 +681,22 @@
 <p><strong>YOLO2 的训练主要包括三个阶段：</strong></p>
 <ol>
 <li>先在 <strong>ImageNet 分类数据集</strong>上<strong>预训练 Darknet-19</strong>，此时模型输入为 <strong>224 * 224</strong> ，共训练 160 个 epochs。(为什么可以这样训练？因为有GAP)</li>
-<li>将网络的输入调整为 <strong>448 * 448</strong>（注意在测试的时候使用 <strong>416 * 416</strong> 大小） ，继续在 ImageNet 数据集上 <strong>finetune 分类模型</strong>，训练 10 个 epochs。注意为什么测试的时候使用大小？<strong>答案是：</strong>将输入图像大小从<strong>448 ×448</strong> 更改为 <strong>416 ×416</strong> 。这将创建<strong>奇数空间维度(</strong>7×7 v.s 8 ×8 <strong>grid cell)</strong>。 图片的中心通常被大目标占据。 对于奇数网格单元，可以更容易确定目标所属的位置。对于一些大目标，它们中心点往落入图片中心位置，此时使用特征图中心的<strong>1个cell</strong>去预测这些目标的bounding box相对容易些，否则就要用中间<strong>4个Cells</strong>来进行预测。</li>
-<li>修改 Darknet-19 分类模型为检测模型为图5形态，即：移除最后一个卷积层、global avgpooling 层以及 softmax 层，并且新增了3个 3 <em> 3 </em> 1024 卷积层，同时增加了一个 passthrough 层，最后使用 1 <em> 1 卷积层输出预测结果，并在<strong>检测数据集</strong>上继续<em>*finetune</em></em> 网络。</li>
-<li>YOLO v1的训练：先使用<strong>224 * 224</strong>的分辨率训练分类网络，再切换到<strong>448 * 448</strong>的分辨率训练检测网络。而YOLO v2在使用<strong>224 * 224</strong>的分辨率训练分类网络<strong>160 epochs</strong>之后，先使用<strong>448 * 448</strong>的分辨率finetune分类网络<strong>10 epochs</strong>，再使用<strong>448 * 448</strong>的分辨率训练检测网络。可提升4%mAP。<strong>为什么可以改变输入维度了？</strong>因为YOLO v2中使用了GAP(Global Average Pooling)不论输入图片多大最后都给你从 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes7%5Ctimes7%5Crightarrow1000%5Ctimes1" alt="[公式]"> ，进行分类训练。</li>
+<li>将网络的输入调整为 <strong>448 * 448</strong>（注意在测试的时候使用 <strong>416 * 416</strong> 大小） ，继续在 ImageNet 数据集上 <strong>finetune 分类模型</strong>，训练 10 个 epochs。注意为什么测试的时候使用大小？<strong>答案是：<strong>将输入图像大小从</strong>448 ×448</strong> 更改为 <strong>416 ×416</strong> 。这将创建<strong>奇数空间维度(<strong>7×7 v.s 8 ×8 <strong>grid cell)</strong>。 图片的中心通常被大目标占据。 对于奇数网格单元，可以更容易确定目标所属的位置。对于一些大目标，它们中心点往落入图片中心位置，此时使用特征图中心的</strong>1个cell</strong>去预测这些目标的bounding box相对容易些，否则就要用中间<strong>4个Cells</strong>来进行预测。</li>
+<li>修改 Darknet-19 分类模型为检测模型为图5形态，即：移除最后一个卷积层、global avgpooling 层以及 softmax 层，并且新增了3个 3 * 3 * 1024 卷积层，同时增加了一个 passthrough 层，最后使用 1 * 1 卷积层输出预测结果，并在<strong>检测数据集</strong>上继续<strong>finetune</strong> 网络。</li>
+<li>YOLO v1的训练：先使用<strong>224 * 224</strong>的分辨率训练分类网络，再切换到<strong>448 * 448</strong>的分辨率训练检测网络。而YOLO v2在使用<strong>224 * 224</strong>的分辨率训练分类网络<strong>160 epochs</strong>之后，先使用<strong>448 * 448</strong>的分辨率finetune分类网络<strong>10 epochs</strong>，再使用<strong>448 * 448</strong>的分辨率训练检测网络。可提升4%mAP。**为什么可以改变输入维度了？**因为YOLO v2中使用了GAP(Global Average Pooling)不论输入图片多大最后都给你从 <img src="https://www.zhihu.com/equation?tex=1000%5Ctimes7%5Ctimes7%5Crightarrow1000%5Ctimes1" alt="[公式]"> ，进行分类训练。</li>
 </ol>
 <blockquote>
 <p>注意这里图5有个地方得解释一下：第25层把第16层进行reorg，即passthrough操作，得到的结果为27层，再与第24层进行route，即concat操作，得到第28层。</p>
 </blockquote>
 <p><strong>可视化的图为：</strong></p>
 <p><img src="https://pic3.zhimg.com/80/v2-33a0c926dc46085ac913b5262edb3a0a_720w.jpg" alt="img">图5：YOLO v2可视化结构</p>
-<h2 id="YOLO-v3"><a href="#YOLO-v3" class="headerlink" title="YOLO v3"></a>YOLO v3</h2><p>先看下YOLO v3的backbone，如下图6所示：</p>
+<h2 id="YOLO-v3">YOLO v3</h2>
+<p>先看下YOLO v3的backbone，如下图6所示：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-2bc3e653ec7744e36e45960d0cc060c9_720w.jpg" alt="img">图6：YOLO v3 backbone</p>
 <p>先声明下darknet 53指的是convolution层有52层+1个conv层把1024个channel调整为1000个，你会发现YOLO v2中使用的GAP层在YOLO v3中还在用，他还是在ImageNet上先train的backbone，</p>
 <p>观察发现依然是有bottleneck的结构和<strong>残差网络</strong>。</p>
-<p><strong>为什么</strong>YOLO v3敢用3个检测头<strong>？因为</strong>他的backbone更强大了。</p>
-<p><strong>为什么</strong>更强大了<strong>？因为</strong>当时已经出现了ResNet结构。</p>
+<p><strong>为什么</strong>YOLO v3敢用3个检测头**？因为**他的backbone更强大了。</p>
+<p><strong>为什么</strong>更强大了**？因为**当时已经出现了ResNet结构。</p>
 <p>所以YOLO v3的提高，有一部分功劳应该给ResNet。</p>
 <p>再观察发现YOLO v3没有Pooling layer了，用的是conv(stride = 2)进行下采样，<strong>为什么？</strong></p>
 <p><strong>因为</strong>Pooling layer，不管是MaxPooling还是Average Pooling，本质上都是下采样减少计算量，本质上就是不更新参数的conv，但是他们会损失信息，所以用的是conv(stride = 2)进行下采样。</p>
@@ -671,7 +705,8 @@
 <p><img src="https://pic4.zhimg.com/80/v2-3946e19705fcabb730daf30f9cd1408f_720w.jpg" alt="img">图8：YOLO v3 Structure</p>
 <p>特征融合的方式更加直接，没有YOLO v2的passthrough操作，直接上采样之后concat在一起。</p>
 <hr>
-<h2 id="YOLO-v4"><a href="#YOLO-v4" class="headerlink" title="YOLO v4"></a>YOLO v4</h2><p>图9,10展示了YOLO v4的结构：</p>
+<h2 id="YOLO-v4">YOLO v4</h2>
+<p>图9,10展示了YOLO v4的结构：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-0ea4884cd89aaf5b87ba1464d02f358d_720w.jpg" alt="img">图9：YOLO v4 Structure</p>
 <p><img src="https://pic3.zhimg.com/80/v2-05a713ffc8cee40dbaa3b808aa63dcea_720w.jpg" alt="img">图10：YOLO v4 Structure</p>
 <p><img src="https://pic1.zhimg.com/80/v2-c70a13fe3c658d20e9d11a1880619e70_720w.jpg" alt="img">图11：YOLO v4 Structure</p>
@@ -679,16 +714,16 @@
 <p><strong>YOLOv4使用了CSPDarknet53作为backbone，加上SPP模块，PANET作为neck，以及YOLO v3的head。</strong></p>
 <p><strong>Yolov4的五个基本组件</strong>：</p>
 <ol>
-<li><strong>CBM：</strong>Yolov4网络结构中的最小组件，由Conv+Bn+Mish激活函数三者组成。</li>
-<li><strong>CBL：</strong>由Conv+Bn+Leaky_relu激活函数三者组成。</li>
-<li><strong>Res unit：</strong>借鉴Resnet网络中的残差结构，让网络可以构建的更深。</li>
-<li><strong>CSPX：</strong>借鉴CSPNet网络结构，由三个卷积层和X个Res unint模块Concate组成。</li>
-<li><strong>SPP：</strong>采用1×1，5×5，9×9，13×13的最大池化的方式，进行多尺度融合。</li>
+<li>**CBM：**Yolov4网络结构中的最小组件，由Conv+Bn+Mish激活函数三者组成。</li>
+<li>**CBL：**由Conv+Bn+Leaky_relu激活函数三者组成。</li>
+<li>**Res unit：**借鉴Resnet网络中的残差结构，让网络可以构建的更深。</li>
+<li>**CSPX：**借鉴CSPNet网络结构，由三个卷积层和X个Res unint模块Concate组成。</li>
+<li>**SPP：**采用1×1，5×5，9×9，13×13的最大池化的方式，进行多尺度融合。</li>
 </ol>
 <p><strong>其他基础操作：</strong></p>
 <ol>
-<li><strong>Concat：</strong>张量拼接，维度会扩充，和Yolov3中的解释一样，对应于cfg文件中的route操作。</li>
-<li><strong>add：</strong>张量相加，不会扩充维度，对应于cfg文件中的shortcut操作。</li>
+<li>**Concat：**张量拼接，维度会扩充，和Yolov3中的解释一样，对应于cfg文件中的route操作。</li>
+<li>**add：**张量相加，不会扩充维度，对应于cfg文件中的shortcut操作。</li>
 </ol>
 <p><strong>Backbone中卷积层的数量：</strong></p>
 <p>和Yolov3一样，再来数一下Backbone里面的卷积层数量。</p>
@@ -703,26 +738,28 @@
 <p>Yolov4的作者采用了<strong>Mosaic数据增强</strong>的方式。</p>
 <p>主要有几个优点：</p>
 <ol>
-<li><strong>丰富数据集：</strong>随机使用<strong>4张图片</strong>，随机缩放，再随机分布进行拼接，大大丰富了检测数据集，特别是随机缩放增加了很多小目标，让网络的鲁棒性更好。</li>
-<li><strong>减少GPU：</strong>可能会有人说，随机缩放，普通的数据增强也可以做，但作者考虑到很多人可能只有一个GPU，因此Mosaic增强训练时，可以直接计算4张图片的数据，使得Mini-batch大小并不需要很大，一个GPU就可以达到比较好的效果。</li>
+<li><strong>丰富数据集：<strong>随机使用</strong>4张图片</strong>，随机缩放，再随机分布进行拼接，大大丰富了检测数据集，特别是随机缩放增加了很多小目标，让网络的鲁棒性更好。</li>
+<li>**减少GPU：**可能会有人说，随机缩放，普通的数据增强也可以做，但作者考虑到很多人可能只有一个GPU，因此Mosaic增强训练时，可以直接计算4张图片的数据，使得Mini-batch大小并不需要很大，一个GPU就可以达到比较好的效果。</li>
 </ol>
 <p>cmBN的方法如下图：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-bc8cfe6198d8c2a0d8a3a646a27a6e0d_720w.jpg" alt="img">cmBN的方法</p>
 <hr>
-<h2 id="YOLO-v5"><a href="#YOLO-v5" class="headerlink" title="YOLO v5"></a>YOLO v5</h2><p>图12,13展示了YOLO v5的结构：</p>
+<h2 id="YOLO-v5">YOLO v5</h2>
+<p>图12,13展示了YOLO v5的结构：</p>
 <p><img src="https://pic2.zhimg.com/80/v2-2ca7dfc26a64e7ca0e5e8b21c87ed13d_720w.jpg" alt="img">图12：YOLO v5 Structure</p>
 <p><img src="https://pic2.zhimg.com/80/v2-31ca3528d3bb53273f74a23b5b59ab51_720w.jpg" alt="img">图13：YOLO v5 Structure</p>
 <p>检测头的结构基本上是一样的，融合方法也是一样。</p>
 <p><strong>Yolov5的基本组件</strong>：</p>
 <ol>
-<li><strong>Focus：</strong>基本上就是YOLO v2的passthrough。</li>
-<li><strong>CBL：</strong>由Conv+Bn+Leaky_relu激活函数三者组成。</li>
-<li><strong>CSP1_X：</strong>借鉴CSPNet网络结构，由三个卷积层和X个Res unint模块Concate组成。</li>
-<li><strong>CSP2_X：</strong>不再用Res unint模块，而是改为CBL。</li>
-<li><strong>SPP：</strong>采用1×1，5×5，9×9，13×13的最大池化的方式，进行多尺度融合，如图13所示。</li>
+<li>**Focus：**基本上就是YOLO v2的passthrough。</li>
+<li>**CBL：**由Conv+Bn+Leaky_relu激活函数三者组成。</li>
+<li>**CSP1_X：**借鉴CSPNet网络结构，由三个卷积层和X个Res unint模块Concate组成。</li>
+<li>**CSP2_X：**不再用Res unint模块，而是改为CBL。</li>
+<li>**SPP：**采用1×1，5×5，9×9，13×13的最大池化的方式，进行多尺度融合，如图13所示。</li>
 </ol>
 <p>提特征的网络变短了，速度更快。YOLO v5的结构没有定下来，作者的代码还在持续更新。</p>
-<h2 id="YOLO-v5的四种结构的深度："><a href="#YOLO-v5的四种结构的深度：" class="headerlink" title="YOLO v5的四种结构的深度："></a><strong>YOLO v5的四种结构的深度：</strong></h2><p>下图展示了YOLO v5的四种结构：</p>
+<h2 id="YOLO-v5的四种结构的深度："><strong>YOLO v5的四种结构的深度：</strong></h2>
+<p>下图展示了YOLO v5的四种结构：</p>
 <p><img src="https://pic3.zhimg.com/80/v2-6c383a7d5fdafda4a18799b1a1e7585e_720w.jpg" alt="img">图14：YOLO四种结构深度</p>
 <p>Yolov5代码中，每个网络结构的两个参数：</p>
 <p><strong>（1）Yolov5s.yaml</strong></p>
@@ -734,7 +771,8 @@
 <p><strong>（4）Yolov5x.yaml</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">depth_multiple: 1.33  # model depth multiple</span><br><span class="line">width_multiple: 1.25  # layer channel multiple</span><br></pre></td></tr></table></figure>
 <p>四种结构就是通过上面的两个参数，来进行控制网络的<strong>深度</strong>和<strong>宽度</strong>。其中<strong>depth_multiple</strong>控制网络的<strong>深度</strong>，<strong>width_multiple</strong>控制网络的<strong>宽度</strong>。</p>
-<h3 id="Yolov5网络结构"><a href="#Yolov5网络结构" class="headerlink" title="Yolov5网络结构"></a>Yolov5网络结构</h3><p>四种结构的yaml文件中，下方的网络架构代码都是一样的。</p>
+<h3 id="Yolov5网络结构">Yolov5网络结构</h3>
+<p>四种结构的yaml文件中，下方的网络架构代码都是一样的。</p>
 <p>将Backbone部分提取出来，讲解如何控制网络的宽度和深度，yaml文件中的Head部分也是同样的原理。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"># YOLOv5 backbone</span><br><span class="line">backbone:</span><br><span class="line">  # [from, number, module, args]</span><br><span class="line">  [[-1, 1, Focus, [64, 3]],  # 0-P1/2</span><br><span class="line">   [-1, 1, Conv, [128, 3, 2]],  # 1-P2/4</span><br><span class="line">   [-1, 3, BottleneckCSP, [128]],</span><br><span class="line">   [-1, 1, Conv, [256, 3, 2]],  # 3-P3/8</span><br><span class="line">   [-1, 9, BottleneckCSP, [256]],</span><br><span class="line">   [-1, 1, Conv, [512, 3, 2]],  # 5-P4/16</span><br><span class="line">   [-1, 9, BottleneckCSP, [512]],</span><br><span class="line">   [-1, 1, Conv, [1024, 3, 2]],  # 7-P5/32</span><br><span class="line">   [-1, 1, SPP, [1024, [5, 9, 13]]],</span><br><span class="line">   [-1, 3, BottleneckCSP, [1024, False]],  # 9</span><br><span class="line">  ]</span><br></pre></td></tr></table></figure>
 <p>在对网络结构进行解析时，yolo.py中下方的这一行代码将四种结构的<strong>depth_multiple</strong>，<strong>width_multiple</strong>提取出，赋值给<strong>gd，gw</strong>。后面主要对这<strong>gd，gw</strong>这两个参数进行讲解。</p>
@@ -751,11 +789,11 @@
 <p>其他的四个CSP2结构，也是同理。</p>
 <p>Yolov5中，网络的不断加深，也在不断<strong>增加网络特征提取</strong>和<strong>特征融合</strong>的能力。</p>
 <p><strong>2) 控制深度的代码</strong></p>
-<p>控制四种网络结构的核心代码是<strong>yolo.py</strong>中下面的代码，存在两个变量，<strong>n和gd</strong>。</p>
+<p>控制四种网络结构的核心代码是<strong><a target="_blank" rel="noopener" href="http://yolo.py">yolo.py</a></strong>中下面的代码，存在两个变量，<strong>n和gd</strong>。</p>
 <p>我们再将<strong>n和gd</strong>带入计算，看每种网络的变化结果。</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">n = max(round(n * gd), 1) if n &gt; 1 else n  # depth gain</span><br></pre></td></tr></table></figure>
 <p><strong>3) 验证控制深度的有效性</strong></p>
-<p>我们选择<strong>最小的yolov5s.yaml</strong>和中间的<strong>yolov5l.yaml</strong>两个网络结构，将<strong>gd(height_multiple)</strong>系数带入，看是否正确。</p>
+<p>我们选择<strong>最小的yolov5s.yaml</strong>和中间的<strong>yolov5l.yaml</strong>两个网络结构，将**gd(height_multiple)**系数带入，看是否正确。</p>
 <p><img src="https://pic1.zhimg.com/80/v2-2bc10e474354757a4d7947e219f56cc0_720w.jpg" alt="img"></p>
 <p><strong>a. yolov5x.yaml</strong></p>
 <p>其中<strong>height_multiple=0.33</strong>，即<strong>gd=0.33</strong>，而n则由上面红色框中的信息获得。</p>
@@ -767,7 +805,8 @@
 <p>其中<strong>height_multiple=1</strong>，即<strong>gd=1</strong></p>
 <p>和上面的计算方式相同，第一个CSP1结构中，n=1，带入代码中，结果n=3，因此为CSP1_3。</p>
 <p>下面第二个CSP1和第三个CSP1结构都是同样的原理。</p>
-<h2 id="YOLO-v5的四种结构的宽度："><a href="#YOLO-v5的四种结构的宽度：" class="headerlink" title="YOLO v5的四种结构的宽度："></a>YOLO v5的四种结构的宽度：</h2><p><img src="https://pic3.zhimg.com/80/v2-76ec41e464f5ce3ce103136837937112_720w.jpg" alt="img">图15：YOLO四种结构宽度</p>
+<h2 id="YOLO-v5的四种结构的宽度：">YOLO v5的四种结构的宽度：</h2>
+<p><img src="https://pic3.zhimg.com/80/v2-76ec41e464f5ce3ce103136837937112_720w.jpg" alt="img">图15：YOLO四种结构宽度</p>
 <p><strong>1) 不同网络的宽度:</strong></p>
 <p>如上图表格中所示，四种yolov5结构在不同阶段的卷积核的数量都是不一样的，因此也直接影响卷积后特征图的第三维度，即<strong>宽度</strong>。</p>
 <p>a.以Yolo v5s结构为例，第一个Focus结构中，最后卷积操作时，卷积核的数量是32个，因此经过<strong>Focus结构</strong>，特征图的大小变成<strong>304*304*32</strong>。</p>
@@ -776,11 +815,13 @@
 <p>c. 后面三个卷积下采样操作也是同样的原理。</p>
 <p>四种不同结构的卷积核的数量不同，这也直接影响网络中，比如<strong>CSP1，CSP2等结构</strong>，以及各个普通卷积，卷积操作时的卷积核数量也同步在调整，影响整体网络的计算量。</p>
 <p>当然卷积核的数量越多，特征图的厚度，即<strong>宽度越宽</strong>，网络提取特征的<strong>学习能力也越强</strong>。</p>
-<p>2) <strong>控制宽度的代码</strong></p>
-<p>在Yolo v5的代码中，控制宽度的核心代码是<strong>yolo.py</strong>文件里面的这一行：</p>
+<ol start="2">
+<li><strong>控制宽度的代码</strong></li>
+</ol>
+<p>在Yolo v5的代码中，控制宽度的核心代码是<strong><a target="_blank" rel="noopener" href="http://yolo.py">yolo.py</a></strong>文件里面的这一行：</p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">c2 = make_divisible(c2 * gw, 8) if c2 != no else c2</span><br></pre></td></tr></table></figure>
 <p>它所调用的子函数<strong>make_divisible</strong>是一个很出名的函数，在各大任务中均会使用，作用是：</p>
-<p><strong>make_divisible(A,B)：</strong>找到比A大的，能整除B的最小整数。</p>
+<p>**make_divisible(A,B)：**找到比A大的，能整除B的最小整数。</p>
 <blockquote>
 <p>make_divisible(54,8) = 56</p>
 </blockquote>
@@ -840,7 +881,7 @@
 <p>通过这种简单的改进，推理速度得到了37%的提升，可以说效果很明显。</p>
 <p>Yolov5中填充的是灰色，即（114,114,114），都是一样的效果，且训练时没有采用缩减黑边的方式，还是采用传统填充的方式，即缩放到416*416大小。只是在测试，使用模型推理时，才采用缩减黑边的方式，提高目标检测，推理的速度。</p>
 <p><strong>关于样本：</strong></p>
-<p>yolov5的很大区别就是在于正样本区域的定义。<strong>在yolov3中，每一个</strong> <img src="https://www.zhihu.com/equation?tex=GT" alt="[公式]"> <strong>只有1个对应的anchor，</strong>设定的规则是取 <img src="https://www.zhihu.com/equation?tex=IoU%28anchor%2CGT%29" alt="[公式]"> 最大的anchor。而且某个 <img src="https://www.zhihu.com/equation?tex=GT" alt="[公式]"> 一定不可能在三个预测层的某几层上同时进行匹配。这样就会导致一个问题：正样本的anchor太少了，导致整体收敛比较慢。后面的FCOS等工作研究表明：<strong>增加高质量正样本anchor可以显著加速收敛</strong>。</p>
+<p>yolov5的很大区别就是在于正样本区域的定义。<strong>在yolov3中，每一个</strong> <img src="https://www.zhihu.com/equation?tex=GT" alt="[公式]"> **只有1个对应的anchor，**设定的规则是取 <img src="https://www.zhihu.com/equation?tex=IoU%28anchor%2CGT%29" alt="[公式]"> 最大的anchor。而且某个 <img src="https://www.zhihu.com/equation?tex=GT" alt="[公式]"> 一定不可能在三个预测层的某几层上同时进行匹配。这样就会导致一个问题：正样本的anchor太少了，导致整体收敛比较慢。后面的FCOS等工作研究表明：<strong>增加高质量正样本anchor可以显著加速收敛</strong>。</p>
 <p>YOLO v5和前YOLO系列相比，特点应该是：</p>
 <ul>
 <li><strong>(1) 增加了正样本：方法是邻域的正样本anchor匹配策略。</strong></li>
@@ -852,7 +893,9 @@
 <p>最后我们对YOLO series总的做个比较，结束这个系列的解读，喜欢的同学点赞关注评论3连：</p>
 <p><img src="https://pic1.zhimg.com/80/v2-ba712736fadbf364cc2fec97dd374f98_720w.jpg" alt="img"></p>
 <p>YOLO v5 series的比较</p>
-<h1 id="写给小白的Yolo介绍"><a href="#写给小白的Yolo介绍" class="headerlink" title="写给小白的Yolo介绍"></a>写给小白的Yolo介绍</h1><h2 id="YOLO是什么？"><a href="#YOLO是什么？" class="headerlink" title="YOLO是什么？"></a>YOLO是什么？</h2><p>YOLO是目标检测模型。</p>
+<h1>写给小白的Yolo介绍</h1>
+<h2 id="YOLO是什么？">YOLO是什么？</h2>
+<p>YOLO是目标检测模型。</p>
 <p>目标检测是计算机视觉中比较简单的任务，用来在一张图篇中找到<strong>某些特定的物体</strong>，目标检测不仅要求我们识别这些物体的<strong>种类</strong>，同时要求我们标出这些物体的<strong>位置</strong>。</p>
 <p>显然，类别是离散数据，位置是连续数据。</p>
 <p><img src="https://pic1.zhimg.com/80/v2-88ca6ec106e7647a0390ad3d93625444_720w.jpg" alt="img"></p>
@@ -864,7 +907,8 @@
 <p>也就是说，一个典型的Region-base方法的流程是这样的：先通过计算机图形学（或者深度学习）的方法，对图片进行分析，找出若干个可能存在物体的区域，将这些区域裁剪下来，放入一个图片分类器中，由分类器分类。</p>
 <p>因为YOLO这样的Region-free方法只需要一次扫描，也被称为<strong>单阶段</strong>（1-stage）模型。Region-based方法方法也被称为<strong>两阶段</strong>（2-stage）方法。</p>
 <hr>
-<h2 id="YOLO之前的世界"><a href="#YOLO之前的世界" class="headerlink" title="YOLO之前的世界"></a>YOLO之前的世界</h2><p>YOLO之前的世界，额，其实是R-CNN什么的，也就是我们前面说的Region-based方法，但是感觉还是太高端了。我们从用脚都能想到的目标检测方法开始讲起。</p>
+<h2 id="YOLO之前的世界">YOLO之前的世界</h2>
+<p>YOLO之前的世界，额，其实是R-CNN什么的，也就是我们前面说的Region-based方法，但是感觉还是太高端了。我们从用脚都能想到的目标检测方法开始讲起。</p>
 <p>如果我们现在有一个<strong>分类器：</strong></p>
 <p><img src="https://pic3.zhimg.com/80/v2-21d1a2b0e0381fa30e69eeaa7f24384e_720w.jpg" alt="img"></p>
 <p>这只猫咪好可爱，想撸。</p>
@@ -889,7 +933,8 @@
 <p>R-CNN同学管这个叫做Region Proposal，并且提出了一个叫做Selective Search的算法。（吐槽一下这个名字起得太大众了）</p>
 <p>但是R-CNN被YOLO打脸了，YOLO说，我更快。</p>
 <hr>
-<h2 id="YOLO原理"><a href="#YOLO原理" class="headerlink" title="YOLO原理"></a>YOLO原理</h2><p>在这之前，我们再重申一下我们的任务。我们的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测是基于监督学习的，每张图片的监督信息是它所包含的N个物体，每个物体的信息有<strong>五个</strong>，分别是物体的<strong>中心位置(x,y)</strong>和它的<strong>高(h)</strong>和<strong>宽(w)</strong>，最后是它的类别。</p>
+<h2 id="YOLO原理">YOLO原理</h2>
+<p>在这之前，我们再重申一下我们的任务。我们的目的是在一张图片中找出物体，并给出它的类别和位置。目标检测是基于监督学习的，每张图片的监督信息是它所包含的N个物体，每个物体的信息有<strong>五个</strong>，分别是物体的<strong>中心位置(x,y)<strong>和它的</strong>高(h)<strong>和</strong>宽(w)</strong>，最后是它的类别。</p>
 <p>YOLO 的预测是基于整个图片的，并且它会一次性输出所有检测到的目标信息，包括类别和位置。</p>
 <p>就好像捕鱼一样，R-CNN是先选好哪里可能出现鱼，而YOLO是直接一个大网下去，把所有的鱼都捞出来。</p>
 <p>先假设我们处理的图片是一个<strong>正方形</strong>。</p>
@@ -899,7 +944,7 @@
 <p>YOLO的聪明之处在于，它只要求这个物体的<strong>中心</strong>落在这个框框之中。</p>
 <p>这意味着，我们不用设计非常非常<strong>大</strong>的框，因为我们只需要让物体的中心在这个框中就可以了，而不是必须要让整个物体都在这个框中。</p>
 <p>具体怎么实现呢？</p>
-<p>我们要让这个 <img src="https://www.zhihu.com/equation?tex=S%5E2" alt="[公式]"> 个框每个都预测出<strong>B个bounding boxs</strong>，这个bounding boxs有5个量，分别是物体的<strong>中心位置(x,y)</strong>和它的<strong>高(h)</strong>和<strong>宽(w)</strong>，以及这次预测的<strong>置信度</strong>。</p>
+<p>我们要让这个 <img src="https://www.zhihu.com/equation?tex=S%5E2" alt="[公式]"> 个框每个都预测出<strong>B个bounding boxs</strong>，这个bounding boxs有5个量，分别是物体的<strong>中心位置(x,y)<strong>和它的</strong>高(h)<strong>和</strong>宽(w)</strong>，以及这次预测的<strong>置信度</strong>。</p>
 <p>每个框框不仅只预测B个bounding boxs，它还要负责预测这个框框中的物体<strong>是什么类别</strong>的，这里的类别用one-hot编码表示。</p>
 <p>注意，虽然一个框框有多个bounding boxes，但是只能识别出一个物体，因此每个框框需要预测物体的类别，<strong>而bounding box不需要</strong>。</p>
 <p>也就是说，如果我们有 <img src="https://www.zhihu.com/equation?tex=S%5E2" alt="[公式]"> 个框框，每个框框的bounding boxes个数为B，分类器可以识别出C种不同的物体，那么所有整个ground truth的长度为：</p>
@@ -937,7 +982,7 @@
 <p>我们规定每个grid的ground truth的顺序是confidence, x, y, w, h, c1, c2, c3</p>
 <p>那么第一个（左上角）grid的ground truth应该是：0, ?, ?, ?, ?, ?, ?, ?</p>
 <p>实际上除了最中间的grid以外，其他的grid的ground truth都是这样的。</p>
-<p>这里的”?”的意思是，随便是多少都行，我不在乎。在下面我们会看到，我们<strong>不会</strong>对这些值计算损失函数。</p>
+<p>这里的&quot;?&quot;的意思是，随便是多少都行，我不在乎。在下面我们会看到，我们<strong>不会</strong>对这些值计算损失函数。</p>
 <p>中间的ground truth应该是：</p>
 <p>iou, 0.48, 0.28, 0.50, 0.32, 1, 0, 0</p>
 <p>iou要根据x, y, w, h的预测值现场计算。</p>
@@ -973,7 +1018,7 @@
 <p>然后是高和宽，没有简单的用MSE，而是用平方根的MSE，这是为什么呢？</p>
 <p>第一个原因是更容易优化，但是还有更重要的原因：</p>
 <p>看下面的表格：</p>
-<p><img src="https://pic4.zhimg.com/80/v2-a0a7833719a274bfce50aed5ed977217_720w.jpg" alt="img" style="zoom:50%;" /></p>
+<img src="https://pic4.zhimg.com/80/v2-a0a7833719a274bfce50aed5ed977217_720w.jpg" alt="img" style="zoom:50%;" />
 <p>首先，我们只考虑var1和var2在0和1之间。当var1和var2都很小的时候，也即是w和h都很小，意味着这个物体很小，那么我们应该尽量放大一些损失函数，让模型在识别小物体的时候准确一点。当var1和var2都很大，意味着这个物体也很大，甚至可能已经布满整张图片了，这时我么可以减小一些损失函数，毕竟很大的物体不需要很高的精度。</p>
 <p>一句话，使用平方根的MSE而不是MSE其实就是像让模型<strong>对小尺度的物体更敏感</strong>。或者说，对大的和小的物体同样敏感。</p>
 <p>接下来的三项都使用了MSE，其实用交叉熵可能会更好，但是这些细节就不追究了。</p>
@@ -984,7 +1029,7 @@
 <p>因此，我们放大第一项和第二项，缩小第四项。</p>
 <p>YOLO的设计虽然精巧，但是还有许多不足的地方，比如一个grid只能识别出一种物体。我们会在YOLO v2和YOLO v3中看到更巧妙的设计。</p>
 <p>此外，YOLO的bounding box的预测准确度是不如R-CNN这样的Region-based方法的，看YOLO v2里作者们怎么报复回来。</p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/08/YOLO%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">http://cjh0220.github.io/2022/09/08/YOLO%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/YOLO/">YOLO</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/08/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/"><img class="prev-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">模拟退火算法</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/08/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D/"><img class="next-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">目标检测介绍</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%8E%A8%E8%8D%90%E5%8D%9A%E5%AE%A2"><span class="toc-number">1.</span> <span class="toc-text">推荐博客</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#YOLO%EF%BC%88You-Only-Look-Once%EF%BC%89"><span class="toc-number">2.</span> <span class="toc-text">YOLO（You Only Look Once）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E5%89%8D%E8%A8%80"><span class="toc-number">2.1.</span> <span class="toc-text">0 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%85%88%E4%BB%8E%E4%B8%80%E6%AC%BE%E5%BC%BA%E5%A4%A7%E7%9A%84app%E8%AF%B4%E8%B5%B7"><span class="toc-number">2.2.</span> <span class="toc-text">1 先从一款强大的app说起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8D%E5%BE%97%E4%B8%8D%E8%B0%88%E7%9A%84%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.3.</span> <span class="toc-text">2 不得不谈的分类模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-YOLO%E7%B3%BB%E5%88%97%E6%80%9D%E6%83%B3%E7%9A%84%E9%9B%8F%E5%BD%A2%EF%BC%9AYOLO-v0"><span class="toc-number">2.4.</span> <span class="toc-text">3 YOLO系列思想的雏形：YOLO v0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-YOLO-v1%E7%BB%88%E4%BA%8E%E8%AF%9E%E7%94%9F"><span class="toc-number">2.5.</span> <span class="toc-text">4 YOLO v1终于诞生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-YOLO-v2"><span class="toc-number">2.6.</span> <span class="toc-text">5 YOLO v2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-YOLO-v3"><span class="toc-number">2.7.</span> <span class="toc-text">6 YOLO v3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%96%AB%E6%83%85%E9%83%BD%E6%8C%A1%E4%B8%8D%E4%BD%8F%E7%9A%84YOLO-v4"><span class="toc-number">2.8.</span> <span class="toc-text">7 疫情都挡不住的YOLO v4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E4%BB%A3%E7%A0%81%E6%AF%94%E8%AE%BA%E6%96%87%E9%83%BD%E6%97%A9%E7%9A%84YOLO-v5"><span class="toc-number">2.9.</span> <span class="toc-text">8 代码比论文都早的YOLO v5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v1"><span class="toc-number">2.10.</span> <span class="toc-text">YOLO v1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v2"><span class="toc-number">2.11.</span> <span class="toc-text">YOLO v2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v3"><span class="toc-number">2.12.</span> <span class="toc-text">YOLO v3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v4"><span class="toc-number">2.13.</span> <span class="toc-text">YOLO v4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5"><span class="toc-number">2.14.</span> <span class="toc-text">YOLO v5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5%E7%9A%84%E5%9B%9B%E7%A7%8D%E7%BB%93%E6%9E%84%E7%9A%84%E6%B7%B1%E5%BA%A6%EF%BC%9A"><span class="toc-number">2.15.</span> <span class="toc-text">YOLO v5的四种结构的深度：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Yolov5%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="toc-number">2.15.1.</span> <span class="toc-text">Yolov5网络结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5%E7%9A%84%E5%9B%9B%E7%A7%8D%E7%BB%93%E6%9E%84%E7%9A%84%E5%AE%BD%E5%BA%A6%EF%BC%9A"><span class="toc-number">2.16.</span> <span class="toc-text">YOLO v5的四种结构的宽度：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%86%99%E7%BB%99%E5%B0%8F%E7%99%BD%E7%9A%84Yolo%E4%BB%8B%E7%BB%8D"><span class="toc-number">3.</span> <span class="toc-text">写给小白的Yolo介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">YOLO是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E4%B9%8B%E5%89%8D%E7%9A%84%E4%B8%96%E7%95%8C"><span class="toc-number">3.2.</span> <span class="toc-text">YOLO之前的世界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E5%8E%9F%E7%90%86"><span class="toc-number">3.3.</span> <span class="toc-text">YOLO原理</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/08/%E5%AB%A6%E5%A8%A5%E5%A5%94%E6%9C%88%E6%94%B9%E5%8F%98%E7%89%88/" title="嫦娥奔月改变版"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="嫦娥奔月改变版"/></a><div class="content"><a class="title" href="/2023/03/08/%E5%AB%A6%E5%A8%A5%E5%A5%94%E6%9C%88%E6%94%B9%E5%8F%98%E7%89%88/" title="嫦娥奔月改变版">嫦娥奔月改变版</a><time datetime="2023-03-08T13:53:05.000Z" title="发表于 2023-03-08 21:53:05">2023-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/20/24%E8%80%83%E7%A0%94%E8%AE%A1%E5%88%92/" title="24考研计划"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="24考研计划"/></a><div class="content"><a class="title" href="/2023/02/20/24%E8%80%83%E7%A0%94%E8%AE%A1%E5%88%92/" title="24考研计划">24考研计划</a><time datetime="2023-02-20T12:55:52.000Z" title="发表于 2023-02-20 20:55:52">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据预处理概念"/></a><div class="content"><a class="title" href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念">数据预处理概念</a><time datetime="2023-01-29T02:27:42.000Z" title="发表于 2023-01-29 10:27:42">2023-01-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/" title="图片爬取"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="图片爬取"/></a><div class="content"><a class="title" href="/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/" title="图片爬取">图片爬取</a><time datetime="2022-12-15T08:12:00.000Z" title="发表于 2022-12-15 16:12:00">2022-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="腾讯云从业者认证学习笔记"><img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.ithome.com%2Fnewsuploadfiles%2F2021%2F5%2Ff97e2c7e-5c84-413f-9917-2ff9472b1c04.png&amp;refer=http%3A%2F%2Fimg.ithome.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1672297509&amp;t=b42e24265f6575e03e2d50cd3a5b5145" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="腾讯云从业者认证学习笔记"/></a><div class="content"><a class="title" href="/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="腾讯云从业者认证学习笔记">腾讯云从业者认证学习笔记</a><time datetime="2022-11-29T07:02:54.000Z" title="发表于 2022-11-29 15:02:54">2022-11-29</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/08/YOLO%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">http://cjh0220.github.io/2022/09/08/YOLO%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/YOLO/">YOLO</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/08/%E6%A8%A1%E6%8B%9F%E9%80%80%E7%81%AB%E7%AE%97%E6%B3%95/"><img class="prev-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">模拟退火算法</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/08/%E7%9B%AE%E6%A0%87%E6%A3%80%E6%B5%8B%E4%BB%8B%E7%BB%8D/"><img class="next-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">目标检测介绍</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">82</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">66</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">18</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">推荐博客</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">YOLO（You Only Look Once）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#0-%E5%89%8D%E8%A8%80"><span class="toc-number">2.1.</span> <span class="toc-text">0 前言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%85%88%E4%BB%8E%E4%B8%80%E6%AC%BE%E5%BC%BA%E5%A4%A7%E7%9A%84app%E8%AF%B4%E8%B5%B7"><span class="toc-number">2.2.</span> <span class="toc-text">1 先从一款强大的app说起</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E4%B8%8D%E5%BE%97%E4%B8%8D%E8%B0%88%E7%9A%84%E5%88%86%E7%B1%BB%E6%A8%A1%E5%9E%8B"><span class="toc-number">2.3.</span> <span class="toc-text">2 不得不谈的分类模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-YOLO%E7%B3%BB%E5%88%97%E6%80%9D%E6%83%B3%E7%9A%84%E9%9B%8F%E5%BD%A2%EF%BC%9AYOLO-v0"><span class="toc-number">2.4.</span> <span class="toc-text">3 YOLO系列思想的雏形：YOLO v0</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-YOLO-v1%E7%BB%88%E4%BA%8E%E8%AF%9E%E7%94%9F"><span class="toc-number">2.5.</span> <span class="toc-text">4 YOLO v1终于诞生</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-YOLO-v2"><span class="toc-number">2.6.</span> <span class="toc-text">5 YOLO v2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-YOLO-v3"><span class="toc-number">2.7.</span> <span class="toc-text">6 YOLO v3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E7%96%AB%E6%83%85%E9%83%BD%E6%8C%A1%E4%B8%8D%E4%BD%8F%E7%9A%84YOLO-v4"><span class="toc-number">2.8.</span> <span class="toc-text">7 疫情都挡不住的YOLO v4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E4%BB%A3%E7%A0%81%E6%AF%94%E8%AE%BA%E6%96%87%E9%83%BD%E6%97%A9%E7%9A%84YOLO-v5"><span class="toc-number">2.9.</span> <span class="toc-text">8 代码比论文都早的YOLO v5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v1"><span class="toc-number">2.10.</span> <span class="toc-text">YOLO v1</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v2"><span class="toc-number">2.11.</span> <span class="toc-text">YOLO v2</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v3"><span class="toc-number">2.12.</span> <span class="toc-text">YOLO v3</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v4"><span class="toc-number">2.13.</span> <span class="toc-text">YOLO v4</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5"><span class="toc-number">2.14.</span> <span class="toc-text">YOLO v5</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5%E7%9A%84%E5%9B%9B%E7%A7%8D%E7%BB%93%E6%9E%84%E7%9A%84%E6%B7%B1%E5%BA%A6%EF%BC%9A"><span class="toc-number">2.15.</span> <span class="toc-text">YOLO v5的四种结构的深度：</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Yolov5%E7%BD%91%E7%BB%9C%E7%BB%93%E6%9E%84"><span class="toc-number">2.15.1.</span> <span class="toc-text">Yolov5网络结构</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO-v5%E7%9A%84%E5%9B%9B%E7%A7%8D%E7%BB%93%E6%9E%84%E7%9A%84%E5%AE%BD%E5%BA%A6%EF%BC%9A"><span class="toc-number">2.16.</span> <span class="toc-text">YOLO v5的四种结构的宽度：</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">写给小白的Yolo介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E6%98%AF%E4%BB%80%E4%B9%88%EF%BC%9F"><span class="toc-number">3.1.</span> <span class="toc-text">YOLO是什么？</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E4%B9%8B%E5%89%8D%E7%9A%84%E4%B8%96%E7%95%8C"><span class="toc-number">3.2.</span> <span class="toc-text">YOLO之前的世界</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#YOLO%E5%8E%9F%E7%90%86"><span class="toc-number">3.3.</span> <span class="toc-text">YOLO原理</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2023/03/08/%E5%AB%A6%E5%A8%A5%E5%A5%94%E6%9C%88%E6%94%B9%E5%8F%98%E7%89%88/" title="嫦娥奔月改变版"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="嫦娥奔月改变版"/></a><div class="content"><a class="title" href="/2023/03/08/%E5%AB%A6%E5%A8%A5%E5%A5%94%E6%9C%88%E6%94%B9%E5%8F%98%E7%89%88/" title="嫦娥奔月改变版">嫦娥奔月改变版</a><time datetime="2023-03-08T13:53:05.000Z" title="发表于 2023-03-08 21:53:05">2023-03-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/02/20/24%E8%80%83%E7%A0%94%E8%AE%A1%E5%88%92/" title="24考研计划"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="24考研计划"/></a><div class="content"><a class="title" href="/2023/02/20/24%E8%80%83%E7%A0%94%E8%AE%A1%E5%88%92/" title="24考研计划">24考研计划</a><time datetime="2023-02-20T12:55:52.000Z" title="发表于 2023-02-20 20:55:52">2023-02-20</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="数据预处理概念"/></a><div class="content"><a class="title" href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念">数据预处理概念</a><time datetime="2023-01-29T02:27:42.000Z" title="发表于 2023-01-29 10:27:42">2023-01-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/" title="图片爬取"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="图片爬取"/></a><div class="content"><a class="title" href="/2022/12/15/%E5%9B%BE%E7%89%87%E7%88%AC%E5%8F%96/" title="图片爬取">图片爬取</a><time datetime="2022-12-15T08:12:00.000Z" title="发表于 2022-12-15 16:12:00">2022-12-15</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="腾讯云从业者认证学习笔记"><img src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fimg.ithome.com%2Fnewsuploadfiles%2F2021%2F5%2Ff97e2c7e-5c84-413f-9917-2ff9472b1c04.png&amp;refer=http%3A%2F%2Fimg.ithome.com&amp;app=2002&amp;size=f9999,10000&amp;q=a80&amp;n=0&amp;g=0n&amp;fmt=auto?sec=1672297509&amp;t=b42e24265f6575e03e2d50cd3a5b5145" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="腾讯云从业者认证学习笔记"/></a><div class="content"><a class="title" href="/2022/11/29/%E8%85%BE%E8%AE%AF%E4%BA%91%E4%BB%8E%E4%B8%9A%E8%80%85%E8%AE%A4%E8%AF%81%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="腾讯云从业者认证学习笔记">腾讯云从业者认证学习笔记</a><time datetime="2022-11-29T07:02:54.000Z" title="发表于 2022-11-29 15:02:54">2022-11-29</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.ax1x.com/2022/09/08/vqpCng.jpg')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2023 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
   document.querySelectorAll('#article-container span.katex-display').forEach(item => {
     btf.wrap(item, 'div', { class: 'katex-wrap'})
   })
