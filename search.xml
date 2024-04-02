@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>论文跟读（一）反向传播</title>
+      <link href="/2024/04/02/%E8%AE%BA%E6%96%87%E8%B7%9F%E8%AF%BB%EF%BC%88%E4%B8%80%EF%BC%89%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/"/>
+      <url>/2024/04/02/%E8%AE%BA%E6%96%87%E8%B7%9F%E8%AF%BB%EF%BC%88%E4%B8%80%EF%BC%89%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/</url>
+      
+        <content type="html"><![CDATA[<h1>论文跟读系列（一）：反向传播</h1><h2 id="资源">资源</h2><p><a href="https://www.iro.umontreal.ca/~vincentp/ift3395/lectures/backprop_old.pdf">https://www.iro.umontreal.ca/~vincentp/ift3395/lectures/backprop_old.pdf</a></p><p>【【论文必读#1：反向传播】在错误中学习，在传递中演进】 <a href="https://www.bilibili.com/video/BV1954y1o7bh/?share_source=copy_web&amp;vd_source=bd967f0d540a64617b8b612bc0f0f9a3">https://www.bilibili.com/video/BV1954y1o7bh/?share_source=copy_web&amp;vd_source=bd967f0d540a64617b8b612bc0f0f9a3</a></p><h2 id="作者介绍">作者介绍</h2><p>这篇论文是三位大牛的合作，其中有我们比较了解的Hinton大牛。</p><h2 id="知识点">知识点</h2><p>反向传播入门</p><ul><li>神经网络15分钟入门！——反向传播到底是怎么传播的？ - Mr.看海的文章 - 知乎<br><a href="https://zhuanlan.zhihu.com/p/66534632">https://zhuanlan.zhihu.com/p/66534632</a></li><li>反向传播最佳总结——一篇文章读懂神经网络反向传播 - 干好每一天的文章 - 知乎<br><a href="https://zhuanlan.zhihu.com/p/662487898">https://zhuanlan.zhihu.com/p/662487898</a></li><li>温故知新——前向传播算法和反向传播算法（BP算法）及其推导 - G-kdom的文章 - 知乎<br><a href="https://zhuanlan.zhihu.com/p/71892752">https://zhuanlan.zhihu.com/p/71892752</a></li><li>【[5分钟深度学习] #02 反向传播算法】<a href="https://www.bilibili.com/video/BV1yG411x7Cc?vd_source=bd967f0d540a64617b8b612bc0f0f9a3">https://www.bilibili.com/video/BV1yG411x7Cc?vd_source=bd967f0d540a64617b8b612bc0f0f9a3</a></li></ul><p>其实大部分内容，知乎或者CSDN的内容会很详细，而且是中文的带图片。在我之前的博客也有记载。这里不多介绍。这篇文章是深度学习基础中的基础，看视频也好，读原文也好，要读懂反向传播的全流程，对神经网络的学习大有收益。</p><h2 id="专业英语">专业英语</h2><ul><li>Learning representations by back-propagating errors：在反向传播的误差中进行学习。</li><li>BP：back-propagating 反向传播</li><li>learning procedure：学习方法</li><li>self-organizing neural networks：自训练神经网络</li><li>symmetrical pattern：对称图案</li><li>perceptron：感知机</li></ul><h2 id="出发点，目的">出发点，目的</h2><p>反向传播与感知机来说，他能够发现新的特征（features）,来自代价函数的信息通过网络向后流动，以便计算梯度。本质上，他只是用来计算梯度的。</p><h2 id="方法，创新">方法，创新</h2><p><a href="http://t.csdnimg.cn/PCQVn">http://t.csdnimg.cn/PCQVn</a></p><p>对反向传播算法的过程进行一下总结：</p><p>**输入：**总层数L，以及各隐藏层与输出层的神经元个数，<a href="https://www.zhihu.com/search?q=%E6%BF%80%E6%B4%BB%E5%87%BD%E6%95%B0&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%2271892752%22%7D">激活函数</a>，损失函数，<a href="https://www.zhihu.com/search?q=%E8%BF%AD%E4%BB%A3%E6%AD%A5%E9%95%BF&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%2271892752%22%7D">迭代步长</a> α\alpha ，最大迭代次数MAX与停止迭代阈值 ϵ\epsilon ，输入的m个训练样本 ((x1,y1),(x2,y2),…(xm,ym))((x_{1},y_{1}),(x_{2},y_{2}),…(x_{m},y_{m}))</p><p><strong>1. 初始化参数W，b</strong></p><p><strong>2. 进行前向传播算法计算</strong>，for l=2l=2 to L</p><p>z(l)=W(l)a(l−1)+b(l)z^{(l)}=W^{(l)}a^{(l-1)}+b^{(l)}</p><p>a(l)=σ(z(l))a^{(l)}=\sigma(z^{(l)})</p><p><strong>3. 通过损失函数计算输出层的梯度</strong></p><p><strong>4. 进行反向传播算法计算</strong>，for l=L−1l=L-1 to 2</p><p><img src="https://pic2.zhimg.com/v2-47606ddd08c7c073d4c284eb33ff7149_b.jpg" alt="img"></p><p><strong>5. 更新W，b</strong></p><p>通过<a href="https://www.zhihu.com/search?q=%E6%A2%AF%E5%BA%A6%E4%B8%8B%E9%99%8D%E7%AE%97%E6%B3%95&amp;search_source=Entity&amp;hybrid_search_source=Entity&amp;hybrid_search_extra=%7B%22sourceType%22%3A%22article%22%2C%22sourceId%22%3A%2271892752%22%7D">梯度下降算法</a>更新权重ww和偏置bb的值，α\alpha为学习率其中α∈(0,1]\alpha\in(0,1]。</p><p><img src="https://pic2.zhimg.com/v2-2efb3ca24cce35c7869943a08c1de961_b.jpg" alt="img"></p><p><strong>6. 如果所有W，b的变化值都小于停止迭代阈值ϵ，则跳出迭代循环</strong></p><p><strong>7. 输出各隐藏层与输出层的线性关系系数矩阵W和偏置b</strong>。</p><h2 id="结果，贡献">结果，贡献</h2><p>从另一个角度理解深度学习：通过多层处理，逐渐将初始的”低层”特征表示转化为“高层”特征表示后，用“简单模型”即可完成复杂的分类等学习任务，由此可将深度学习理解为进行特征学习或表示学习。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 论文跟读 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 反向传播 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>24考研经验与计划</title>
       <link href="/2024/02/26/24%E8%80%83%E7%A0%94%E7%BB%8F%E9%AA%8C%E4%B8%8E%E8%AE%A1%E5%88%92/"/>
       <url>/2024/02/26/24%E8%80%83%E7%A0%94%E7%BB%8F%E9%AA%8C%E4%B8%8E%E8%AE%A1%E5%88%92/</url>
