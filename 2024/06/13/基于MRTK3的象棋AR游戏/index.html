@@ -1,0 +1,374 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>基于MRTK3的象棋AR游戏 | CJH's blog</title><meta name="keywords" content="毕业设计"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="基于MRTK3的象棋AR游戏（广工优秀毕业设计非完整版） 摘要 本文采用混合现实工具包MRTK3，在Unity平台上设计并实现了一款基于MRTK3的AR象棋游戏，使用HoloLens2设备进行交互。针对中国象棋规则和棋盘布局，设计出游戏的交互界面和操作方式，实现了棋子的选择、移动、吃子、悔棋、重开等基本操作。具体地， （1）使用MRTK3的文本框以及按钮预设体，完成对按钮以及文本框的建模工作。 （">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基于MRTK3的象棋AR游戏">
+<meta property="og:url" content="http://cjh0220.github.io/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="基于MRTK3的象棋AR游戏（广工优秀毕业设计非完整版） 摘要 本文采用混合现实工具包MRTK3，在Unity平台上设计并实现了一款基于MRTK3的AR象棋游戏，使用HoloLens2设备进行交互。针对中国象棋规则和棋盘布局，设计出游戏的交互界面和操作方式，实现了棋子的选择、移动、吃子、悔棋、重开等基本操作。具体地， （1）使用MRTK3的文本框以及按钮预设体，完成对按钮以及文本框的建模工作。 （">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png">
+<meta property="article:published_time" content="2024-06-13T00:16:40.000Z">
+<meta property="article:modified_time" content="2024-06-13T05:04:45.383Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="毕业设计">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基于MRTK3的象棋AR游戏',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-06-13 13:04:45'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">96</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基于MRTK3的象棋AR游戏</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2024-06-13T00:16:40.000Z" title="发表于 2024-06-13 08:16:40">2024-06-13</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-06-13T05:04:45.383Z" title="更新于 2024-06-13 13:04:45">2024-06-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B8%B8%E6%88%8F%E5%BC%80%E5%8F%91/">游戏开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="基于MRTK3的象棋AR游戏"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>基于MRTK3的象棋AR游戏（广工优秀毕业设计非完整版）</h1>
+<p><strong>摘要</strong></p>
+<p>本文采用混合现实工具包MRTK3，在Unity平台上设计并实现了一款基于MRTK3的AR象棋游戏，使用HoloLens2设备进行交互。针对中国象棋规则和棋盘布局，设计出游戏的交互界面和操作方式，实现了棋子的选择、移动、吃子、悔棋、重开等基本操作。具体地，</p>
+<p>（1）使用MRTK3的文本框以及按钮预设体，完成对按钮以及文本框的建模工作。</p>
+<p>（2）使用Unity中的模型工具，完成对棋盘、棋子、辅助点和微模型的建模工作。</p>
+<p>（3）使用粒子系统，制作了在落棋时产生的粒子特效。</p>
+<p>（4）添加游戏模式。本文设置了“单人学习”与“残局较量”两种游戏模式。玩家可以随时切换游戏模式。</p>
+<p>经过综合测试，基于MRTK3的AR中国象棋游戏具有良好的交互性和娱乐性，程序无故障。</p>
+<p><strong>关键词</strong>： MRTK3，Unity，游戏开发，增强现实</p>
+<h2 id="1-绪论">1 绪论</h2>
+<h3 id="1-1-研究背景与意义">1.1 研究背景与意义</h3>
+<ol>
+<li>
+<p>技术背景：随着计算机视觉、图形处理、传感器技术和移动设备性能的不断提升，AR技术得以快速发展并应用于游戏领域。这些技术为游戏玩家提供了全新的沉浸式体验。尤其是先前进入市场的HoloLens2以及最新的Apple Vision Pro VR，更是大幅提高了游戏硬件性能。在Unity平台上使用微软的MRTK3开发HoloLens应用，提高了AR游戏的开发效率，降低了小型AR游戏的制作门槛。</p>
+</li>
+<li>
+<p>市场背景：随着消费者对游戏体验的需求多样化，传统的游戏形式已无法满足玩家们的需求。AR游戏作为一种结合了现实与虚拟元素的新型游戏形式，吸引了大量寻求新颖、刺激和个性化游戏体验的玩家。现如今，苹果、微软等公司正投入大量资金及人力开发AR游戏。此时研发一款具有启蒙意义的小型AR象棋游戏，能够将使用传统设备游玩的玩家吸引至AR游戏领域进行传统文化游戏，既能迎合传统象棋玩家的市场，也能抓住其他玩家的好奇心。如今市面上已经有多款AR象棋游戏比如，Mirage AR游戏平台的《中国象棋》。</p>
+</li>
+<li>
+<p>文化背景：象棋作为中国传统对弈游戏，它的基本规则简明易懂，而其中的策略和变化却无穷无尽。AR象棋可以凭借高互动性与新奇性促进中国象棋在世界范围内的普及和推广。同时也可以挖掘历史背景，将游戏历史“楚汉相争”的故事融入象棋游戏中。</p>
+</li>
+<li>
+<p>研究意义：将中国象棋结合AR技术，让人们能在AR这一全新场景下游玩中国象棋，进一步发现中国象棋的魅力，体验AR交互的乐趣。优秀的游戏可以让人们身临其境，感受游戏带来的魅力，让玩家可以在游戏的同时学习到相关的知识，充实自我。</p>
+</li>
+</ol>
+<h3 id="1-2-国内外研究现况">1.2 国内外研究现况</h3>
+<p>如今国外已经有一批成熟的AR象棋游戏。比如ChessAR，HoloChess，中国象棋。</p>
+<p>ChessAR：是一个在App Store上可用的AR游戏，允许玩家通过增强现实技术在现实世界中玩象棋。它提供了不同的棋盘风格和棋子设计，使得玩家可以在不同的环境中体验象棋游戏。</p>
+<p>HoloChess：是一款由Magic Leap推出的AR游戏，让玩家可以在现实世界中体验星球大战系列中的象棋游戏。它利用Magic Leap的AR眼镜和技术，将虚拟的象棋棋盘放置在玩家的真实环境中。</p>
+<p>中国象棋：是一款在Mirage AR游戏平台上运营且游玩的首款中国象棋游戏。虽然无法联机对战，但是有不同难度的AI对手进行选择。画面最大的特点是游戏元素取自历史的棋子与棋盘，与游戏主题楚汉之争保持了高度一致。画风，模型符合现在年轻玩家的审美。规则为传统的中国象棋规则。中国象棋对弈画面见图1.1。</p>
+<div align=center><img src="https://pic.imgdb.cn/item/666a6800d9c307b7e9ab78ec.png"></div>
+<p>目前国内没有成熟的象棋AR游戏。虽然中国的游戏开发者在AR领域有着不俗的技术水平，但是在象棋AR游戏方面的产品较少。随着AR技术的不断发展和普及，以及中国市场对于象棋游戏的热爱，象棋AR游戏在国内有很大的发展机会。</p>
+<p>传统象棋游戏十分火爆，为AR象棋游戏提供了用户基础。无论是移动平台的小程序或APP，还是电脑或游戏机上的象棋游戏均有大量的活跃玩家。一些知名的象棋游戏平台包括中国象棋网、中国象棋在线等。除了提供对弈服务外，一些网站也提供象棋教学资源和培训课程。这些资源包括象棋规则介绍、棋谱分析、开局布局、残局技巧等，帮助玩家提高象棋水平。随着技术的不断发展和社会的不断进步以及人们对传统文化的重视，中国象棋在网上的发展前景也将更加广阔。《天天象棋》小程序截图1.2。</p>
+<img src="https://pic.imgdb.cn/item/666a6881d9c307b7e9ac9f59.png" alt="image.png">
+<h2 id="2-开发环境与开发工具">2 开发环境与开发工具</h2>
+<h3 id="2-1-Unity介绍">2.1 Unity介绍</h3>
+<p>Unity在3D游戏开发者中非常受欢迎，它是一款跨平台开发软件，Unity 支持将游戏发布到Windows平台、Mac平台、苹果手机和安卓手机平台等各大设备，在将游戏打包发布时，只需要执行对应的打包方式即可实现，大大的降低了开发周期。</p>
+<p>AR游戏中，已有许多优秀的作品，比如风靡全球的Pokemon GO（精灵宝可梦GO），Harry Potter: Wizards Unite（哈利·波特：巫师联盟）。这些游戏不仅提供了新颖的游戏体验，而且有可能改变玩家对物理现实的看法。</p>
+<p>Unity在AR游戏开发上有以下特点。</p>
+<p><strong>AR基础框架</strong>：Unity提供了AR Foundation框架，作为跨平台AR开发的基础。AR Foundation集成了ARCore和ARKit等AR平台的功能，使开发者可以在不同的设备上共享相似的AR体验。</p>
+<p><strong>3D模型和动画支持</strong>：Unity支持导入和管理3D模型和动画，开发者可以利用这些功能来创建各种虚拟对象和场景，与现实世界进行交互。</p>
+<p><strong>物理引擎和碰撞检测</strong>：Unity集成了强大的物理引擎和碰撞检测系统，可以模拟现实世界中的物理效果，使AR游戏更加真实和具有交互性。</p>
+<p><strong>增强现实效果</strong>：Unity支持各种增强现实效果的实现，包括虚拟对象的投影、实时阴影、光照效果等，为AR游戏提供了更丰富的视觉体验。</p>
+<p><strong>社区支持和资源丰富</strong>：Unity拥有庞大的开发者社区和资源库，开发者可以在社区中获取各种教程、示例项目和插件，加速AR游戏的开发过程。</p>
+<h3 id="2-2-MRTK3介绍">2.2 MRTK3介绍</h3>
+<p>MixedReality Toolkit（MRTK）是由微软公司开发的一套开源工具包，旨在简化和加速增强现实（AR）和混合现实（MR）应用程序的开发过程。MRTK提供了一系列预制件、组件和脚本，帮助开发者能快速构建功能丰富、交互性强的AR/MR应用，并且支持多种AR/MR平台，包括HoloLens、Windows Mixed Reality、Oculus等。</p>
+<p>AR技术允许虚拟体验覆盖在物理环境之上，从而创建一种混合体验，其中虚拟对象成为用户感知和物理环境的一部分。AR将数字信息叠加在真实元素上。它以现实世界为基础，创造了一个新的感知层，并与现实或环境相辅相成。</p>
+<p>MRTK的主要特点和功能包括以下几点。</p>
+<p>**多设备支持：**MRTK支持多种AR/MR平台，包括HoloLens、Windows Mixed Reality、Oculus等，使开发者能够在不同平台上构建一致的AR/MR应用。</p>
+<p><strong>交互组件</strong>：MRTK提供了丰富的交互组件，包括手势识别、物体操控、UI控件等，使开发者可以轻松地实现用户与应用的交互。</p>
+<p><strong>UI工具</strong>：MRTK包含了一系列用于构建用户界面的工具和组件，包括按钮、滑块、文本框等，帮助开发者创建可视化的AR/MR界面。</p>
+<p><strong>物理模拟</strong>：MRTK集成了物理引擎，支持碰撞检测、物体运动和交互效果的模拟，使开发者能够创建更加真实和具有交互性的AR/MR场景。</p>
+<p>MRTK3对于MRTK2有一定改进，比如，</p>
+<p>1.重新设计的边界框视觉对象，以减少视觉噪音，并启用流畅的注视交互。</p>
+<p>2.改进了增强型多模式输入的视觉反馈，例如眼睛凝视与捏合手势。</p>
+<p>3.基于 Unity XR 交互工具包和 Unity 输入系统构建，并专注于 Open XR。</p>
+<p>4.拥有开放且灵活的交互范式，重新编写并重新设计了大多数功能和系统，从 UX 到输入再到子系统，使得开发更加简洁便捷。</p>
+<p>5.可在 HoloLens 2 和其他资源受限的移动平台上实现最高性能。</p>
+<h3 id="2-3-HoloLens2介绍">2.3 HoloLens2介绍</h3>
+<p>HoloLens2 是由微软公司推出的一款头戴式光学透视增强现实（AR）显示器，是其第二代产品[7]。它于2019年2月正式发布，是一款设计精良、功能强大的AR头显设备，具有许多令人印象深刻的特点和功能[8]。以下是对 HoloLens2 设备各个功能的介绍。</p>
+<p><strong>手部追踪</strong>：以自然的方式完全契合手部移动，会准确进行手部跟踪、触摸、抓握和移动全息图。HoloLens 2 能适应你的双手，让全息图可以像实物一样做出反应比如旋转，阴影等。这也是AR交互中最重要最常使用的方式。</p>
+<p><strong>支持语音</strong>：通过内置语音命令，用户可以在双手忙于处理任务时，快速导航和操作 HoloLens 2。相当于多了一种信息输入方式。</p>
+<p><strong>眼动追踪</strong>：HoloLens 2 可以准确地了解你所看的地方，理解你的意图，并根据眼睛的活动实时调整全息图。</p>
+<p><strong>空间映射</strong>：无缝映射物理环境，无论你身在何处，都可以将数字内容稳稳投射到相应的对象或表面。它会更具你初始定位位置确定数字内容位置。</p>
+<p><strong>大视野范围</strong>：视野是初代 HoloLens 的两倍。阅读全息网站上的 8 号字体，与全息图进行精确交互，打造混合现实环境并沉浸其中。</p>
+<h2 id="3-需求分析（略）">3 需求分析（略）</h2>
+<h2 id="4-系统设计">4 系统设计</h2>
+<h3 id="4-1-总体设计">4.1 总体设计</h3>
+<p>在Unity框架下，使用MRTK3的预制体与组件，缩短开发时间并简易实现复杂的交互功能。MRTK3的工具包具有丰富的人机交互优化方法，比如在抓取与放下棋子所用的事件交互系统XRI（XR Interaction Toolkit，Unity中一个基于组件的高级交互系统）。</p>
+<p>首先，需要在Unity中完成各个模型的UI设计，包括棋子，棋盘，按钮等。UI设计可以使用MRTK3的预设体来实现。这些预制体具有很强的适应性与兼容性，相比使用Unity制作的组件更加健壮。</p>
+<p>其次，需要实现游戏操作。在XRI系统上导入C#脚本中的函数，并配置玩家互动事件与游戏脚本的连接方法，搭建了用户操作与系统反馈之间的桥梁，以此实现了所有的游戏操作。需要使用脚本实现中国象棋的规则。</p>
+<p>最后，需要提升交互体验。AR游戏场景与一般游戏场景不同，具有不同的输入方式和反馈逻辑。为了方便玩家操作，需要添加辅助功能。比如，抓取棋子过程中，添加辅助点帮助用户确定落棋位置</p>
+<img src="https://pic.imgdb.cn/item/666a75bed9c307b7e9c9247a.png" alt="image.png">
+<h3 id="4-2-UI设计">4.2 UI设计</h3>
+<h4 id="4-2-1-棋盘设计">4.2.1 棋盘设计</h4>
+<p>棋盘是象棋游戏的重要背景，一个简洁好看的棋盘能吸引玩家。但在AR场景下，不能随意选择棋盘颜色，因为这样会干扰手势辅助线。本文构建长方体，使用背景为棕色的棋盘，使HoloLens2中的白色的手势辅助线清晰易见，提高了用户的交互体验。</p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/666a7625d9c307b7e9c9d1fb.png"><img src="https://pic.imgdb.cn/item/666a7625d9c307b7e9c9d1fb.png" alt=""></a></p>
+<p>为了防止在渲染物体时导致图片清晰度下降，可以使用图像增强技术增加原图的清晰度再进行图片渲染。同时，应把握AR游戏内图片的渲染程度，过度的渲染可能会与棋盘内的其他物体产生冲突，会对AR设备造成不必要的运行负担。</p>
+<h4 id="4-2-2-棋子设计">4.2.2 棋子设计</h4>
+<p>类型：兵（卒）、炮，车，马，相（象），仕（士），帅（将）。</p>
+<p>字体：华文行楷。</p>
+<p>边框：双边框，提高识别度。</p>
+<p>颜色：在使用手势的头戴增强现实（AR）中，颜色选择和表面绘制在很大程度上尚未被探索，十分重要[10] 。本文在颜色上选择传统的黑色红色。</p>
+<p>棋子正反面都需要刻上棋子类型，同时要保证图片高清，棋子在实际游玩时做到清晰可见。棋子原型图见4.3。游戏内效果图见4.4。</p>
+<img src="https://pic.imgdb.cn/item/666a7660d9c307b7e9ca4999.png" alt="image.png">
+<img src="https://pic.imgdb.cn/item/666a7676d9c307b7e9ca6eb1.png" alt="image.png">
+<h4 id="4-2-3-按钮设计">4.2.3 按钮设计</h4>
+<p>“Restart”按钮与“Regret chess”使用了MRKT3的预设体按钮，按钮的背景为蓝色，玩家按下按钮与松开按钮时，有明显的表层陷入画面。同时会播放MRTK3中的预设声效。声效与陷入画面有效提高了虚拟人机交互的及时性。按钮挤压效果图见4.6。</p>
+<img src="https://pic.imgdb.cn/item/666a769dd9c307b7e9cabf50.png" alt="image.png">
+<h4 id="4-2-4-规则框设计">4.2.4 规则框设计</h4>
+<p>游戏规则框存放用于辅助新手玩家上手中国象棋游戏的规则文本。使用了MRTK3中的预设体。MRTK3的文本框预设体区别于MRTK2使用了更加柔和的边框设计与色彩基调。同时还可以根据需要更改文字字体，段落排版。其中，需要将对应的蓝色背景框延长，并选择合适的字体类型与字体大小。文本框整体需要略微倾斜于主视角，便于玩家读取文本框内容。文本框效果图见图4.8。</p>
+<img src="https://pic.imgdb.cn/item/666a76c5d9c307b7e9cb0fb3.png" alt="image.png">
+<h4 id="4-2-5-辅助点设计">4.2.5 辅助点设计</h4>
+<p>为了提高玩家的游玩体验，当抓取物体时会生成红色或绿色的辅助点在棋盘上。红色代表这步棋不可行，绿色代表这步棋可行。具体设计思路为设计一个小的圆柱体，在脚本使用函数进行生成，移动或销毁。辅助点圆柱体设计见图4.9。</p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/666a76f5d9c307b7e9cb875d.png"><img src="https://pic.imgdb.cn/item/666a76f5d9c307b7e9cb875d.png" alt=""></a></p>
+<h4 id="4-2-6-粒子特效设计">4.2.6 粒子特效设计</h4>
+<p>粒子系统是Unity游戏设计重要的渲染工具。在粒子系统中玩家可以定制自己所需的粒子特效。在图4.10中，在击杀对面棋子时所产生的黄色爆炸粒子特效具有观赏性。</p>
+<img src="https://pic.imgdb.cn/item/666a7762d9c307b7e9cc967e.png" alt="image.png">
+<p>在场景中创建Pacticle System，并在属性面板上进行修改，如将播放时间设置为0.5秒，使用一次性特效，将粒子更改为黄色等参数调整，即可完成这样一个粒子特效喷射器。之后，将它设置为预设体，即可在脚本中进行载入及播放。粒子特效信息见图4.11。</p>
+<img src="https://pic.imgdb.cn/item/666a777ad9c307b7e9ccd031.png" alt="image.png">
+<h3 id="4-3-游戏规则（略）">4.3 游戏规则（略）</h3>
+<p>基本象棋规则介绍，包括移动规则，击杀规则等。</p>
+<h3 id="4-4-交互模拟设计（略）">4.4 交互模拟设计（略）</h3>
+<p>在追求沉浸式增强现实（AR）游戏的过程中，手势交互被认为是一种很有前途的模式。手势交互是一种能给用户带来乐趣的方式，在游戏模拟中，需要尽可能还原手势交互的功能。</p>
+<p>在Unity中，可以在游戏开发平台直接模拟游戏，方便进行游戏的体验与检查。</p>
+<p><a target="_blank" rel="noopener" href="https://learn.microsoft.com/zh-cn/windows/mixed-reality/mrtk-unity/mrtk3-input/packages/input/input-simulation">输入模拟 - MRTK3 | Microsoft Learn</a></p>
+<p>值得注意的是，由于电脑上鼠标的灵敏度不同，实机与模拟操作上的灵敏度差距过大。模拟与实机体验差距过大，这也是AR游戏设计目前的一个问题。开发者需要做到在游戏规则完善的情况下，提高玩家的交互体验。</p>
+<h4 id="4-5-实机交互设计">4.5 实机交互设计</h4>
+<p>对于AR程序，我们需要考虑用户的实际操作场景。用户在与虚拟内容交互时，也会在物理空间产生较大幅度的肢体动作。玩家在使用头戴设备时，可能会因为自身身高以及环境因素，导致离棋盘过远过近，角度偏离或者有物体阻碍等情况。此时进行AR互动，会产生安全隐患。</p>
+<p>为此，本文设计了一个功能，使玩家能够移动棋盘，改变整个棋盘以及UI界面的位置，极大地方便了玩家的游戏操作。模型移动图见图4.13。</p>
+<img src="https://pic.imgdb.cn/item/666a7866d9c307b7e9cf04cc.png" alt="image.png">
+<p>红绿辅助点位与HoloLens2原本的辅助射线互相配合，帮助玩家准确地抓取棋子。玩家可以使用白色辅助线远程抓取棋子，也可以直接用近距离交互抓取棋子。效果图见4.14。</p>
+<img src="https://pic.imgdb.cn/item/666a787ed9c307b7e9cf389b.png" alt="image.png">
+<h2 id="5-系统实现与测试（不完整）">5 系统实现与测试（不完整）</h2>
+<h3 id="5-1-模型建立">5.1 模型建立</h3>
+<h4 id="5-1-1-棋盘">5.1.1 棋盘</h4>
+<p>在游戏场景中，右键空白区域，在3D Object中建立一个Cube，并命名为table。具体操作见5.1。同时根据Camera主相机位置，调整table的Transform属性。具体属性见图5.2。</p>
+<img src="https://pic.imgdb.cn/item/666a78cad9c307b7e9cff329.png" alt="image.png">
+<img src="https://pic.imgdb.cn/item/666a7908d9c307b7e9d0803c.png" alt="image.png">
+<p>在网络上寻找或自己制作棋盘图片，可参考图4.2。并将照片table2.jpg放入在游戏目录新建立的image文件夹，同时将照片直接拖入实时面板中的table模型中。具体方法见图5.3。</p>
+<img src="https://pic.imgdb.cn/item/666a791ed9c307b7e9d0b93f.png" alt="image.png">
+<p>完成棋盘的图片渲染，生成预设体table。如果发现图片渲染方向相反，可调整Cube下Transform中的Rotation。如果图片渲染效果差，推荐使用更加高清的图片进行渲染。</p>
+<h4 id="5-1-2-棋子">5.1.2 棋子</h4>
+<ol>
+<li>在游戏场景中创建一个Cylinder命名为piece，将其Scale属性调整至合适数值,见图5.4。</li>
+</ol>
+<img src="https://pic.imgdb.cn/item/666a7957d9c307b7e9d15151.png" alt="image.png">
+<ol start="2">
+<li>为棋子添加Rigidbody组件。点击inspector最下方AddComponent按钮搜索点击Rigidbody将其添加到游戏对象。Rigidbody是一个物理组件，可以模拟出重力加速和碰撞等物理效果。具体信息见图5.5。</li>
+</ol>
+<img src="https://pic.imgdb.cn/item/666a7979d9c307b7e9d1a409.png" alt="image.png">
+<ol start="3">
+<li>编辑Rigidbody组件。我们需要该对象在游戏过程中只发生位置移动而不发生旋转，因此在Freeze Rotation一栏中勾选XYZ。同时将Angular Drag 角偏移力设置为10000000。‘</li>
+<li>更换Collider。Collider是一类检测碰撞的组件，有多种不同形状的派生类型。在该项目中，使用盒子形状的碰撞箱能更好地实现物理效果。因此移除对象中默认的Capsule Collider并添加Box Collider组件。Box Collider见图5.6。</li>
+</ol>
+<img src="https://pic.imgdb.cn/item/666a79aad9c307b7e9d22a18.png" alt="image.png">
+<ol start="5">
+<li>为棋子添加Constraint Manager与Object Manipulator组件。点击inspector最下方Add Component按钮搜索点击Constraint Manager与Object Manipulator将其添加到游戏对象。</li>
+</ol>
+<p>Constraint Manager为操作限制器，根据下图选择FixedRotationToUse 可以限制玩家对物体进行旋转，FixedRotationToWorld可以限制世界的物理引擎对其进行旋转。</p>
+<p>Object Manipulator提供了一种简便的方式，让用户通过手势或控制器来操作、平移、旋转和缩放场景中的虚拟对象。它允许用户直接在现实世界中与虚拟对象进行互动。在这里主要用于识别玩家的抓取与放下操作。对MRTK3中的交互实现，主要集中在XRI系统中。见图5.7。</p>
+<img src="https://pic.imgdb.cn/item/666a79e4d9c307b7e9d2b42d.png" alt="image.png">
+<ol start="6">
+<li>
+<p>为棋子添加AudioSource组件。点击inspector最下方AddComponent按钮搜索点击Audio Source将其添加到游戏对象。Audio Source是一种用于在混合现实应用程序中播放声音的组件。MRTK的Audio Source可以与其他MRTK组件和事件系统集成，例如手势识别或物体交互事件，以实现在特定情境下自动播放或控制音频。例如，与Object Manipulator配合，可以用于设置棋子的抓取声音与放下声音。见图5.8。</p>
+<img src="https://pic.imgdb.cn/item/666a7a2dd9c307b7e9d3872d.png" alt="image.png">
+</li>
+<li>
+<p>图片导入，将绘制好的棋子图案导入图形中。Piece的图形渲染效果图见图5.9。</p>
+</li>
+</ol>
+<img src="https://pic.imgdb.cn/item/666a7a4fd9c307b7e9d3bcad.png" alt="image.png">
+<p>操作完成之后会生成Materials对应的材质文件，可以将材质文件导入预设体，改变预设体的表面图案。在规则脚本中，你可以使用代码直接将预设体放入游戏场景中。</p>
+<h4 id="5-1-3-按钮">5.1.3 按钮</h4>
+<p>按钮有两个，一个为悔棋按钮，一个为重新开始按钮，可以选择MRTK3的预设体。两者之间除了文本显示与脚本函数绑定，两者之间并无区别。MRTK3的预设体已经封装了大量完整的组件与脚本。对于按钮预设体，MRTK3使用了自己的抓取与放下的声音，对于开发者而言，可以更快的完成AR游戏的制作，也使得AR游戏开发更加简便。</p>
+<p>在工程文件中，选择“ALL” 范围，输入“PressableButton”，会显示多种可使用的MRKT3交互按钮。MRTK的按钮预设体见5.10。</p>
+<img src="https://pic.imgdb.cn/item/666a7a87d9c307b7e9d41391.png" alt="image.png">
+<p>CompressbleButtonVisuals下的TextMeshPro中，修改Text Input 即可修改按钮显示的文字。</p>
+<p>在PressButton 组件下，有XRI Interactable events 即XPI系统。可交互行为定义。对应不同的XRI行为，下图中，上面那个指的是按下时触发与松开后触发。XRI行为定义见图5.12。</p>
+<img src="https://pic.imgdb.cn/item/666a7aa7d9c307b7e9d44f18.png" alt="image.png">
+<h4 id="5-1-4-文本框">5.1.4 文本框</h4>
+<p>文本框主要存放英文版象棋规则，方便玩家上手象棋规则。由于只用存放文本，可以使用MRTK3自带的文本面板。在工程文件夹下，搜索DescriptionPanel 找到对应预设体。在该预设体下，有多种组件。Subtitle是副标题，Title是标题，Paragraph是正文部分，Back指的是背景板，可以通过改变BackPlate的scale来改变蓝色背景版的大小。</p>
+<h4 id="5-1-5-抓取模型">5.1.5 抓取模型</h4>
+<p>抓取模型设置为简单的圆柱体，但是需要注意的是，它浮在空中，应该关闭重力系统，并冻结旋转功能。同时放下模型后，速度需要设置为0。其他的组件与棋子类似，都需要添加MRTK3的互动操作功能。抓取模型建立方法见图5.15。</p>
+<img src="https://pic.imgdb.cn/item/666a7b1ad9c307b7e9d553d2.png" alt="image.png">
+<h3 id="5-2-脚本书写与导入">5.2 脚本书写与导入</h3>
+<h4 id="5-2-1-象棋规则脚本">5.2.1 象棋规则脚本</h4>
+<ol>
+<li>
+<p>创建C#文件</p>
+<p>在工程文件夹中，建立一个新的文件夹命名为“Resource”，再在Resource文件夹中，建立一个新的文件命名为“script”，里面存放我们使用的脚本文件。在script文件夹中，右键创建一个空的C#脚本。命名为“check_rule.cs”。</p>
+</li>
+<li>
+<p>棋盘结构体定义</p>
+</li>
+</ol>
+<p>对于中国象棋棋盘，本质上就是一个10<code>*</code>9的二维数组。其中10为竖直方向z方向，9为水平方向x方向。</p>
+<img src="https://pic.imgdb.cn/item/666a7b8ad9c307b7e9d675fb.png" alt="image.png">
+<p>构建一个二维结构体数组，并存放相应信息：实际XYZ位置，棋子归属，棋子类型，棋子GameObject。</p>
+<img src="https://pic.imgdb.cn/item/666a7ba2d9c307b7e9d6b242.png" alt="image.png">
+<ol start="3">
+<li>行动结构体定义及悔棋的实现</li>
+</ol>
+<p>为了方便记录玩家的操作，以实现悔棋功能，使用了栈这一种数据结构。这里我们构建了一个栈存储“step”这个行为结构体。</p>
+<img src="https://pic.imgdb.cn/item/666a7bc8d9c307b7e9d71e29.png" alt="image.png">
+<p>点击按钮触发Regret_Chess函数，进行逻辑判断。若栈为空，则拒绝请求。若栈不为空，则复原棋盘，并将行为step出栈，同时进攻方转换。</p>
+<ol start="4">
+<li>其他函数的实现</li>
+</ol>
+<p>其中包含：抓取棋子时触发的函数，放下棋子时触发的函数，用于计算离最近点位的函数，生成/销毁辅助点的函数，击杀时触发粒子特效的函数，请求进入点位的函数，拒绝进入点位的函数等等。</p>
+<p>其中point为棋盘数组结构体，包含棋子类型，棋子颜色，棋子队伍等。规则函数源码见图5.19。</p>
+<p><a target="_blank" rel="noopener" href="https://pic.imgdb.cn/item/666a7bf4d9c307b7e9d795bb.png"><img src="https://pic.imgdb.cn/item/666a7bf4d9c307b7e9d795bb.png" alt=""></a></p>
+<h4 id="5-2-2-棋子规则脚本">5.2.2 棋子规则脚本</h4>
+<p>在script文件夹中，右键创建一个空的C#脚本。命名为“Piece”。并在里面封装关于棋子本身的函数。函数数量过大，不一一截图。</p>
+<img src="https://pic.imgdb.cn/item/666a7c4ed9c307b7e9d87e82.png" alt="image.png">
+<img src="https://pic.imgdb.cn/item/666a7c5cd9c307b7e9d8972b.png" alt="image.png">
+<h4 id="5-2-3-粒子自毁脚本">5.2.3 粒子自毁脚本</h4>
+<p>粒子特效被创建后，经过Duration的时间，会停止喷射。但其GameObject仍然存在场景中，会影响游戏的内存与运行速度。我们创建一个名叫ParticleDestroyer.cs的脚本。并设置函数。通过Destroy函数能够在指定时间后销毁其GameObject。粒子自毁脚本见图5.22。</p>
+<img src="https://pic.imgdb.cn/item/666a7c72d9c307b7e9d8bf2b.png" alt="image.png">
+<h4 id="5-2-4-模型移动脚本">5.2.4 模型移动脚本</h4>
+<p>当移动该模型时，所有物体也需平移相同距离，方便用户交互。创建名为GrabbableObject.cs的脚本，同时编写抓取时函数与放下时函数，并拖入模型中。</p>
+<h3 id="5-3-实机部署">5.3 实机部署</h3>
+<p>将脚本文件拖入棋子预设体中。即可在场景中将该棋子拖入文件夹，生成预设体。在游戏场景中创建一个Empty项目为Rule，设置Postion为0，0，0，用于挂载check_rule脚本。同时将所有的自己生成的物体放入Rule中，作为Rule的子对象。在Unity界面左上角“File”中，点击“Build Settings”添加新的场景，并选择UWP平台，根据自己的电脑配置与HoloLens2设备需求，选择VS版本与SDK版本。在项目文件夹中，新建一个文件夹，选择后会进行编译与打包项目。在弹出的文件夹中，选择.sln文件。进入VS界面。在打包完成后弹出的文件夹中，选择.sln文件。进入VS界面。在VS界面中，选择Release系统，ARM64,设备，并生成解决方案。</p>
+<h3 id="5-4-游戏过程">5.4 游戏过程</h3>
+<h4 id="5-4-1-游戏开始">5.4.1 游戏开始</h4>
+<p>进入游戏内，所有内容会自动生成。</p>
+<p>左侧是文本框，玩家可以阅读上面的文字，了解象棋的基本规则。</p>
+<p>中间是棋盘与棋子，玩家主要在棋盘上进行交互。</p>
+<p>右侧是Restart与regret chess 按钮，前者为重新开始游戏按钮，后者悔棋为悔棋按钮。在右上角，有残局选择按钮，目前已安装两种残局。游戏开始效果图5.24。</p>
+<img src="https://pic.imgdb.cn/item/666a7ccdd9c307b7e9da408e.png" alt="image.png">
+<h4 id="5-4-2-游戏互动">5.4.2 游戏互动</h4>
+<p>玩家可使用左手或右手进行棋子的抓取，并移动棋子，将棋子放置你想放入的点位中。棋子会自动锁定最近的点位进行判断。根据象棋规则判断是否能够落入点位。如果有敌人，则消灭敌方棋子。抓取展示图见5.25。</p>
+<img src="https://pic.imgdb.cn/item/666a7cfbd9c307b7e9da93fb.png" alt="image.png">
+<p>使用手或者射线按下两个按钮可以触发对应效果。为提高互动体验，按钮按下与放开时，会产生音效。点击按钮效果图见5.26。</p>
+<img src="https://pic.imgdb.cn/item/666a7d06d9c307b7e9daa996.png" alt="image.png">
+<h4 id="5-4-3-游戏结束">5.4.3 游戏结束</h4>
+<p>当玩家击杀一方的将（帅）时，会触发一段“Game over”的语音。同时所有棋子初始化并返回原位，重新开始游戏。由于使用HoloLens2设备，实际体验会比截图表现得更加优秀。</p>
+<h4 id="5-4-4-单人学习模式">5.4.4 单人学习模式</h4>
+<p>玩家使用HoloLens2进入游戏程序时，默认在单人学习模式进行游戏。玩家可以根据象棋规则，自己移动红色黑色两方棋子进行学习。过程图见5.28。</p>
+<img src="https://pic.imgdb.cn/item/666a7d46d9c307b7e9db1dc9.png" alt="image.png">
+<h4 id="5-4-5-经典残局">5.4.5 经典残局</h4>
+<p>残局（bishop ending）是一种独特的解密玩法。玩家在棋局中双方各只剩下少量棋子的情况下的局面下，使用精妙的策略取得胜利。残局比较适应用碎片时间游戏的玩家。对于AR游戏而言，完整的象棋对局在时间上较难完整进行。比如说，不熟悉AR设备操作的玩家在棋子密集的棋盘中抓取棋子比较困难。而残局的棋子少，容易抓取，可以缓解这个问题，为新手玩家带来更好的游戏体验。本文设计了两种残局，玩家可以点击棋盘旁边的bishop ending按钮进行游戏，具体图谱请见图5.29与图5.30。</p>
+<img src="https://pic.imgdb.cn/item/666a7d69d9c307b7e9db614c.png" alt="image.png">
+<h4 id="5-5-测试方法与用例">5.5 测试方法与用例</h4>
+<p>分为功能测试，游戏规则测试，测试结果。测试结果优秀。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/">http://cjh0220.github.io/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%AF%95%E4%B8%9A%E8%AE%BE%E8%AE%A1/">毕业设计</a></div><div class="post_share"><div class="social-share" data-image="https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/05/05/python%E6%9C%BA%E8%AF%95%E5%A4%8D%E8%AF%95/"><img class="next-cover" src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">python机试复试</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">96</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">74</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">23</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">基于MRTK3的象棋AR游戏（广工优秀毕业设计非完整版）</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E7%BB%AA%E8%AE%BA"><span class="toc-number">1.1.</span> <span class="toc-text">1 绪论</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E7%A0%94%E7%A9%B6%E8%83%8C%E6%99%AF%E4%B8%8E%E6%84%8F%E4%B9%89"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 研究背景与意义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E5%9B%BD%E5%86%85%E5%A4%96%E7%A0%94%E7%A9%B6%E7%8E%B0%E5%86%B5"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 国内外研究现况</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E4%B8%8E%E5%BC%80%E5%8F%91%E5%B7%A5%E5%85%B7"><span class="toc-number">1.2.</span> <span class="toc-text">2 开发环境与开发工具</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-Unity%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 Unity介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-MRTK3%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 MRTK3介绍</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-HoloLens2%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 HoloLens2介绍</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E9%9C%80%E6%B1%82%E5%88%86%E6%9E%90%EF%BC%88%E7%95%A5%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">3 需求分析（略）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E7%B3%BB%E7%BB%9F%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.</span> <span class="toc-text">4 系统设计</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%80%BB%E4%BD%93%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 总体设计</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-UI%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 UI设计</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-1-%E6%A3%8B%E7%9B%98%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">4.2.1 棋盘设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-2-%E6%A3%8B%E5%AD%90%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">4.2.2 棋子设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-3-%E6%8C%89%E9%92%AE%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.3.</span> <span class="toc-text">4.2.3 按钮设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-4-%E8%A7%84%E5%88%99%E6%A1%86%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.4.</span> <span class="toc-text">4.2.4 规则框设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-5-%E8%BE%85%E5%8A%A9%E7%82%B9%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.5.</span> <span class="toc-text">4.2.5 辅助点设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-2-6-%E7%B2%92%E5%AD%90%E7%89%B9%E6%95%88%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.2.6.</span> <span class="toc-text">4.2.6 粒子特效设计</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E6%B8%B8%E6%88%8F%E8%A7%84%E5%88%99%EF%BC%88%E7%95%A5%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 游戏规则（略）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E4%BA%A4%E4%BA%92%E6%A8%A1%E6%8B%9F%E8%AE%BE%E8%AE%A1%EF%BC%88%E7%95%A5%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 交互模拟设计（略）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#4-5-%E5%AE%9E%E6%9C%BA%E4%BA%A4%E4%BA%92%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.4.4.1.</span> <span class="toc-text">4.5 实机交互设计</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E4%B8%8E%E6%B5%8B%E8%AF%95%EF%BC%88%E4%B8%8D%E5%AE%8C%E6%95%B4%EF%BC%89"><span class="toc-number">1.5.</span> <span class="toc-text">5 系统实现与测试（不完整）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E6%A8%A1%E5%9E%8B%E5%BB%BA%E7%AB%8B"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 模型建立</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-%E6%A3%8B%E7%9B%98"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">5.1.1 棋盘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-%E6%A3%8B%E5%AD%90"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">5.1.2 棋子</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-3-%E6%8C%89%E9%92%AE"><span class="toc-number">1.5.1.3.</span> <span class="toc-text">5.1.3 按钮</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-4-%E6%96%87%E6%9C%AC%E6%A1%86"><span class="toc-number">1.5.1.4.</span> <span class="toc-text">5.1.4 文本框</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-5-%E6%8A%93%E5%8F%96%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.5.1.5.</span> <span class="toc-text">5.1.5 抓取模型</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E8%84%9A%E6%9C%AC%E4%B9%A6%E5%86%99%E4%B8%8E%E5%AF%BC%E5%85%A5"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 脚本书写与导入</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-%E8%B1%A1%E6%A3%8B%E8%A7%84%E5%88%99%E8%84%9A%E6%9C%AC"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">5.2.1 象棋规则脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-%E6%A3%8B%E5%AD%90%E8%A7%84%E5%88%99%E8%84%9A%E6%9C%AC"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">5.2.2 棋子规则脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-%E7%B2%92%E5%AD%90%E8%87%AA%E6%AF%81%E8%84%9A%E6%9C%AC"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">5.2.3 粒子自毁脚本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-4-%E6%A8%A1%E5%9E%8B%E7%A7%BB%E5%8A%A8%E8%84%9A%E6%9C%AC"><span class="toc-number">1.5.2.4.</span> <span class="toc-text">5.2.4 模型移动脚本</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E5%AE%9E%E6%9C%BA%E9%83%A8%E7%BD%B2"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 实机部署</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E6%B8%B8%E6%88%8F%E8%BF%87%E7%A8%8B"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 游戏过程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-1-%E6%B8%B8%E6%88%8F%E5%BC%80%E5%A7%8B"><span class="toc-number">1.5.4.1.</span> <span class="toc-text">5.4.1 游戏开始</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-2-%E6%B8%B8%E6%88%8F%E4%BA%92%E5%8A%A8"><span class="toc-number">1.5.4.2.</span> <span class="toc-text">5.4.2 游戏互动</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-3-%E6%B8%B8%E6%88%8F%E7%BB%93%E6%9D%9F"><span class="toc-number">1.5.4.3.</span> <span class="toc-text">5.4.3 游戏结束</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-4-%E5%8D%95%E4%BA%BA%E5%AD%A6%E4%B9%A0%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.5.4.4.</span> <span class="toc-text">5.4.4 单人学习模式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-4-5-%E7%BB%8F%E5%85%B8%E6%AE%8B%E5%B1%80"><span class="toc-number">1.5.4.5.</span> <span class="toc-text">5.4.5 经典残局</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-5-%E6%B5%8B%E8%AF%95%E6%96%B9%E6%B3%95%E4%B8%8E%E7%94%A8%E4%BE%8B"><span class="toc-number">1.5.4.6.</span> <span class="toc-text">5.5 测试方法与用例</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/" title="基于MRTK3的象棋AR游戏"><img src="https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="基于MRTK3的象棋AR游戏"/></a><div class="content"><a class="title" href="/2024/06/13/%E5%9F%BA%E4%BA%8EMRTK3%E7%9A%84%E8%B1%A1%E6%A3%8BAR%E6%B8%B8%E6%88%8F/" title="基于MRTK3的象棋AR游戏">基于MRTK3的象棋AR游戏</a><time datetime="2024-06-13T00:16:40.000Z" title="发表于 2024-06-13 08:16:40">2024-06-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/05/05/python%E6%9C%BA%E8%AF%95%E5%A4%8D%E8%AF%95/" title="python机试复试"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="python机试复试"/></a><div class="content"><a class="title" href="/2024/05/05/python%E6%9C%BA%E8%AF%95%E5%A4%8D%E8%AF%95/" title="python机试复试">python机试复试</a><time datetime="2024-05-05T03:29:45.000Z" title="发表于 2024-05-05 11:29:45">2024-05-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/03/%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0/" title="小样本分类few-shot 初步学习"><img src="https://s3.bmp.ovh/imgs/2024/04/03/9758f47a58be9929.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="小样本分类few-shot 初步学习"/></a><div class="content"><a class="title" href="/2024/04/03/%E5%88%9D%E6%AD%A5%E5%AD%A6%E4%B9%A0/" title="小样本分类few-shot 初步学习">小样本分类few-shot 初步学习</a><time datetime="2024-04-03T03:53:30.000Z" title="发表于 2024-04-03 11:53:30">2024-04-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/04/02/%E8%AE%BA%E6%96%87%E8%B7%9F%E8%AF%BB%EF%BC%88%E4%B8%80%EF%BC%89%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/" title="论文跟读（一）反向传播"><img src="https://s1.ax1x.com/2022/09/08/vqpCng.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文跟读（一）反向传播"/></a><div class="content"><a class="title" href="/2024/04/02/%E8%AE%BA%E6%96%87%E8%B7%9F%E8%AF%BB%EF%BC%88%E4%B8%80%EF%BC%89%E5%8F%8D%E5%90%91%E4%BC%A0%E6%92%AD/" title="论文跟读（一）反向传播">论文跟读（一）反向传播</a><time datetime="2024-04-02T09:01:36.000Z" title="发表于 2024-04-02 17:01:36">2024-04-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/02/26/24%E8%80%83%E7%A0%94%E7%BB%8F%E9%AA%8C%E4%B8%8E%E8%AE%A1%E5%88%92/" title="24考研经验与计划"><img src="https://pic.imgdb.cn/item/65ddd6789f345e8d03925dc1.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="24考研经验与计划"/></a><div class="content"><a class="title" href="/2024/02/26/24%E8%80%83%E7%A0%94%E7%BB%8F%E9%AA%8C%E4%B8%8E%E8%AE%A1%E5%88%92/" title="24考研经验与计划">24考研经验与计划</a><time datetime="2024-02-26T11:51:03.000Z" title="发表于 2024-02-26 19:51:03">2024-02-26</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://pic.imgdb.cn/item/666a7dedd9c307b7e9dc73ac.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
