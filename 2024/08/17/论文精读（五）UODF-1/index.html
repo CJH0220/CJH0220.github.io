@@ -1,0 +1,238 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>论文精读（五）UODF | CJH's blog</title><meta name="keywords" content="UODF"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="论文精读（五）Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes资源代码：cscvlab&#x2F;UODFs: The implementation of our CVPR 2024 paper “Unsigned Orthogonal Distance">
+<meta property="og:type" content="article">
+<meta property="og:title" content="论文精读（五）UODF">
+<meta property="og:url" content="http://cjh0220.github.io/2024/08/17/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%BA%94%EF%BC%89UODF-1/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="论文精读（五）Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes资源代码：cscvlab&#x2F;UODFs: The implementation of our CVPR 2024 paper “Unsigned Orthogonal Distance">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png">
+<meta property="article:published_time" content="2024-08-17T08:04:30.000Z">
+<meta property="article:modified_time" content="2024-09-05T05:31:38.077Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="UODF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2024/08/17/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%BA%94%EF%BC%89UODF-1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '论文精读（五）UODF',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-09-05 13:31:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">117</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">91</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">论文精读（五）UODF</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-08-17T08:04:30.000Z" title="发表于 2024-08-17 16:04:30">2024-08-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E6%B7%B1%E5%BA%A6%E5%AD%A6%E4%B9%A0/">深度学习</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="论文精读（五）UODF"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="论文精读（五）Unsigned-Orthogonal-Distance-Fields-An-Accurate-Neural-Implicit-Representation-for-Diverse-3D-Shapes"><a href="#论文精读（五）Unsigned-Orthogonal-Distance-Fields-An-Accurate-Neural-Implicit-Representation-for-Diverse-3D-Shapes" class="headerlink" title="论文精读（五）Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes"></a>论文精读（五）Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes</h1><h2 id="资源"><a href="#资源" class="headerlink" title="资源"></a>资源</h2><p>代码：<a target="_blank" rel="noopener" href="https://github.com/cscvlab/UODFs">cscvlab/UODFs: The implementation of our CVPR 2024 paper “Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes.” (github.com)</a></p>
+<p>需要的知识：SDF,UDF</p>
+<h3 id="SDF-带符号距离场"><a href="#SDF-带符号距离场" class="headerlink" title="SDF 带符号距离场"></a>SDF 带符号距离场</h3><p><strong>距离场</strong>：给定一个空间中的几何形状，对于空间中的每一个点，可以计算该点到几何形状的最小距离。所有这些最小距离的集合就是距离场。</p>
+<p><strong>符号</strong>：带符号距离场不仅表示距离，还会根据点相对于几何形状的位置添加符号。通常，距离场的符号规定如下：</p>
+<ul>
+<li>如果一个点位于几何形状的外部，其距离为正值。</li>
+<li>如果一个点位于几何形状的内部，其距离为负值。</li>
+<li>如果一个点恰好位于几何形状的边界上，其距离为零。</li>
+</ul>
+<p>示例 1：圆形的 SDF</p>
+<p>假设我们有一个半径为 r 的圆形，圆心在$\mathbf{c} = (x_c, y_c)$。对任意点 $\mathbf{p} = (x, y) $，其 SDF 表示如下：</p>
+<script type="math/tex; mode=display">d(\mathbf{p}) = \|\mathbf{p} - \mathbf{c}\| - r = \sqrt{(x - x_c)^2 + (y - y_c)^2} - r</script><ul>
+<li>如果 d(p)&gt;0，说明点 p 在圆形的外部。</li>
+<li>如果 d(p)&lt;0，说明点 p 在圆形的内部。</li>
+<li>如果 d(p)=0，说明点 p 位于圆的边界上。</li>
+</ul>
+<h3 id="UDF-无符号距离场"><a href="#UDF-无符号距离场" class="headerlink" title="UDF 无符号距离场"></a>UDF 无符号距离场</h3><p>无符号距离场（Unsigned Distance Field，简称 UDF）与带符号距离场（SDF）类似，也是用于描述几何形状的数学表示方法。不同的是，无符号距离场只表示空间中任意一点到几何形状的最小距离，而不包含点在形状内部或外部的信息，即没有符号的区分。</p>
+<p>假设有一个几何形状 S，对于空间中的任意一点 p，无符号距离场 d(p) 定义为：</p>
+<p>$d(\mathbf{p}) = \min_{\mathbf{q} \in \mathcal{S}} |\mathbf{p} - \mathbf{q}|$</p>
+<p>其中：</p>
+<ul>
+<li>∥p−q∥|\mathbf{p} - \mathbf{q}|∥p−q∥ 是点 p\mathbf{p}p 到 q\mathbf{q}q 的欧几里得距离。</li>
+<li>q\mathbf{q}q 是几何形状 S\mathcal{S}S 上的一个点。</li>
+</ul>
+<p>其中：</p>
+<ul>
+<li>∥p−q∥是点 p 到 q 的欧几里得距离。</li>
+<li>q 是几何形状 S 上的一个点。</li>
+</ul>
+<h2 id="摘要"><a href="#摘要" class="headerlink" title="摘要"></a>摘要</h2><p>近年来，几何形状的神经隐式表示方法取得了长足的发展。然而，基于距离场的隐式表示，特别是用于无缝形状的带符号距离场（SDF）或用于任意形状的无符号距离场（UDF），在转换为显式表面点和网格时，通常会遭受重建精度的降低。提出一种新的基于无符号正交距离场（UODF）的神经网络隐式表示。在UODF中，从任意空间点到形状表面的最小无符号距离仅在一个正交方向上定义，这与SDF和UDF所做的多方向确定形成对比。因此，3D UODF中的<strong>每个点可以沿着三个正交方向直接访问其最近的表面点</strong>。这一独特的特点充分利用了曲面点的精确重建，而没有插值误差。我们通过一系列的重建实例验证了UODF的有效性，从简单的不透水或非不透水形状扩展到包括空洞、内部或组装结构的复杂形状。</p>
+<blockquote>
+<p>Watertight Shape（封闭形状）</p>
+<p>Non-watertight Shape（非封闭形状）</p>
+</blockquote>
+<h2 id="1-引言"><a href="#1-引言" class="headerlink" title="1 引言"></a>1 引言</h2><p>在计算机视觉和图形学领域，三维形状的神经隐式表示（NIR）已经成为一个值得注意的研究领域。目前，用于3D形状的最流行的NIR是基于符号距离场（SDF）的，在诸如形状重建[6，12，24，26，29-32]或新视图合成[22，36，37，39，41]的各种应用中使用。对于任何3D造型，每个空间点的SDF值会显示两个性质：（1）该点是否在造型内部（由SDF符号指示）;（2）从该点到造型表面的所有方向中的最小距离（由其绝对值描述）。尽管基于SDF的NIR在多个环境中提供了优势，但仍存在SDF不适用的若干情形。</p>
+<p>第一种情况出现在3D形状不封闭或包含内部结构时。在这种情况下，将SDF符号指定给三维点可能具有挑战性或不准确。为了解决该限制并迎合不同类型的3D形状，研究人员已经提出了基于无符号距离场（UDF）的NIR [8，10，14，20，35，40]。失去符号后，点得UDF值表示从所有方向到形状曲面得最小距离，而不管该点是在模型内部还是外部.</p>
+<p>要考虑的第二种情况是从3D形状的NIR精确重建表面点。从SDF或UDF重建表面点的常用方法是移动立方体（MC）算法[23]。该过程在图1（a）的上部示出。神经网络预测受拟合误差影响的网格（立方体）角处的SDF或UDF值。然后，适用于SDF的MC算法通过线性插值估计网格边缘点（GEP）（详细信息请参见放大网格）。然而，由于插值误差，这种近似对于非线性局部形状可能不准确。因此，当使用基于SDF的近红外时，表面点的重建遭受这两种类型的误差。类似的拟合和插值问题也会在深度UDF方法中遇到，例如[8，14，35]中详述的那些方法，其中MC算法以各种方式扩展，以在网格拐角处将符号并入UDF中。此外，在下游任务中，如3D对象分类和部件分割（参见[15，27，28，38]），形状通常由1024个表面点表示。隐式表示和重建的表面点在这个规模需要大网格的MC算法，进一步放大了插值误差。</p>
+<p>本文提出了一种<strong>基于无符号正交距离场的近红外光谱分析方法</strong>。与传统的SDF和UDF相比，UODF最大的区别在于它定义了<strong>三维空间中沿着三个正交方向到形状曲面的最小距离</strong>。这意味着UODF中的每个点都可以直接访问它沿沿着三个正交方向的最近曲面点（如果存在）。图1（a）描绘了基于SDF（或UDF）和UODF的NIR如何在表面点重建中工作。所有预测的距离值由$..\widehat{DF(s)}$.神经网络的拟合误差会影响网格角点处的DF（s）。然而，与SDF或UDF相比，UODF的GEP估计不会引入插值误差。相反，可以通过对每个GEP的多个预测进行平均来减轻拟合误差。因此，基于UODF的NIR自然地利用针对不同3D形状的准确重建，其中三个在图1（B）中示出。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/1f05c982eacb8e06.png" alt=""></p>
+<p>图1.基于无符号正交距离场（UODF）的近红外研究综述。与在表面点重建中遭受插值误差的基于SDF或UDF的NIR不同，UODF直接估计表面点并通过对每个GEP的预测求平均来减轻拟合误差。上面的放大网格说明了传统方法中的不准确性，其中中间网格边缘点（紫色）是用两个网格角的距离值（由两个虚线圆表示）近似估计的。这个估计的GEP距离它的真实位置（红色）很远，它的真实位置是由我们的UODF值（两个红色箭头）联合预测的，如下面的放大网格所示。</p>
+<p>本文的主要贡献如下：</p>
+<ul>
+<li>提出了基于UODF的近红外，它允许以统一的方式表示和重建不同的3D形状（如封闭，非封闭，多层或组装模型）。</li>
+<li>基于UODF的NIR使得能够从沿沿着三个正交方向的多个远距离采样点直接估计表面点，从而促进网格边缘点的无插值重建。</li>
+<li>基于UODF的NIR在重建精度方面明显优于传统的SDF或基于UDF的NIR，特别是对于开放形状或重建小点云时。</li>
+</ul>
+<h2 id="2-相关工作"><a href="#2-相关工作" class="headerlink" title="2 相关工作"></a>2 相关工作</h2><p>本文的重点在于3D形状的神经距离场表示，可以大致分为三类进行审查：SDF基于近红外，基于UDF的近红外，和其他类型的神经距离场。</p>
+<h3 id="2-1-SDF-based-Neural-Implicit-Representation"><a href="#2-1-SDF-based-Neural-Implicit-Representation" class="headerlink" title="2.1 SDF based Neural Implicit Representation"></a>2.1 SDF based Neural Implicit Representation</h3><p>符号距离场（SDF）是神经隐式表征领域的一种常用方法，它将三维形状隐式表示为空间位置的零水平集。许多方法，包括但不限于DeepSDF [26]，IGR [13]，SAL [1]，FFN [31]，SIREN [29]，NI [12]和GC [3]，通常使用多层感知器（MLP）网络来全局拟合3D形状的SDF。另一种方法采用局部拟合策略，旨在学习更精细的形状细节，例如OctField [32]，DeepLS [6]，NGLOD [30]和Instant-NGP [24]。传统的移动立方体（MC）算法用于提取SDF的零等值面，从而能够同时计算网格边缘点和网格划分。此外，SDF还用于隐式表示新视图合成任务中的几何形状，例如NeuS [36]，MonoSDF [41]和VOXURF [39]。这些基于SDF的方法具有局限性，即它们只能表示封闭的模型。</p>
+<h3 id="2-2-UDF-based-Neural-Implicit-Representation"><a href="#2-2-UDF-based-Neural-Implicit-Representation" class="headerlink" title="2.2 UDF based Neural Implicit Representation"></a>2.2 UDF based Neural Implicit Representation</h3><p>提出了基于无符号距离场（UDF）的神经隐式方法来表示任意形状，例如NDF [10]，CSP [34]，GIFS [40]，DeepCurrents [25]，3 PSDF [8]，NDC [9]，MeshUDF [14]和HSDF [35]。在新视图合成的背景下，也存在从多视图图像学习UDF的工作，例如NeUDF [20]和Neural UDF [21]。虽然所有这些方法都代表开放的形状，但预测和网格化过程具有独特的区别。例如，NDF首先从预测的UDF中获得离散点，然后采用球旋转算法[4]（BPA）来完成网格化; NeUDF遵循类似的过程，但使用SPSR [18]来网格化表面点。MeshUDF使用UDF渐变对栅格角点的符号进行分类，这与同时预测栅格角点的符号和UDF值的HSDF不同。这两种方法都扩展了MC [23]，用于从UDF重建表面点和网格，因此受到神经网络拟合误差和相邻角点插值误差的影响，如图1所示。</p>
+<h3 id="2-3-其他类型的距离场"><a href="#2-3-其他类型的距离场" class="headerlink" title="2.3 其他类型的距离场"></a>2.3 其他类型的距离场</h3><p>传统的距离场表示，称为有向距离场（DDFs）[19]，于2001年提出，以更好地提取尖锐边缘上的表面点。DDFs显式计算和用于后续的轮廓重建通过扩展MC算法。虽然我们提出的基于UODF的NIR在距离场定义方面与DDFs相关，但我们研究的重点涉及使用神经网络拟合UODF和重建GEP，这将我们的工作与[19]区分开来。存在一些研究用于3D形状表示的沿沿着任意方向的深距离场的工作[2，17]。虽然这些方法在重建表面点方面表现出灵活性，但精度与基于SDF或UDF的NIR所达到的水平不匹配。</p>
+<blockquote>
+<p>DDFs (Deep Distance Fields) 是一种通过深度学习模型来表示和处理距离场的技术。神经网络通过学习一组训练数据（通常是带标签的 3D 模型），来生成一个函数，该函数可以对任意点输出该点到目标物体的距离。</p>
+<p>GEP :”Grid edge points” 通常指的是网格（grid）中位于边缘的点。这些点位于网格的边界上，而不是在内部。它们在计算、模拟和可视化等领域中起着重要作用。</p>
+</blockquote>
+<h2 id="Method"><a href="#Method" class="headerlink" title="Method"></a>Method</h2><h3 id="3-1-Definition-of-UODFs"><a href="#3-1-Definition-of-UODFs" class="headerlink" title="3.1 Definition of UODFs"></a>3.1 Definition of UODFs</h3><p>点的无符号正交距离定义为从该点到形状曲面沿沿着一个正交方向的最近距离。术语“unsigned”意味着距离值永远不会为负，并且形状的内部和外部之间没有区别。在3D空间中，存在三个正交方向，分别由“左右（LR）”、“前后（FB）”和“上下（UD）”表示。</p>
+<p>因此，UODF将每个形状描绘为沿着这些正交方向的三个距离场的组合，分别由$UODF<em>{LR}$、$UODF</em>{FB}$和$UODF_{UD}$表示。UODF的地面真值可以通过沿三个正交方向沿着的射线穿刺来计算。</p>
+<p>对于归一化模型A，其表面由S表示。UODFs被限制在归一化立方体空间R(R∈[−1, 1]3).用射线（p，X）（X∈{LR，FB，UD}）表示沿沿着一个正交方向X与点p相交的射线。子集D（p，X）表示曲面S与射线ray（p，X）的所有交点。p的UODFs表示为：</p>
+<p>$UODFs(p) = {UODF<em>{LR}(p),UODF</em>{FB}(p),UODF_{UD}(p)}$</p>
+<p>其中，点的每个UODF定义为</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/2d88d1794286195a.png" alt=""></p>
+<h3 id="3-2-UODF的特点"><a href="#3-2-UODF的特点" class="headerlink" title="3.2 UODF的特点"></a>3.2 UODF的特点</h3><p>UODF具有几个显著区别于SDF或UDF的特征。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/585439a673e8df70.png" alt=""></p>
+<p>图2.UODF示意图。为了理解三个正交分量、1D导数和相邻UODF射线之间可能的不连续性，请参考第3.2.</p>
+<p>特点1.UODF由三个沿着正交方向的无符号距离场组成。在正交方向上的任何射线对应于1D无符号距离场。因此，UODFX可以被看作是正交方向X上的所有平行射线的1D无符号距离场的集合。图2描绘了一个点的三条正交射线（红色、绿色和蓝色）、它们与该形状的交点（每条射线对应两个表面点）以及它们的1D无符号距离场。这里，射线和采样点（空心圆）位于网格角上，这将在第1.2节中详细说明。3.4与3.5.</p>
+<p>特点2.对于每个点，每个UODF的1D导数的绝对值等于1。图2还表明，表面点一侧等间距点的UODF值形成了一个算术序列。1D UODF图中的每条线段的角度为±45度。该特性可用于减轻来自多个样本点的UODF预测的表面点的估计误差。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/4eae86ffa91863a3.png" alt=""></p>
+<p>图3.一个切片从3D模型“龙”的UODFUD。当与曲面的相交发生变化时，相邻“UD”射线之间会出现不连续性。灰度区域表示在地面实况计算和我们的预测中未定义的UODFUD。</p>
+<p>特点3.UDFX可能会显示相邻平行光线之间的不连续性，这将其与处处连续的SDF或UDF区分开来。图3描绘了来自3D模型“Dragon”的UODFUD切片。很明显，相邻射线上的两个相邻点的UODFUD值可以有很大的不同。这种独特的特性反映了在激光传感器中观察到的行为，并有助于直接和准确地预测精细细节。</p>
+<p>综上所述，UODF的这三个特性有利于表面点的精确估计，特别是对于各种复杂形状或小的点云。由于每个UODF都是在平行光线上定义的，因此未被遮挡的外部区域中的UODF基本上等同于从单位立方体的六个面捕获的深度图。然而，UODF还以统一的方式管理3D模型的外部和内部区域。</p>
+<h3 id="3-3-网络体系结构和处理流程"><a href="#3-3-网络体系结构和处理流程" class="headerlink" title="3.3 网络体系结构和处理流程"></a>3.3 网络体系结构和处理流程</h3><p><img src="https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png" alt=""></p>
+<p>图4.网络体系结构和处理管道。使用UODF和掩码网络单独回归每个UODF。该算法首先利用一个正交方向上的网格边缘点的UODF估计出该方向上的网格边缘点，然后进行点融合，得到最终的重建结果。</p>
+<p>图4描述了所提出的网络体系结构和处理流水线。在每个正交平面上定义平行光线。对于一个空间点，它在一个正交平面上的2D坐标被用来通过位置编码（“P.E.”）提取42维特征。模块）。.该射线特征与3D坐标相结合，形成用于多层感知器（MLP）网络的45维输入，以在该正交方向上回归UODF。同时，为了避免回归方程中未定义的不相交射线的UODF。在图2中，利用射线特征在该正交平面上回归2D掩模（参见每个轮廓中的区域）。随后，可以根据与形状相交的射线来估计在该正交方向上的表面点，这在第3.5.</p>
+<p>在每个正交方向上回归UODF和掩码的网络分别是10 × 256 MLP和3 × 256 MLP。监督遮罩值设置为“0”和“1”，分别表示轮廓的外部和内部。UODFX的损失函数由三个分量损失项组成：</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/c34e415862be6bc7.png" alt=""></p>
+<h3 id="3-4-推理和训练过程中的抽样"><a href="#3-4-推理和训练过程中的抽样" class="headerlink" title="3.4 推理和训练过程中的抽样"></a>3.4 推理和训练过程中的抽样</h3><p>采样过程包括两个步骤：在正交平面上的射线采样和沿沿着射线的点采样。在推理过程中，射线和点采样都被离散化。为了与MC [23]和MeshUDF [14]进行比较，在我们的实验中，射线和点在网格拐角处以相等的间隔进行采样。然而，UODF也便于分别用于射线和点采样的任意2D和1D图案。在训练过程中，由于相邻射线之间可能的不连续性，在第3节中被分析为“特征3”。3.2，射线采样保持离散。我们以257*257的分辨率在三个正交平面上对每条射线进行密集采样。对于沿沿着射线采样的点，我们每10个历元均匀地采样256个点。这适应了1D UODF沿着每条射线的连续性质，允许射线上的任何给定点准确地预测其最近的曲面点。</p>
+<h3 id="3-5-每条射线的表面点估计"><a href="#3-5-每条射线的表面点估计" class="headerlink" title="3.5 每条射线的表面点估计"></a>3.5 每条射线的表面点估计</h3><p>虽然在推断中沿沿着射线采样的点对于UODF可能是随机的，但是我们以与MC的分辨率对齐的相等间隔采样点。随后，从这些等间隔的样本点估计沿沿着每条射线的表面点。图5示出了如何估计沿着射线的表面点。标记为“A”、“B”和“C”的三个交点由沿着该射线的实心圆沿着表示。图的下半部分描绘了沿着该射线的1D UODF，其中采样了九个等距点（空心）。与SDF或UDF不同，每个采样点直接预测其最近的曲面点。因此，我们的基于UODF的NIR可以潜在地从表现出一致梯度的几个样本点估计表面点。例如，该射线上的九个样本点被划分为四个段，每个段通过对该段内所有样本点的预测进行平均来估计一个表面点。线段“S1”和“S2”都估计表面点“A”。如果两个估计点之间的距离小于阈值τ（在我们的实验中τ=1/512），则这两个估计点将平均合并为一个新的估计点。对于段“S3”和“S4”，如果它们的估计点之间的距离大于τ，则重构表面点“B”和“C”两者，尽管它们在相同的网格边缘上。当两个封闭模型靠近在一起或薄板模型由两个平面表示时，会出现这种现象。然而，MC算法仅限于估计每个网格边缘上的最多一个交点，并伴随着插值误差的引入。相比之下，我们基于UODF的估计可以重建一个网格边缘上的两个交点，并平滑多个样本点的预测，受网络拟合误差的影响。尽管UODF中的表面点估计利用了来自射线上的样本点的距离值，但它与另一种适用于SDF和UDF的点估计技术（称为球体跟踪）完全不同[16]。球体跟踪采用保守的策略，只允许光线按照与当前位置的无符号距离步进。相反，UODF中的一个点直接预测正交方向上的最近点，与光线跟踪方案无关。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/08/15/408c058690090074.png" alt=""></p>
+<p>在估计三个正交边缘中的表面点之后，进行融合操作以导出最终的GEP，如图4所示。具体地，如果在至少3个相邻边缘上存在估计点，则保留那些点。否则，它们将被删除。该策略类似于MC，并且允许对孤立点进行有效过滤。</p>
+<h2 id="4-实验"><a href="#4-实验" class="headerlink" title="4 实验"></a>4 实验</h2><h3 id="4-1-数据集与数据库"><a href="#4-1-数据集与数据库" class="headerlink" title="4.1 数据集与数据库"></a>4.1 数据集与数据库</h3><p>数据集。使用来自各种数据集的50多个模型来验证各种形状的重建精度。具体来说，Thingi 10 K [42]中有36个形状，其中包括NI [12]和NGLOD [30]中使用的Thingi 32子集中的32个形状。其他形状来自斯坦福大学3D扫描库[11]、ShapeNet [7]、MGN数据集[5]和我们自己的自生成。指标.网格边缘点（GEP）的重构精度由L2倒角距离（CD）来评价，简称为“GEP-CD”。对于网格，测量了100，000个均匀分布点的L2 CD和正态一致性（NC），分别缩写为“网格-CD”和“网格-NC”。为了进行公平比较，除了第1.2节中所示的具有多个网格分辨率的实验外，所有从测试的NIR方法重建的网格均采用2573个网格角的预测距离值。4.6.</p>
+<h3 id="4-2-Reconstruction-ofWatertight-Shapes"><a href="#4-2-Reconstruction-ofWatertight-Shapes" class="headerlink" title="4.2 Reconstruction ofWatertight Shapes"></a>4.2 Reconstruction ofWatertight Shapes</h3><h3 id="4-3-Reconstruction-of-Non-watertight-Shapes"><a href="#4-3-Reconstruction-of-Non-watertight-Shapes" class="headerlink" title="4.3 Reconstruction of Non-watertight Shapes"></a>4.3 Reconstruction of Non-watertight Shapes</h3><h3 id="4-4-Reconstruction-of-Complex-Shapes"><a href="#4-4-Reconstruction-of-Complex-Shapes" class="headerlink" title="4.4 Reconstruction of Complex Shapes"></a>4.4 Reconstruction of Complex Shapes</h3><h3 id="4-5-Ablation-of-Loss-Function"><a href="#4-5-Ablation-of-Loss-Function" class="headerlink" title="4.5. Ablation of Loss Function"></a>4.5. Ablation of Loss Function</h3><h3 id="4-6-Reconstruction-at-Multi-resolution-Grids"><a href="#4-6-Reconstruction-at-Multi-resolution-Grids" class="headerlink" title="4.6. Reconstruction at Multi-resolution Grids"></a>4.6. Reconstruction at Multi-resolution Grids</h3><h3 id="4-7-Discussion-and-Limitation"><a href="#4-7-Discussion-and-Limitation" class="headerlink" title="4.7. Discussion and Limitation"></a>4.7. Discussion and Limitation</h3><p>补充材料中提供了其他实验结果，其中基于UODF的NIR继续表现出卓越的重建性能。这一成就可归因于下文讨论的几个关键因素：</p>
+<p>1)每个UODF都具有与平面激光器类似的工作机制，能够精确测量沿沿着方向到最近表面点的距离。值得注意的是，UODF进一步在封闭或内部区域内工作。</p>
+<p>2)我们验证了MLP网络可以很好地拟合不连续的UODF。这一发现挑战了传统的信念，即只有连续的字段（例如，SDF）适用于神经网络拟合。</p>
+<p>3)一个正交方向上的GEP无插值估计以及三个方向上的点的融合对任何测试模型都具有鲁棒性。如果需要网格，采用掩蔽SPSR也执行鲁棒性。</p>
+<p>2)我们验证了MLP网络可以很好地拟合不连续的UODF。这一发现挑战了传统的信念，即只有连续的字段（例如，SDF）适用于神经网络拟合。</p>
+<p>3)在一个正交方向上的GEP的无插值估计，以及跨三个方向的点的融合，对任何测试的模型都是鲁棒的。如果需要网格，采用掩蔽SPSR也执行鲁棒性。UODF的一个显著限制是需要三个神经网络，每个神经网络需要拟合一个UODF。这一要求导致目前神经网络中的参数数量相对较多。虽然在不同方向上的距离场之间已经观察到一定的相关性，但是在一个神经网络内拟合三个场的前景是未来探索的感兴趣的领域。</p>
+<h2 id="5-总结"><a href="#5-总结" class="headerlink" title="5. 总结"></a>5. 总结</h2><p>在本文中，我们提出了基于无符号正交距离场（UODF）的近红外光谱，用于准确重建各种3D形状。UODF在其独特的特性方面不同于传统的SDF和UDF，这些特性包括跨三个正交方向组合每个UODF，直接从远距离采样点估计表面点，以及表现出射线之间的不连续性。因此，特定的神经网络需要UODF回归，沿着的表面点重建的后处理方法。在50多种不同形状上的彻底实验验证了UODF以统一的重建方式始终优于所有竞争对手。UODF甚至可以优于使用地面实况SDF或UDF输入数据的传统网格化方法。在未来，我们计划探索UODF的更多应用，例如形状的实时渲染。在单个神经网络中拟合UODF的可行性也值得研究</p>
+<h2 id="自己的总结"><a href="#自己的总结" class="headerlink" title="自己的总结"></a>自己的总结</h2><blockquote>
+<p>UODF本质上就是优化了插值的过程。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2024/08/17/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%BA%94%EF%BC%89UODF-1/">http://cjh0220.github.io/2024/08/17/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%BA%94%EF%BC%89UODF-1/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/UODF/">UODF</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2024/08/17/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E5%85%AD%EF%BC%89GIFS/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/16/b08925200248af46.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">论文精读（六）GIFS</div></div></a></div><div class="next-post pull-right"><a href="/2024/08/08/GAN%E5%AF%B9%E6%8A%97%E7%94%9F%E6%88%90%E7%BD%91%E7%BB%9C/"><img class="next-cover" src="https://s21.ax1x.com/2024/08/08/pkz8XeU.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">GAN对抗生成网络</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">117</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">91</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%BA%94%EF%BC%89Unsigned-Orthogonal-Distance-Fields-An-Accurate-Neural-Implicit-Representation-for-Diverse-3D-Shapes"><span class="toc-number">1.</span> <span class="toc-text">论文精读（五）Unsigned Orthogonal Distance Fields: An Accurate Neural Implicit Representation for Diverse 3D Shapes</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%B5%84%E6%BA%90"><span class="toc-number">1.1.</span> <span class="toc-text">资源</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#SDF-%E5%B8%A6%E7%AC%A6%E5%8F%B7%E8%B7%9D%E7%A6%BB%E5%9C%BA"><span class="toc-number">1.1.1.</span> <span class="toc-text">SDF 带符号距离场</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#UDF-%E6%97%A0%E7%AC%A6%E5%8F%B7%E8%B7%9D%E7%A6%BB%E5%9C%BA"><span class="toc-number">1.1.2.</span> <span class="toc-text">UDF 无符号距离场</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%91%98%E8%A6%81"><span class="toc-number">1.2.</span> <span class="toc-text">摘要</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%BC%95%E8%A8%80"><span class="toc-number">1.3.</span> <span class="toc-text">1 引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E7%9B%B8%E5%85%B3%E5%B7%A5%E4%BD%9C"><span class="toc-number">1.4.</span> <span class="toc-text">2 相关工作</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-SDF-based-Neural-Implicit-Representation"><span class="toc-number">1.4.1.</span> <span class="toc-text">2.1 SDF based Neural Implicit Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-UDF-based-Neural-Implicit-Representation"><span class="toc-number">1.4.2.</span> <span class="toc-text">2.2 UDF based Neural Implicit Representation</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%85%B6%E4%BB%96%E7%B1%BB%E5%9E%8B%E7%9A%84%E8%B7%9D%E7%A6%BB%E5%9C%BA"><span class="toc-number">1.4.3.</span> <span class="toc-text">2.3 其他类型的距离场</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Method"><span class="toc-number">1.5.</span> <span class="toc-text">Method</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-Definition-of-UODFs"><span class="toc-number">1.5.1.</span> <span class="toc-text">3.1 Definition of UODFs</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-UODF%E7%9A%84%E7%89%B9%E7%82%B9"><span class="toc-number">1.5.2.</span> <span class="toc-text">3.2 UODF的特点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E7%BD%91%E7%BB%9C%E4%BD%93%E7%B3%BB%E7%BB%93%E6%9E%84%E5%92%8C%E5%A4%84%E7%90%86%E6%B5%81%E7%A8%8B"><span class="toc-number">1.5.3.</span> <span class="toc-text">3.3 网络体系结构和处理流程</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E6%8E%A8%E7%90%86%E5%92%8C%E8%AE%AD%E7%BB%83%E8%BF%87%E7%A8%8B%E4%B8%AD%E7%9A%84%E6%8A%BD%E6%A0%B7"><span class="toc-number">1.5.4.</span> <span class="toc-text">3.4 推理和训练过程中的抽样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E6%AF%8F%E6%9D%A1%E5%B0%84%E7%BA%BF%E7%9A%84%E8%A1%A8%E9%9D%A2%E7%82%B9%E4%BC%B0%E8%AE%A1"><span class="toc-number">1.5.5.</span> <span class="toc-text">3.5 每条射线的表面点估计</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.6.</span> <span class="toc-text">4 实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E6%95%B0%E6%8D%AE%E9%9B%86%E4%B8%8E%E6%95%B0%E6%8D%AE%E5%BA%93"><span class="toc-number">1.6.1.</span> <span class="toc-text">4.1 数据集与数据库</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Reconstruction-ofWatertight-Shapes"><span class="toc-number">1.6.2.</span> <span class="toc-text">4.2 Reconstruction ofWatertight Shapes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-Reconstruction-of-Non-watertight-Shapes"><span class="toc-number">1.6.3.</span> <span class="toc-text">4.3 Reconstruction of Non-watertight Shapes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-Reconstruction-of-Complex-Shapes"><span class="toc-number">1.6.4.</span> <span class="toc-text">4.4 Reconstruction of Complex Shapes</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-Ablation-of-Loss-Function"><span class="toc-number">1.6.5.</span> <span class="toc-text">4.5. Ablation of Loss Function</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-Reconstruction-at-Multi-resolution-Grids"><span class="toc-number">1.6.6.</span> <span class="toc-text">4.6. Reconstruction at Multi-resolution Grids</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-Discussion-and-Limitation"><span class="toc-number">1.6.7.</span> <span class="toc-text">4.7. Discussion and Limitation</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E6%80%BB%E7%BB%93"><span class="toc-number">1.7.</span> <span class="toc-text">5. 总结</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%87%AA%E5%B7%B1%E7%9A%84%E6%80%BB%E7%BB%93"><span class="toc-number">1.8.</span> <span class="toc-text">自己的总结</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/09/04/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%83%EF%BC%89SFM/" title="三维重建学习（七）SFM"><img src="https://s3.bmp.ovh/imgs/2024/09/02/facd3eeb2161346a.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三维重建学习（七）SFM"/></a><div class="content"><a class="title" href="/2024/09/04/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%83%EF%BC%89SFM/" title="三维重建学习（七）SFM">三维重建学习（七）SFM</a><time datetime="2024-09-04T11:17:15.000Z" title="发表于 2024-09-04 19:17:15">2024-09-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80-%E5%85%AD%EF%BC%89%E4%BC%A0%E7%BB%9F%E8%A7%86%E8%A7%89%E5%87%A0%E4%BD%95/" title="三维重建学习（一~六）传统视觉几何"><img src="https://s3.bmp.ovh/imgs/2024/08/27/aba7fea4981b21dc.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三维重建学习（一~六）传统视觉几何"/></a><div class="content"><a class="title" href="/2024/08/27/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E5%AD%A6%E4%B9%A0%EF%BC%88%E4%B8%80-%E5%85%AD%EF%BC%89%E4%BC%A0%E7%BB%9F%E8%A7%86%E8%A7%89%E5%87%A0%E4%BD%95/" title="三维重建学习（一~六）传统视觉几何">三维重建学习（一~六）传统视觉几何</a><time datetime="2024-08-27T08:41:55.000Z" title="发表于 2024-08-27 16:41:55">2024-08-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/%E9%9A%8F%E6%9C%BA%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B/" title="随机微分方程"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="随机微分方程"/></a><div class="content"><a class="title" href="/2024/08/27/%E9%9A%8F%E6%9C%BA%E5%BE%AE%E5%88%86%E6%96%B9%E7%A8%8B/" title="随机微分方程">随机微分方程</a><time datetime="2024-08-27T04:39:15.000Z" title="发表于 2024-08-27 12:39:15">2024-08-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/TSDF%E6%88%AA%E6%96%AD%E7%AC%A6%E5%8F%B7%E8%B7%9D%E7%A6%BB/" title="TSDF截断符号距离"><img src="https://s3.bmp.ovh/imgs/2024/08/21/9a2c38e103166449.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TSDF截断符号距离"/></a><div class="content"><a class="title" href="/2024/08/27/TSDF%E6%88%AA%E6%96%AD%E7%AC%A6%E5%8F%B7%E8%B7%9D%E7%A6%BB/" title="TSDF截断符号距离">TSDF截断符号距离</a><time datetime="2024-08-27T04:39:00.000Z" title="发表于 2024-08-27 12:39:00">2024-08-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/08/27/Mamba%E5%AD%A6%E4%B9%A0/" title="Mamba学习"><img src="https://pic2.zhimg.com/v2-826c73167557ddbb76f443ddcc990171_b.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Mamba学习"/></a><div class="content"><a class="title" href="/2024/08/27/Mamba%E5%AD%A6%E4%B9%A0/" title="Mamba学习">Mamba学习</a><time datetime="2024-08-27T04:38:45.000Z" title="发表于 2024-08-27 12:38:45">2024-08-27</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/15/4d82480b61e3bcc1.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
