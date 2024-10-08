@@ -1,0 +1,262 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>三维重建的损失函数和评估标准 | CJH's blog</title><meta name="keywords" content="评价指标"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="三维形状间的评价指标体素Dice Similarity Coefficient (DSC)Dice 相似系数 是一种基于体素（Voxel）的相似性度量，通常用于三维医学图像配准。它通过计算两个体积的重叠比例来评估形状的相似度。 计算公式：DSC(A, B) &#x3D; \frac{2 |A \cap B|}{|A| + |B|} A 和 B 为两个体积对象，计算它们重叠体素数的比例。  特点： 更适合用来">
+<meta property="og:type" content="article">
+<meta property="og:title" content="三维重建的损失函数和评估标准">
+<meta property="og:url" content="http://cjh0220.github.io/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="三维形状间的评价指标体素Dice Similarity Coefficient (DSC)Dice 相似系数 是一种基于体素（Voxel）的相似性度量，通常用于三维医学图像配准。它通过计算两个体积的重叠比例来评估形状的相似度。 计算公式：DSC(A, B) &#x3D; \frac{2 |A \cap B|}{|A| + |B|} A 和 B 为两个体积对象，计算它们重叠体素数的比例。  特点： 更适合用来">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png">
+<meta property="article:published_time" content="2024-10-08T01:48:23.000Z">
+<meta property="article:modified_time" content="2024-10-08T01:52:38.963Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="评价指标">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '三维重建的损失函数和评估标准',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-10-08 09:52:38'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">125</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">98</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">三维重建的损失函数和评估标准</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-10-08T01:48:23.000Z" title="发表于 2024-10-08 09:48:23">2024-10-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA/">三维重建</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="三维重建的损失函数和评估标准"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="三维形状间的评价指标"><a href="#三维形状间的评价指标" class="headerlink" title="三维形状间的评价指标"></a>三维形状间的评价指标</h1><h2 id="体素"><a href="#体素" class="headerlink" title="体素"></a>体素</h2><h3 id="Dice-Similarity-Coefficient-DSC"><a href="#Dice-Similarity-Coefficient-DSC" class="headerlink" title="Dice Similarity Coefficient (DSC)"></a>Dice Similarity Coefficient (DSC)</h3><p><strong>Dice 相似系数</strong> 是一种基于体素（Voxel）的相似性度量，通常用于三维医学图像配准。它通过计算两个体积的重叠比例来评估形状的相似度。</p>
+<h4 id="计算公式："><a href="#计算公式：" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">DSC(A, B) = \frac{2 |A \cap B|}{|A| + |B|}</script><ul>
+<li>A 和 B 为两个体积对象，计算它们重叠体素数的比例。</li>
+</ul>
+<h4 id="特点："><a href="#特点：" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>更适合用来衡量三维体积的相似度，而不是点云。</li>
+<li>重叠率的计算对整体形状的比较更有意义。</li>
+</ul>
+<h3 id="Jaccard-Similarity-Intersection-over-Union-IoU"><a href="#Jaccard-Similarity-Intersection-over-Union-IoU" class="headerlink" title="Jaccard Similarity (Intersection over Union, IoU)"></a>Jaccard Similarity (Intersection over Union, IoU)</h3><p><strong>Jaccard 相似性</strong> 是衡量两个形状重叠程度的一种方法，特别是在三维体素或网格表示中常用。它计算两个形状的交集与并集之比。</p>
+<h4 id="计算公式：-1"><a href="#计算公式：-1" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">IoU(A, B) = \frac{|A \cap B|}{|A \cup B|}</script><ul>
+<li>A 和 B 分别表示两个三维体积的点集或体素。</li>
+</ul>
+<h4 id="特点：-1"><a href="#特点：-1" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>IoU 主要用于体素网格或三维对象的相似性评价，广泛应用于物体检测、分割等任务。</li>
+<li>对离群点鲁棒性强，但它对局部的微小变化不敏感。</li>
+</ul>
+<h2 id="点云"><a href="#点云" class="headerlink" title="点云"></a>点云</h2><h3 id="Chamfer-Distance-CD"><a href="#Chamfer-Distance-CD" class="headerlink" title="Chamfer Distance (CD)"></a>Chamfer Distance (CD)</h3><p><strong>Chamfer Distance</strong> 衡量的是一个点集到另一个点集的最近距离的平均值。它的计算方法非常直接，步骤如下：</p>
+<h4 id="计算步骤："><a href="#计算步骤：" class="headerlink" title="计算步骤："></a>计算步骤：</h4><ul>
+<li>对于点集 A 中的每个点，找到点集 B 中与之最近的点，然后计算它们之间的欧氏距离。</li>
+<li>同样，对于点集 B 中的每个点，找到点集 A 中与之最近的点，计算它们之间的欧氏距离。</li>
+<li>将这两个方向的距离之和作为 Chamfer Distance。</li>
+</ul>
+<p>公式如下：</p>
+<script type="math/tex; mode=display">CD(A, B) = \frac{1}{|A|} \sum_{a \in A} \min_{b \in B} \| a - b \|_2^2 + \frac{1}{|B|} \sum_{b \in B} \min_{a \in A} \| b - a \|_2^2</script><h4 id="特点：-2"><a href="#特点：-2" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li><strong>对称性</strong>：CD 同时考虑了点集 A 到 B 和 B 到 A 的距离，因此是对称的。</li>
+<li><strong>局部一致性</strong>：CD 会给每个点分配一个最近的点，因此它对点集的全局结构不敏感，更适合用于局部匹配。</li>
+<li><strong>计算效率</strong>：相对较快，因为只需要计算最近点距离，而不需要进行全局优化。</li>
+</ul>
+<h4 id="缺点："><a href="#缺点：" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li>如果两个点集之间的点数不匹配，CD 可能会忽略点数较少的点集中的某些点。</li>
+<li>容易受到离群点（outliers）的影响，因为它只关注每个点的最近邻，而不考虑整体的点集结构。</li>
+</ul>
+<h3 id="Earth-Mover’s-Distance-EMD"><a href="#Earth-Mover’s-Distance-EMD" class="headerlink" title="Earth Mover’s Distance (EMD)"></a>Earth Mover’s Distance (EMD)</h3><p><strong>Earth Mover’s Distance</strong>（也称为 Wasserstein 距离）是一种衡量两个点集之间差异的距离，源自最优运输问题。它的基本思想是，将一个点集的分布“转换”为另一个点集的分布，所需的“搬运量”最小的方式即为点集之间的距离。</p>
+<p>公式如下（简化形式）：</p>
+<script type="math/tex; mode=display">EMD(A, B) = \min_{\phi: A \to B} \frac{1}{|A|} \sum_{a \in A} \| a - \phi(a) \|_2</script><p>其中 ϕ 是点集 AAA 中的每个点到点集 B 中的点的最优匹配。</p>
+<h4 id="特点：-3"><a href="#特点：-3" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li><strong>全局最优匹配</strong>：EMD 找到点集 A到 B的最优匹配关系，因此它更关注整个点集的结构和分布，而不仅仅是单个最近点。</li>
+<li><strong>适合不同分布的点集</strong>：EMD 可以处理点集数量不相等的情况，并能够在匹配时考虑整体点的分布。</li>
+<li><strong>鲁棒性</strong>：相比 Chamfer Distance，EMD 对离群点更具鲁棒性，因为它采用了全局匹配而不是局部最近点。</li>
+</ul>
+<h4 id="缺点：-1"><a href="#缺点：-1" class="headerlink" title="缺点："></a>缺点：</h4><ul>
+<li><strong>计算复杂度高</strong>：计算 EMD 需要求解最优运输问题，其时间复杂度较高，尤其是当点集较大时。</li>
+<li><strong>优化困难</strong>：在实际应用中，EMD 的优化难度较大，需要借助特殊的算法或近似计算方法。</li>
+</ul>
+<h3 id="Hausdorff-Distance-HD"><a href="#Hausdorff-Distance-HD" class="headerlink" title="Hausdorff Distance (HD)"></a>Hausdorff Distance (HD)</h3><p><strong>Hausdorff Distance</strong> 衡量两个点集之间的最大差异，关注的是一个点集中离另一个点集最远的点距离。这种度量方法特别适合评估形状的全局差异。</p>
+<h4 id="计算公式：-2"><a href="#计算公式：-2" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">HD(A, B) = \max \left\{ \sup_{a \in A} \inf_{b \in B} \| a - b \|, \sup_{b \in B} \inf_{a \in A} \| b - a \| \right\}</script><ul>
+<li>计算点集 A 到 B 和 B 到 A 的最大距离。</li>
+</ul>
+<h4 id="特点：-4"><a href="#特点：-4" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>关注最大距离（最坏情况），对局部差异非常敏感。</li>
+<li>对噪声非常敏感，因为一个离群点可能导致非常大的距离。</li>
+</ul>
+<h3 id="Root-Mean-Square-Error-RMSE"><a href="#Root-Mean-Square-Error-RMSE" class="headerlink" title="Root Mean Square Error (RMSE)"></a><strong>Root Mean Square Error (RMSE)</strong></h3><p><strong>RMSE</strong> 是一种广泛应用于统计中的度量方法，用于评估预测值与真实值之间的偏差。在三维形状分析中，RMSE 可用于评估形状重建或配准结果的误差。</p>
+<h4 id="计算公式：-3"><a href="#计算公式：-3" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">RMSE = \sqrt{\frac{1}{N} \sum_{i=1}^{N} (a_i - b_i)^2}</script><ul>
+<li>计算形状 AAA 和 BBB 之间的点对点距离误差的平方和的均值。</li>
+</ul>
+<h4 id="特点：-5"><a href="#特点：-5" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>直接衡量预测形状与真实形状之间的点对点差异。</li>
+<li>易受离群点影响，对大误差敏感。</li>
+</ul>
+<h2 id="网格"><a href="#网格" class="headerlink" title="网格"></a>网格</h2><h3 id="Surface-to-Surface-Distance"><a href="#Surface-to-Surface-Distance" class="headerlink" title="Surface-to-Surface Distance"></a><strong>Surface-to-Surface Distance</strong></h3><p><strong>Surface-to-Surface Distance</strong> 是针对三维网格表面差异的一种度量方法，常用于比较两个网格或三角面片之间的差异。</p>
+<h4 id="1-定义"><a href="#1-定义" class="headerlink" title="1. 定义"></a>1. <strong>定义</strong></h4><p>Surface-to-Surface Distance 的核心思想是，给定两个三维表面（例如由三角形网格定义的几何形状），通过计算一个表面上的每个点到另一个表面的最小距离来量化它们的差异。</p>
+<p>这类距离度量适合用于几何处理任务中，如计算机图形学、CAD（计算机辅助设计）、医学图像分割和模型简化等应用场景。与点云的度量方式不同，它专注于网格或表面之间的局部几何差异。</p>
+<p>计算 Surface-to-Surface Distance 的方式可以有多个步骤，典型方法如下：</p>
+<h4 id="表面采样"><a href="#表面采样" class="headerlink" title="表面采样"></a>表面采样</h4><ul>
+<li>在第一个表面（网格）上选取一系列采样点，通常是在网格的顶点或等间距网格采样点。</li>
+</ul>
+<h4 id="计算每个采样点的最近距离"><a href="#计算每个采样点的最近距离" class="headerlink" title="计算每个采样点的最近距离"></a>计算每个采样点的最近距离</h4><ul>
+<li>对每个采样点，计算它到另一个表面的最近距离。通常使用欧氏距离来度量该点到另一表面上各个三角形的最短距离。</li>
+</ul>
+<h4 id="平均或最大化距离"><a href="#平均或最大化距离" class="headerlink" title="平均或最大化距离"></a>平均或最大化距离</h4><ul>
+<li>这些距离可以通过不同的方式总结：<ul>
+<li><strong>平均距离</strong>（Average Distance）：计算所有采样点到另一个表面的最小距离的平均值。</li>
+<li><strong>最大距离</strong>（Max Distance）：关注最大误差，计算所有采样点到另一个表面的最小距离中的最大值。</li>
+<li><strong>Hausdorff Distance</strong>：这是一种特殊的最大距离，考虑两个方向的最大差异，即从一个表面的任意点到另一个表面最远的距离，并在这两个最大值中取更大的那个。</li>
+</ul>
+</li>
+</ul>
+<h4 id="4-双向计算"><a href="#4-双向计算" class="headerlink" title="4. 双向计算"></a>4. <strong>双向计算</strong></h4><ul>
+<li>为了更全面地比较两个表面之间的差异，通常需要进行双向距离计算，即：<ul>
+<li>从第一个表面到第二个表面的距离。</li>
+<li>从第二个表面到第一个表面的距离。</li>
+</ul>
+</li>
+<li>这样可以避免只关注一个方向的误差，确保比较结果更全面。</li>
+</ul>
+<h2 id="平面"><a href="#平面" class="headerlink" title="平面"></a>平面</h2><p>IoU 也可以用。</p>
+<h3 id="Procrustes-Distance"><a href="#Procrustes-Distance" class="headerlink" title="Procrustes Distance"></a>Procrustes Distance</h3><p><strong>Procrustes Distance</strong> 用于衡量两个形状之间的形态差异，特别适用于形状对齐问题。它通过旋转、缩放和平移一个形状，以最小化其与另一个形状的差异。</p>
+<h4 id="计算步骤：-1"><a href="#计算步骤：-1" class="headerlink" title="计算步骤："></a>计算步骤：</h4><ul>
+<li>对齐两个形状（即通过旋转、缩放和平移将它们匹配）。</li>
+<li>计算对齐后形状点之间的欧氏距离平方和。</li>
+</ul>
+<h4 id="特点：-6"><a href="#特点：-6" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>考虑了形状的全局对齐，适合用于配准问题。</li>
+<li>需要预先对齐形状，计算复杂度相对较高。</li>
+</ul>
+<h3 id="L2-Distance-Euclidean-Distance"><a href="#L2-Distance-Euclidean-Distance" class="headerlink" title="L2 Distance (Euclidean Distance)"></a>L2 Distance (Euclidean Distance)</h3><p><strong>欧氏距离 (L2 Distance)</strong> 是最简单的距离度量方法，直接计算两个点集的每个点之间的欧氏距离并取平均值。对于点云匹配来说，这是最基础的度量方式。</p>
+<h4 id="计算公式：-4"><a href="#计算公式：-4" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">L2(A, B) = \sqrt{\sum_{i=1}^{N} (a_i - b_i)^2}</script><ul>
+<li>A和 B为两个点集，直接计算对应点的欧氏距离。</li>
+</ul>
+<h4 id="特点：-7"><a href="#特点：-7" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>计算简单，适合用于小规模点云。</li>
+<li>对点的匹配非常敏感，特别是当点集数量不匹配或形状有噪声时效果不佳。</li>
+</ul>
+<h3 id="Cosine-Similarity"><a href="#Cosine-Similarity" class="headerlink" title="Cosine Similarity"></a>Cosine Similarity</h3><p><strong>余弦相似性</strong> 是衡量两个向量方向相似性的一种度量方法，可以用于比较形状特征向量的相似度。它主要用于形状特征空间中的比较。</p>
+<h4 id="计算公式：-5"><a href="#计算公式：-5" class="headerlink" title="计算公式："></a>计算公式：</h4><script type="math/tex; mode=display">\text{Cosine Similarity}(A, B) = \frac{A \cdot B}{\|A\| \|B\|}</script><ul>
+<li>计算点集或形状特征向量的夹角余弦值。</li>
+</ul>
+<h4 id="特点：-8"><a href="#特点：-8" class="headerlink" title="特点："></a>特点：</h4><ul>
+<li>适用于比较高维特征向量的相似度，而不是直接对点云进行匹配。</li>
+<li>对向量的尺度不敏感，但对方向敏感。</li>
+</ul>
+<p><img src="https://s3.bmp.ovh/imgs/2024/10/07/a73489701414e2b5.png" alt=""></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/">http://cjh0220.github.io/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87/">评价指标</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/10/08/VAE%E5%8F%98%E5%88%86%E8%87%AA%E7%BC%96%E7%A0%81/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/09/29/00ef3f438a5f7577.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">VAE变分自编码</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/09/08/%E4%BA%8C%E5%88%86%E7%B1%BB%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87/" title="二分类评价指标"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">二分类评价指标</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">125</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">98</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">24</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E4%B8%89%E7%BB%B4%E5%BD%A2%E7%8A%B6%E9%97%B4%E7%9A%84%E8%AF%84%E4%BB%B7%E6%8C%87%E6%A0%87"><span class="toc-number">1.</span> <span class="toc-text">三维形状间的评价指标</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%93%E7%B4%A0"><span class="toc-number">1.1.</span> <span class="toc-text">体素</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Dice-Similarity-Coefficient-DSC"><span class="toc-number">1.1.1.</span> <span class="toc-text">Dice Similarity Coefficient (DSC)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A"><span class="toc-number">1.1.1.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A"><span class="toc-number">1.1.1.2.</span> <span class="toc-text">特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Jaccard-Similarity-Intersection-over-Union-IoU"><span class="toc-number">1.1.2.</span> <span class="toc-text">Jaccard Similarity (Intersection over Union, IoU)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A-1"><span class="toc-number">1.1.2.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-1"><span class="toc-number">1.1.2.2.</span> <span class="toc-text">特点：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%82%B9%E4%BA%91"><span class="toc-number">1.2.</span> <span class="toc-text">点云</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Chamfer-Distance-CD"><span class="toc-number">1.2.1.</span> <span class="toc-text">Chamfer Distance (CD)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%AD%A5%E9%AA%A4%EF%BC%9A"><span class="toc-number">1.2.1.1.</span> <span class="toc-text">计算步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-2"><span class="toc-number">1.2.1.2.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="toc-number">1.2.1.3.</span> <span class="toc-text">缺点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Earth-Mover%E2%80%99s-Distance-EMD"><span class="toc-number">1.2.2.</span> <span class="toc-text">Earth Mover’s Distance (EMD)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-3"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%BC%BA%E7%82%B9%EF%BC%9A-1"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">缺点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Hausdorff-Distance-HD"><span class="toc-number">1.2.3.</span> <span class="toc-text">Hausdorff Distance (HD)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A-2"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-4"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Root-Mean-Square-Error-RMSE"><span class="toc-number">1.2.4.</span> <span class="toc-text">Root Mean Square Error (RMSE)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A-3"><span class="toc-number">1.2.4.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-5"><span class="toc-number">1.2.4.2.</span> <span class="toc-text">特点：</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BD%91%E6%A0%BC"><span class="toc-number">1.3.</span> <span class="toc-text">网格</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Surface-to-Surface-Distance"><span class="toc-number">1.3.1.</span> <span class="toc-text">Surface-to-Surface Distance</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">1. 定义</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A8%E9%9D%A2%E9%87%87%E6%A0%B7"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">表面采样</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%AF%8F%E4%B8%AA%E9%87%87%E6%A0%B7%E7%82%B9%E7%9A%84%E6%9C%80%E8%BF%91%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.3.1.3.</span> <span class="toc-text">计算每个采样点的最近距离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%B9%B3%E5%9D%87%E6%88%96%E6%9C%80%E5%A4%A7%E5%8C%96%E8%B7%9D%E7%A6%BB"><span class="toc-number">1.3.1.4.</span> <span class="toc-text">平均或最大化距离</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4-%E5%8F%8C%E5%90%91%E8%AE%A1%E7%AE%97"><span class="toc-number">1.3.1.5.</span> <span class="toc-text">4. 双向计算</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%B9%B3%E9%9D%A2"><span class="toc-number">1.4.</span> <span class="toc-text">平面</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Procrustes-Distance"><span class="toc-number">1.4.1.</span> <span class="toc-text">Procrustes Distance</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E6%AD%A5%E9%AA%A4%EF%BC%9A-1"><span class="toc-number">1.4.1.1.</span> <span class="toc-text">计算步骤：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-6"><span class="toc-number">1.4.1.2.</span> <span class="toc-text">特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#L2-Distance-Euclidean-Distance"><span class="toc-number">1.4.2.</span> <span class="toc-text">L2 Distance (Euclidean Distance)</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A-4"><span class="toc-number">1.4.2.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-7"><span class="toc-number">1.4.2.2.</span> <span class="toc-text">特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Cosine-Similarity"><span class="toc-number">1.4.3.</span> <span class="toc-text">Cosine Similarity</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%A1%E7%AE%97%E5%85%AC%E5%BC%8F%EF%BC%9A-5"><span class="toc-number">1.4.3.1.</span> <span class="toc-text">计算公式：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%89%B9%E7%82%B9%EF%BC%9A-8"><span class="toc-number">1.4.3.2.</span> <span class="toc-text">特点：</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/" title="三维重建的损失函数和评估标准"><img src="https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三维重建的损失函数和评估标准"/></a><div class="content"><a class="title" href="/2024/10/08/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E7%9A%84%E6%8D%9F%E5%A4%B1%E5%87%BD%E6%95%B0%E5%92%8C%E8%AF%84%E4%BC%B0%E6%A0%87%E5%87%86/" title="三维重建的损失函数和评估标准">三维重建的损失函数和评估标准</a><time datetime="2024-10-08T01:48:23.000Z" title="发表于 2024-10-08 09:48:23">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/08/VAE%E5%8F%98%E5%88%86%E8%87%AA%E7%BC%96%E7%A0%81/" title="VAE变分自编码"><img src="https://s3.bmp.ovh/imgs/2024/09/29/00ef3f438a5f7577.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="VAE变分自编码"/></a><div class="content"><a class="title" href="/2024/10/08/VAE%E5%8F%98%E5%88%86%E8%87%AA%E7%BC%96%E7%A0%81/" title="VAE变分自编码">VAE变分自编码</a><time datetime="2024-10-08T01:47:46.000Z" title="发表于 2024-10-08 09:47:46">2024-10-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/25/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E4%B8%9A%E5%86%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%EF%BC%88%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E4%BD%9C%E4%B8%9A1%EF%BC%89/" title="三维重建业内相关知识（论文写作作业1）"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三维重建业内相关知识（论文写作作业1）"/></a><div class="content"><a class="title" href="/2024/09/25/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA%E4%B8%9A%E5%86%85%E7%9B%B8%E5%85%B3%E7%9F%A5%E8%AF%86%EF%BC%88%E8%AE%BA%E6%96%87%E5%86%99%E4%BD%9C%E4%BD%9C%E4%B8%9A1%EF%BC%89/" title="三维重建业内相关知识（论文写作作业1）">三维重建业内相关知识（论文写作作业1）</a><time datetime="2024-09-25T11:20:37.000Z" title="发表于 2024-09-25 19:20:37">2024-09-25</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/18/%E6%B7%B1%E5%BA%A6%E5%9B%BEDepth-Map/" title="深度图Depth_Map"><img src="https://s3.bmp.ovh/imgs/2024/09/09/ca630095c9ea5d25.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="深度图Depth_Map"/></a><div class="content"><a class="title" href="/2024/09/18/%E6%B7%B1%E5%BA%A6%E5%9B%BEDepth-Map/" title="深度图Depth_Map">深度图Depth_Map</a><time datetime="2024-09-18T00:51:12.000Z" title="发表于 2024-09-18 08:51:12">2024-09-18</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/09/18/%E4%B8%89%E7%BB%B4%E7%A9%BA%E9%97%B4%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95/" title="三维空间的表示方法"><img src="https://s3.bmp.ovh/imgs/2024/09/13/f1efc63247aff598.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三维空间的表示方法"/></a><div class="content"><a class="title" href="/2024/09/18/%E4%B8%89%E7%BB%B4%E7%A9%BA%E9%97%B4%E7%9A%84%E8%A1%A8%E7%A4%BA%E6%96%B9%E6%B3%95/" title="三维空间的表示方法">三维空间的表示方法</a><time datetime="2024-09-18T00:50:49.000Z" title="发表于 2024-09-18 08:50:49">2024-09-18</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/10/08/249610cbabf14611.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
