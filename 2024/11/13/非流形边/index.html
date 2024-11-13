@@ -1,0 +1,260 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>非流形边 | CJH's blog</title><meta name="keywords" content="非流形边"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="非流形边Non-Manifold Edges 好博客：[Non-Manifold Edges in 3D Printing – What They Are and How to Fix Them - 3D Insider](https:&#x2F;&#x2F;3dinsider.com&#x2F;non-manifold-edges-3d-printing&#x2F;#:~:text&#x3D;Non-manifold edges refer t">
+<meta property="og:type" content="article">
+<meta property="og:title" content="非流形边">
+<meta property="og:url" content="http://cjh0220.github.io/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="非流形边Non-Manifold Edges 好博客：[Non-Manifold Edges in 3D Printing – What They Are and How to Fix Them - 3D Insider](https:&#x2F;&#x2F;3dinsider.com&#x2F;non-manifold-edges-3d-printing&#x2F;#:~:text&#x3D;Non-manifold edges refer t">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
+<meta property="article:published_time" content="2024-11-13T01:35:07.000Z">
+<meta property="article:modified_time" content="2024-11-13T01:36:31.142Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="非流形边">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '非流形边',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-11-13 09:36:31'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">130</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">103</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">26</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">非流形边</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2024-11-13T01:35:07.000Z" title="发表于 2024-11-13 09:35:07">2024-11-13</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E5%87%A0%E4%BD%95%E5%BB%BA%E6%A8%A1/">几何建模</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="非流形边"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>非流形边Non-Manifold Edges</h1>
+<p>好博客：[Non-Manifold Edges in 3D Printing – What They Are and How to Fix Them - 3D Insider](<a target="_blank" rel="noopener" href="https://3dinsider.com/non-manifold-edges-3d-printing/#:~:text=Non-manifold">https://3dinsider.com/non-manifold-edges-3d-printing/#:~:text=Non-manifold</a> edges refer to the edges of an,other%2C areas with no thickness%2C and internal walls.)</p>
+<p>参考博客：<a target="_blank" rel="noopener" href="https://www.sculpteo.com/en/3d-learning-hub/create-3d-file/fix-non-manifold-geometry/">How to fix non-manifold geometry issues on 3D models</a></p>
+<p>3D建模软件可以成为很好的工具，因为它们使您能够将想法转化为形状。另一方面，当你遇到设计问题时，它们可能会变成一场噩梦，比如非流形边。通常情况下，您可以上传3D文件进行3D打印，但由于它包含非流形几何形状，因此无法打印。在这篇文章中，除了我们为您提供的关于如何修复3D文件的其他指导方针外，我们还将尝试找出如何修复非流形问题并防止发生此类错误。让我们一起确保您将准备一个可打印的3D设计。</p>
+<h2 id="什么是-non-manifold-geometry">什么是 non-manifold geometry</h2>
+<p>非流形几何体是一种三维形状，不能展开为所有法线指向同一方向的二维曲面。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/b26f93e3bc6540a1.png" alt=""></p>
+<p>法线是一个垂直于对象表面的向量。在三维建模时，法线是设计者手动设置的参数，也可以由软件自动定义。<br>
+下图以一种说明性的方式展示了什么是正常。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/0f2f0565dfbb34d4.png" alt=""></p>
+<p>这是创建数字对象时可能出现的一个非常常见的错误。这是因为在创建3D模型的过程中，一些操作可能会创建未连接的曲面，也可能会分割曲面。也可能发生的情况是，彼此附着的面连接到一个点，而不是连接到一条边。因此，你得到了一个非流形边。此外，应修复或完全消除创建没有体积的形状的错误。一旦你使用了3D建模软件，这些错误可能就不可见了，因为你是在处理整个3D模型的形状和体积。然而，在进行3D渲染时，3D模型正在被转换为3D帧模型。在此过程中，将指定其边和顶点，并在每条边的位置将对象绘制为一组线。</p>
+<p>因此，如果3D模型包含非流形建模错误，则渲染3D文件时看起来会有所不同。如果其线框没有精确确定，3D打印机的软件将难以读取文件，因此可能无法成功打印对象。</p>
+<h2 id="为什么3D打印必须使用流形网格">为什么3D打印必须使用流形网格</h2>
+<p><strong>非流形几何是一种在现实世界中不可能存在的几何</strong>，除非非常技术化。这意味着3D模型可以以数字方式表示，但现实世界中没有几何体可以物理地支持它。由于3D模型的网格是由边、面和顶点定义的，因此它必须是流形的。如果它是非流形网格，则意味着3D模型中存在无法精确定义3D模型几何形状的错误。3D打印机的软件正在读取模型的精确几何表示，以便打印出来。因此，如果3D设计包含非流形建模错误，导致无法实现这种几何精度，3D打印机将无法识别3D文件，从而无法打印3D模型。</p>
+<h2 id="How-to-fix-non-manifold-geometries">How to fix non-manifold geometries</h2>
+<h3 id="Type-of-non-manifold-error-n°1-Multiply-connected-geometry">Type of non-manifold error n°1:  Multiply connected geometry</h3>
+<p>The shape in the image below represents a typical non-manifold geometry, which you can also find as “T-type”. In this case, there are three faces sharing a single edge.<strong>（有面但是不封闭成体积）</strong></p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/ca9d550876c90632.png" alt=""></p>
+<p>Correcting non-manifold issues like this is easy: you should eliminate the non-manifold surface either by giving it volume or by deleting it completely.（删除或补全）</p>
+<h3 id="Type-of-non-manifold-error-n°2-Several-surfaces-connected-to-a-single-vertex">Type of non-manifold error n°2: Several surfaces connected to a single vertex</h3>
+<p>In the following picture, we see another common non-manifold geometry, which is often called “bow-type”. In this case, there are more than two surfaces connected to a vertex. This is practically impossible, as there cannot be multiple faces sharing a common vertex but no edge.<strong>(一个点连接多个平面)</strong></p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/bfafa3750a5fcec6.png" alt=""></p>
+<p>This error could be eliminated by either disconnecting the cubes from each other or by deleting one of them completely.（断开多维数据集之间的连接，也就是分开处理，或者直接删去）</p>
+<blockquote>
+<p>在三维网格处理（如计算机图形学、有限元分析等）中，如果两个以上的面连接到一个点，可能会导致以下问题：</p>
+<ol>
+<li><strong>拓扑不一致</strong>：多于两个面的相交会在顶点附近产生不一致的拓扑结构，尤其是当这些面相交在一个尖锐的角上。这样的拓扑不一致可能导致渲染或计算中出现错误。</li>
+<li><strong>形变和渲染问题</strong>：在渲染过程中，多面共顶可能导致表面法线计算不准确，进而影响阴影和光照效果，使表面显示异常。在形变操作（例如平滑）中，多面共顶点会导致不自然的形状变化。</li>
+<li><strong>数据冗余</strong>：如果多个面在一个点连接，会增加计算和存储的复杂性，因为需要额外的内存和处理来处理该点的相邻面。这可能会影响性能，尤其在大规模网格上。</li>
+<li><strong>计算不稳定性</strong>：在有限元分析等计算中，多面共顶点可能导致刚度矩阵和其他计算的数值不稳定性，进而影响仿真结果的精度。</li>
+</ol>
+<p>在三维网格处理时，通常建议避免多个面在同一顶点过度聚集，必要时可以通过<strong>重新划分网格</strong>或<strong>增加顶点数量</strong>来解决。</p>
+</blockquote>
+<h3 id="Type-of-non-manifold-error-n°3-Open-objects">Type of non-manifold error n°3: Open objects</h3>
+<p>This model represents a cube with surfaces with zero volume, as well as there are two missing surfaces. In the real world, this model cannot exist as it is.（开口，不封闭，有洞）</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/9de6385d6d2dba41.png" alt=""></p>
+<p>In order to fix this geometry, you have two alternatives. Either to adjust the wall thickness of the box or to close the box with adding two new surfaces. In both cases, the cube has a valid volume and it can be 3D printed.（添加壁厚或者修补完整）</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/1fac6e1354211ec1.png" alt=""></p>
+<h3 id="Type-of-non-manifold-error-n°4-Internal-faces">Type of non-manifold error n°4: Internal faces</h3>
+<p>In the following image, we see the wireframe of a cube. From this perspective, we see an internal face that is totally unnecessary.</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/4939904b41a9d8b3.png" alt=""></p>
+<p>This error can be easily fixed by just deleting the internal face. If you do not delete that face, the software of the 3D printer will have difficulty in reading your file.（删除内部面即可）</p>
+<h3 id="Type-of-non-manifold-error-n°5-Opposite-normals">Type of non-manifold error n°5: Opposite normals</h3>
+<p>In this example, we see a single shape with two adjacent faces which have opposite normals. This error could be hard to detect, as it is the least obvious one.（法线反了）</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/933b7873fc146111.png" alt=""></p>
+<p>Once you detect the error, it is easy to fix it, by just reversing the normals, so that they point the same direction（反转法线）</p>
+<h2 id="及时处理">及时处理</h2>
+<p>纠正下载模型中的非流形几何是一回事，但如果你也制作自己的3D模型，你也要避免犯同样的错误。令人欣慰的是，当你知道非流形几何通常在何时何地发生时，避免它们会变得容易得多。</p>
+<p>在CAD建模中，布尔运算是指两个或多个形状的并集、减法或交集。布尔运算通常也是非流形边出现的地方。防止这种情况发生的最佳方法是每次执行布尔运算时检查非流形边。</p>
+<p>如果你同时处理大型或多个对象，这可能会变得困难。另一个值得注意的提示是在线框模式下检查非流形边。这会使任何不需要的面或边更明显。</p>
+<p>无论您选择哪种方法，请记住，当您的模型仍然很小很简单时，在<strong>早期删除非流形边</strong>要容易得多。必须纠正你几个小时前做的非流形边缘，这真的会打乱你的工作流程，并可能撤消和重做你已经完成的工作。它们也往往具有滚雪球效应，因为一个非流形误差会产生另一个。</p>
+<h2 id="具体方法-meshlab">具体方法(meshlab)</h2>
+<p>选择你的三维网格文件，或在meshlab中打开。</p>
+<h3 id="观察是否水密的方法">观察是否水密的方法</h3>
+<p><code>Filters &gt; Quality Measure and Computations &gt; compute Geometic Measures</code></p>
+<p>log 处会显示三维信息，</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/e7a759579e118f59.png" alt=""></p>
+<p>表示你的mesh不水密，寄。</p>
+<blockquote>
+<p>造成网格不水密的原因可能有以下几种：</p>
+<ol>
+<li><strong>几何问题</strong>：
+<ul>
+<li><strong>孔洞</strong>：网格中存在未被覆盖的空隙或孔洞，导致形状不封闭。</li>
+<li><strong>重叠或错位的面</strong>：不同面之间存在重叠、交叉或错位的情况，导致网格不连通。</li>
+<li><strong>自交</strong>：网格表面与自身相交，导致形成不规则的形状。</li>
+</ul>
+</li>
+<li><strong>网格生成过程中的错误</strong>：
+<ul>
+<li><strong>插值问题</strong>：在网格生成过程中，点、线或面插值错误可能导致连接断裂或重叠。</li>
+<li><strong>不一致的法向量</strong>：网格的面法向量方向不一致，导致某些面无法正确连接或无法识别面之间的关系。</li>
+</ul>
+</li>
+<li><strong>网格细化或简化问题</strong>：
+<ul>
+<li><strong>过度细化或简化</strong>：在网格简化或细化过程中，可能会错误地移除或改变一些关键的连接，导致网格破裂或不闭合。</li>
+<li><strong>不规则的三角形或四边形</strong>：不规则的网格单元（如长条形或极端扭曲的单元）可能导致网格无法正确连接。</li>
+</ul>
+</li>
+<li><strong>数据处理错误</strong>：
+<ul>
+<li><strong>点云数据问题</strong>：从点云生成网格时，点云数据可能不完整或存在噪声，导致网格生成时无法保证水密性。</li>
+<li><strong>文件格式问题</strong>：在转换网格文件格式时，可能会丢失部分数据或导致数据格式不兼容，从而破坏网格的水密性。</li>
+</ul>
+</li>
+<li><strong>数值误差</strong>：
+<ul>
+<li><strong>数值计算误差</strong>：在进行网格优化或转换时，浮动的小数误差可能导致不完全封闭的面或边界。</li>
+<li><strong>精度不足</strong>：在网格生成时，使用的数值精度可能不够高，导致连接点或面之间的微小偏差，造成网格的非水密性。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h4 id="补洞">补洞</h4>
+<p>补洞：<code>Filters - Remeshing,Simplification and Reconstruction - Close Holes</code></p>
+<p>根据补洞的参数进行调整，一般来讲补洞效果还行。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/adb325f13e349f27.png" alt=""></p>
+<h4 id="观察非流形边并删除">观察非流形边并删除</h4>
+<p><code>Filters - Selection- Select non Manifold Edges</code>会将网格中的非流形边和相关面标红。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/690af55dc7bc8ff1.png" alt=""></p>
+<p>选择非流形边后，可以再使用<code>Filters - Selection- Delete Selected Faces and Verties</code>删除，不过这样会留下孔洞，处理起来更复杂。</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/9b35d4472794a46e.png" alt=""></p>
+<h4 id="重建：">重建：</h4>
+<p>体素重建，poisson重建都可以逃课，但是我这里用的poisson重建，也有相关代码pymeshlab。</p>
+<p><code>Filters - Remeshing,Simplification and Reconstruction- Surface Reconstruction</code></p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/3387eb5a333bc057.png" alt=""></p>
+<p>可以调整精细度，也可以点击copy代码按钮，主要方法：</p>
+<p><img src="https://s3.bmp.ovh/imgs/2024/11/11/3abf27f32ec9adad.png" alt=""></p>
+<p>Copy pymeshlab代码：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># ms.generate_surface_reconstruction_screened_poisson()</span></span><br><span class="line"><span class="comment"># pip install pymeshlab</span></span><br><span class="line"><span class="keyword">import</span> pymeshlab</span><br><span class="line"><span class="keyword">def</span> <span class="title function_">poisson_reconstruction</span>(<span class="params">input_path, output_path, depth=<span class="number">8</span></span>):</span><br><span class="line">    <span class="comment"># 初始化 PyMeshLab 工作空间</span></span><br><span class="line">    ms = pymeshlab.MeshSet()</span><br><span class="line">    <span class="comment"># 加载输入网格文件</span></span><br><span class="line">    ms.load_new_mesh(input_path)</span><br><span class="line">    </span><br><span class="line">    <span class="comment"># 根据你所选择的代码改这个函数，</span></span><br><span class="line">    <span class="comment"># 执行 Screened Poisson Surface 重建</span></span><br><span class="line">    ms.generate_surface_reconstruction_screened_poisson()<span class="comment"># 参数在meshlab客户端也可以调整，会反馈到代码中</span></span><br><span class="line">    <span class="comment"># 保存重建后水密网格</span></span><br><span class="line">    ms.save_current_mesh(output_path)</span><br><span class="line">    </span><br><span class="line"><span class="comment"># 对两个网格进行 Poisson 重建，保存水密的重建结果</span></span><br><span class="line">poisson_reconstruction(<span class="string">&quot;mesh1.obj&quot;</span>, <span class="string">&quot;reconstructed_mesh1.obj&quot;</span>)</span><br><span class="line">poisson_reconstruction(<span class="string">&quot;mesh2.obj&quot;</span>, <span class="string">&quot;reconstructed_mesh2.obj&quot;</span>)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 使用 Trimesh 加载重建后的水密网格</span></span><br><span class="line">mesh1 = trimesh.load(<span class="string">&quot;reconstructed_mesh1.obj&quot;</span>)</span><br><span class="line">mesh2 = trimesh.load(<span class="string">&quot;reconstructed_mesh2.obj&quot;</span>)</span><br></pre></td></tr></table></figure>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/">http://cjh0220.github.io/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/">非流形边</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2024/11/13/%E6%A0%B7%E6%9D%A1%E5%87%BD%E6%95%B0/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">样条函数</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">130</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">103</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">26</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">非流形边Non-Manifold Edges</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF-non-manifold-geometry"><span class="toc-number">1.1.</span> <span class="toc-text">什么是 non-manifold geometry</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%883D%E6%89%93%E5%8D%B0%E5%BF%85%E9%A1%BB%E4%BD%BF%E7%94%A8%E6%B5%81%E5%BD%A2%E7%BD%91%E6%A0%BC"><span class="toc-number">1.2.</span> <span class="toc-text">为什么3D打印必须使用流形网格</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#How-to-fix-non-manifold-geometries"><span class="toc-number">1.3.</span> <span class="toc-text">How to fix non-manifold geometries</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-of-non-manifold-error-n%C2%B01-Multiply-connected-geometry"><span class="toc-number">1.3.1.</span> <span class="toc-text">Type of non-manifold error n°1:  Multiply connected geometry</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-of-non-manifold-error-n%C2%B02-Several-surfaces-connected-to-a-single-vertex"><span class="toc-number">1.3.2.</span> <span class="toc-text">Type of non-manifold error n°2: Several surfaces connected to a single vertex</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-of-non-manifold-error-n%C2%B03-Open-objects"><span class="toc-number">1.3.3.</span> <span class="toc-text">Type of non-manifold error n°3: Open objects</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-of-non-manifold-error-n%C2%B04-Internal-faces"><span class="toc-number">1.3.4.</span> <span class="toc-text">Type of non-manifold error n°4: Internal faces</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Type-of-non-manifold-error-n%C2%B05-Opposite-normals"><span class="toc-number">1.3.5.</span> <span class="toc-text">Type of non-manifold error n°5: Opposite normals</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%8A%E6%97%B6%E5%A4%84%E7%90%86"><span class="toc-number">1.4.</span> <span class="toc-text">及时处理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E6%96%B9%E6%B3%95-meshlab"><span class="toc-number">1.5.</span> <span class="toc-text">具体方法(meshlab)</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F%E6%98%AF%E5%90%A6%E6%B0%B4%E5%AF%86%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">1.5.1.</span> <span class="toc-text">观察是否水密的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A1%A5%E6%B4%9E"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">补洞</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%A7%82%E5%AF%9F%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9%E5%B9%B6%E5%88%A0%E9%99%A4"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">观察非流形边并删除</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%87%8D%E5%BB%BA%EF%BC%9A"><span class="toc-number">1.5.1.3.</span> <span class="toc-text">重建：</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/" title="非流形边"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="非流形边"/></a><div class="content"><a class="title" href="/2024/11/13/%E9%9D%9E%E6%B5%81%E5%BD%A2%E8%BE%B9/" title="非流形边">非流形边</a><time datetime="2024-11-13T01:35:07.000Z" title="发表于 2024-11-13 09:35:07">2024-11-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/13/%E6%A0%B7%E6%9D%A1%E5%87%BD%E6%95%B0/" title="样条函数"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="样条函数"/></a><div class="content"><a class="title" href="/2024/11/13/%E6%A0%B7%E6%9D%A1%E5%87%BD%E6%95%B0/" title="样条函数">样条函数</a><time datetime="2024-11-13T01:34:55.000Z" title="发表于 2024-11-13 09:34:55">2024-11-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/23/BRDF/" title="BRDF"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="BRDF"/></a><div class="content"><a class="title" href="/2024/10/23/BRDF/" title="BRDF">BRDF</a><time datetime="2024-10-23T09:09:50.000Z" title="发表于 2024-10-23 17:09:50">2024-10-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/23/UVmapping/" title="UVmapping"><img src="https://s3.bmp.ovh/imgs/2024/10/20/da943600cfa91298.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="UVmapping"/></a><div class="content"><a class="title" href="/2024/10/23/UVmapping/" title="UVmapping">UVmapping</a><time datetime="2024-10-23T09:07:11.000Z" title="发表于 2024-10-23 17:07:11">2024-10-23</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/10/11/MVSNet/" title="MVSNet"><img src="https://s3.bmp.ovh/imgs/2024/10/11/448b7fc6cc6a415b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="MVSNet"/></a><div class="content"><a class="title" href="/2024/10/11/MVSNet/" title="MVSNet">MVSNet</a><time datetime="2024-10-11T08:09:42.000Z" title="发表于 2024-10-11 16:09:42">2024-10-11</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
+  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
+    btf.wrap(item, 'div', { class: 'katex-wrap'})
+  })
+})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
