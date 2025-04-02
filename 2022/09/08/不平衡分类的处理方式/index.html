@@ -146,37 +146,46 @@
 <p>这个问题在异常检测是至关重要的的场景中很明显，例如电力盗窃、银行的欺诈交易、罕见疾病识别等。在这种情况下，利用传统机器学习算法开发出的预测模型可能会存在偏差和不准确。</p>
 <p>发生这种情况的原因是机器学习算法通常被设计成通过减少误差来提高准确率。所以它们并没有考虑类别的分布/比例或者是类别的平衡。</p>
 <p>这篇指南描述了使用多种采样技术来解决这种类别不平衡问题的各种方法。本文还比较了每种技术的优缺点。最后，本文作者还向我们展示了一种让你可以创建一个平衡的类分布的方法，让你可以应用专门为此设计的集成学习技术（ensemble learning technique）。本文作者为来自 KPMG 的数据分析顾问 Upasana Mukherjee。</p>
-<h2 id="1-不平衡数据集面临的挑战"><a href="#1-不平衡数据集面临的挑战" class="headerlink" title="1. 不平衡数据集面临的挑战"></a><strong>1. 不平衡数据集面临的挑战</strong></h2><p>当今公用事业行业面临的主要挑战之一就是电力盗窃。电力盗窃是全球第三大盗窃形式。越来越多的公用事业公司倾向于使用高级的数据分析技术和机器学习算法来识别代表盗窃的消耗模式。</p>
+<h2 id="1-不平衡数据集面临的挑战"><strong>1. 不平衡数据集面临的挑战</strong></h2>
+<p>当今公用事业行业面临的主要挑战之一就是电力盗窃。电力盗窃是全球第三大盗窃形式。越来越多的公用事业公司倾向于使用高级的数据分析技术和机器学习算法来识别代表盗窃的消耗模式。</p>
 <p>然而，最大的障碍之一就是海量的数据及其分布。欺诈性交易的数量要远低于正常和健康的交易，也就是说，它只占到了总观测量的大约 1-2%。这里的问题是提高识别罕见的少数类别的准确率，而不是实现更高的总体准确率。</p>
 <p>当面临不平衡的数据集的时候，机器学习算法倾向于产生不太令人满意的分类器。对于任何一个不平衡的数据集，如果要预测的事件属于少数类别，并且事件比例小于 5%，那就通常将其称为罕见事件（rare event）。</p>
-<h3 id="1-1不平衡类别的实例"><a href="#1-1不平衡类别的实例" class="headerlink" title="1.1不平衡类别的实例"></a>1.1不平衡类别的实例</h3><p>让我们借助一个实例来理解不平衡类别。</p>
+<h3 id="1-1不平衡类别的实例">1.1不平衡类别的实例</h3>
+<p>让我们借助一个实例来理解不平衡类别。</p>
 <p>例子：在一个公用事业欺诈检测数据集中，你有以下数据：</p>
 <p>总观测 = 1000</p>
 <p>欺诈观测 = 20</p>
 <p>非欺诈观测 = 980</p>
 <p>罕见事件比例 = 2%</p>
 <p>这个案例的数据分析中面临的主要问题是：对于这些先天就是小概率的异常事件，如何通过获取合适数量的样本来得到一个平衡的数据集？</p>
-<h3 id="1-2使用标准机器学习技术时面临的挑战"><a href="#1-2使用标准机器学习技术时面临的挑战" class="headerlink" title="1.2使用标准机器学习技术时面临的挑战"></a>1.2使用标准机器学习技术时面临的挑战</h3><p>面临不平衡数据集的时候，传统的机器学习模型的评价方法不能精确地衡量模型的性能。</p>
+<h3 id="1-2使用标准机器学习技术时面临的挑战">1.2使用标准机器学习技术时面临的挑战</h3>
+<p>面临不平衡数据集的时候，传统的机器学习模型的评价方法不能精确地衡量模型的性能。</p>
 <p>诸如决策树和 Logistic 回归这些标准的分类算法会偏向于数量多的类别。它们往往会仅预测占数据大多数的类别。在总量中占少数的类别的特征就会被视为噪声，并且通常会被忽略。因此，与多数类别相比，少数类别存在比较高的误判率。</p>
 <p>对分类算法的表现的评估是用一个包含关于实际类别和预测类别信息的混淆矩阵（Confusion Matrix）来衡量的。</p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8IAicDoeYFUsXGw04ZiaIgF4tGqwwx6sY4HAicosMtjSXYN5MQzjcibzYfQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p><em>如上表所示，模型的准确率 = (TP+TN) / (TP+FN+FP+TP)</em></p>
 <p>然而，在不平衡领域时，准确率并不是一个用来衡量模型性能的合适指标。例如：一个分类器，在包含 2% 的罕见事件时，如果它将所有属于大部分类别的实例都正确分类，实现了 98% 的准确率；而把占 2% 的少数观测数据视为噪声并消除了。</p>
-<h3 id="1-3不平衡类别的其他实例"><a href="#1-3不平衡类别的其他实例" class="headerlink" title="1.3不平衡类别的其他实例"></a>1.3不平衡类别的其他实例</h3><p>因此，总结一下，在尝试利用不平衡数据集解决特定业务的挑战时，由标准机器学习算法生成的分类器可能无法给出准确的结果。除了欺诈性交易，存在不平衡数据集问题的常见业务问题还有：</p>
+<h3 id="1-3不平衡类别的其他实例">1.3不平衡类别的其他实例</h3>
+<p>因此，总结一下，在尝试利用不平衡数据集解决特定业务的挑战时，由标准机器学习算法生成的分类器可能无法给出准确的结果。除了欺诈性交易，存在不平衡数据集问题的常见业务问题还有：</p>
 <ul>
 <li>识别客户流失率的数据集，其中绝大多数顾客都会继续使用该项服务。具体来说，电信公司中，客户流失率低于 2%。</li>
 <li>医疗诊断中识别罕见疾病的数据集</li>
 <li>自然灾害，例如地震</li>
 </ul>
-<h3 id="1-4使用的数据集"><a href="#1-4使用的数据集" class="headerlink" title="1.4使用的数据集"></a>1.4使用的数据集</h3><p>这篇文章中，我们会展示多种在高度不平衡数据集上训练一个性能良好的模型的技术。并且用下面的欺诈检测数据集来精确地预测罕见事件：<br>总观测 = 1000</p>
+<h3 id="1-4使用的数据集">1.4使用的数据集</h3>
+<p>这篇文章中，我们会展示多种在高度不平衡数据集上训练一个性能良好的模型的技术。并且用下面的欺诈检测数据集来精确地预测罕见事件：<br>
+总观测 = 1000</p>
 <p>欺诈观测 = 20</p>
 <p>非欺诈性观测 = 980</p>
 <p>事件比例 = 2%</p>
 <p>欺诈类别标志 = 0（非欺诈实例）</p>
 <p>欺诈类别标志 = 1（欺诈实例）</p>
-<h2 id="2-处理不平衡数据集的方法"><a href="#2-处理不平衡数据集的方法" class="headerlink" title="2. 处理不平衡数据集的方法"></a><strong>2. 处理不平衡数据集的方法</strong></h2><h3 id="2-1-数据层面的方法：重采样技术"><a href="#2-1-数据层面的方法：重采样技术" class="headerlink" title="2.1 数据层面的方法：重采样技术"></a>2.1 数据层面的方法：重采样技术</h3><p>处理不平衡数据集需要在往机器学习算法输入数据之前，制定诸如提升分类算法或平衡训练数据的类（数据预处理）的策略。后者因为应用范围广泛而更常使用。</p>
+<h2 id="2-处理不平衡数据集的方法"><strong>2. 处理不平衡数据集的方法</strong></h2>
+<h3 id="2-1-数据层面的方法：重采样技术">2.1 数据层面的方法：重采样技术</h3>
+<p>处理不平衡数据集需要在往机器学习算法输入数据之前，制定诸如提升分类算法或平衡训练数据的类（数据预处理）的策略。后者因为应用范围广泛而更常使用。</p>
 <p>平衡分类的主要目标不是增加少数类的的频率就是降低多数类的频率。这样做是为了获得大概相同数量的两个类的实例。让我们一起看看几个重采样（resampling）技术：</p>
-<h4 id="2-1-1-随机欠采样（Random-Under-Sampling）"><a href="#2-1-1-随机欠采样（Random-Under-Sampling）" class="headerlink" title="2.1.1 随机欠采样（Random Under-Sampling）"></a>2.1.1 随机欠采样（Random Under-Sampling）</h4><p>随机欠采样的目标是通过随机地消除占多数的类的样本来平衡类分布；直到多数类和少数类的实例实现平衡，目标才算达成。</p>
+<h4 id="2-1-1-随机欠采样（Random-Under-Sampling）">2.1.1 随机欠采样（Random Under-Sampling）</h4>
+<p>随机欠采样的目标是通过随机地消除占多数的类的样本来平衡类分布；直到多数类和少数类的实例实现平衡，目标才算达成。</p>
 <p>总观测 = 1000</p>
 <p>欺诈性观察 = 20</p>
 <p>非欺诈性观察 = 980</p>
@@ -186,17 +195,20 @@
 <p>结合欺诈性与非欺诈性观察之后的全体观察 = 20+98 = 118</p>
 <p>欠采样之后新数据集的事件发生率 = 20／118 = 17%</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>它可以提升运行时间；并且当训练数据集很大时，可以通过减少样本数量来解决存储问题。</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>它会丢弃对构建规则分类器很重要的有价值的潜在信息。</li>
 <li>被随机欠采样选取的样本可能具有偏差。它不能准确代表大多数。从而在实际的测试数据集上得到不精确的结果。</li>
 </ul>
 </li>
 </ul>
-<h4 id="2-1-2随机过采样（Random-Over-Sampling）"><a href="#2-1-2随机过采样（Random-Over-Sampling）" class="headerlink" title="2.1.2随机过采样（Random Over-Sampling）"></a>2.1.2随机过采样（Random Over-Sampling）</h4><p>过采样（Over-Sampling）通过随机复制少数类来增加其中的实例数量，从而可增加样本中少数类的代表性。</p>
+<h4 id="2-1-2随机过采样（Random-Over-Sampling）">2.1.2随机过采样（Random Over-Sampling）</h4>
+<p>过采样（Over-Sampling）通过随机复制少数类来增加其中的实例数量，从而可增加样本中少数类的代表性。</p>
 <p>总观测 = 1000</p>
 <p>欺诈性观察 = 20</p>
 <p>非欺诈性观察 = 980</p>
@@ -207,17 +219,20 @@
 <p>过采样之后新数据集中的总体观察 = 1380</p>
 <p>欠采样之后新数据集的事件发生率 = 400/1380 = 29%</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>与欠采样不同，这种方法不会带来信息损失。</li>
 <li>表现优于欠采样。</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>由于复制少数类事件，它加大了过拟合的可能性</li>
 </ul>
 </li>
 </ul>
-<h4 id="2-1-3-基于聚类的过采样（Cluster-Based-Over-Sampling）"><a href="#2-1-3-基于聚类的过采样（Cluster-Based-Over-Sampling）" class="headerlink" title="2.1.3 基于聚类的过采样（Cluster-Based Over Sampling）"></a>2.1.3 基于聚类的过采样（Cluster-Based Over Sampling）</h4><p>在这种情况下，K-均值聚类算法独立地被用于少数和多数类实例。这是为了识别数据集中的聚类。随后，每一个聚类都被过采样以至于相同类的所有聚类有着同样的实例数量，且所有的类有着相同的大小。</p>
+<h4 id="2-1-3-基于聚类的过采样（Cluster-Based-Over-Sampling）">2.1.3 基于聚类的过采样（Cluster-Based Over Sampling）</h4>
+<p>在这种情况下，K-均值聚类算法独立地被用于少数和多数类实例。这是为了识别数据集中的聚类。随后，每一个聚类都被过采样以至于相同类的所有聚类有着同样的实例数量，且所有的类有着相同的大小。</p>
 <p>总观测 = 1000</p>
 <p>欺诈性观察 = 20</p>
 <p>非欺诈性观察 = 980</p>
@@ -261,17 +276,20 @@
 </ol>
 <p>基于聚类的过采样之后的事件率 = 500/ (1020+500) = 33 %</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>这种聚类技术有助于克服类之间不平衡的挑战。表示正例的样本数量不同于表示反例的样本数量。</li>
 <li>有助于克服由不同子聚类组成的类之间的不平衡的挑战。每一个子聚类不包含相同数量的实例。</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>正如大多数过采样技术，这一算法的主要缺点是有可能过拟合训练集。</li>
 </ul>
 </li>
 </ul>
-<h4 id="2-1-4信息性过采样：合成少数类过采样技术（SMOTE）"><a href="#2-1-4信息性过采样：合成少数类过采样技术（SMOTE）" class="headerlink" title="2.1.4信息性过采样：合成少数类过采样技术（SMOTE）"></a>2.1.4信息性过采样：合成少数类过采样技术（SMOTE）</h4><p>这一技术可用来避免过拟合——当直接复制少数类实例并将其添加到主数据集时。从少数类中把一个数据子集作为一个实例取走，接着创建相似的新合成的实例。这些合成的实例接着被添加进原来的数据集。新数据集被用作样本以训练分类模型。</p>
+<h4 id="2-1-4信息性过采样：合成少数类过采样技术（SMOTE）">2.1.4信息性过采样：合成少数类过采样技术（SMOTE）</h4>
+<p>这一技术可用来避免过拟合——当直接复制少数类实例并将其添加到主数据集时。从少数类中把一个数据子集作为一个实例取走，接着创建相似的新合成的实例。这些合成的实例接着被添加进原来的数据集。新数据集被用作样本以训练分类模型。</p>
 <p>总观测 = 1000</p>
 <p>欺诈性观察 = 20</p>
 <p>非欺诈性观察 = 980</p>
@@ -282,56 +300,65 @@
 <p>多数类（非欺诈性观察）= 980</p>
 <p>事件发生率 = 300/1280 = 23.4 %</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>通过随机采样生成的合成样本而非实例的副本，可以缓解过拟合的问题。</li>
 <li>不会损失有价值信息。</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>当生成合成性实例时，SMOTE 并不会把来自其他类的相邻实例考虑进来。这导致了类重叠的增加，并会引入额外的噪音。</li>
 <li>SMOTE 对高维数据不是很有效。</li>
 </ul>
 </li>
 </ul>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8nq3B8E6Ffo02wIn4HFM5m8dS7eENZLEy1IoY6h4gwq5RksvIpVksow/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img"  /></p>
+<img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8nq3B8E6Ffo02wIn4HFM5m8dS7eENZLEy1IoY6h4gwq5RksvIpVksow/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img"  />
 <p><em>图 1：合成少数类过采样算法，其中 N 是属性的数量</em></p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8AibmQVA6FMYcCVJ8icEogb0KNNgYT8qe8icRc524QLthFvHuLIxCEsSNw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p><em>图 2：借助 SMOTE 的合成实例生成</em></p>
-<h4 id="2-1-5-改进的合成少数类过采样技术（MSMOTE）"><a href="#2-1-5-改进的合成少数类过采样技术（MSMOTE）" class="headerlink" title="2.1.5 改进的合成少数类过采样技术（MSMOTE）"></a>2.1.5 改进的合成少数类过采样技术（MSMOTE）</h4><p>这是 SMOTE 的改进版本，SMOTE 没有考虑数据集中少数类和潜在噪声的基本分布。所以为了提高 SMOTE 的效果，MSMOTE 应运而生。</p>
+<h4 id="2-1-5-改进的合成少数类过采样技术（MSMOTE）">2.1.5 改进的合成少数类过采样技术（MSMOTE）</h4>
+<p>这是 SMOTE 的改进版本，SMOTE 没有考虑数据集中少数类和潜在噪声的基本分布。所以为了提高 SMOTE 的效果，MSMOTE 应运而生。</p>
 <p>该算法将少数类别的样本分为 3 个不同的组：安全样本、边界样本和潜在噪声样本。分类通过计算少数类的样本和训练数据的样本之间的距离来完成。安全样本是可以提高分类器性能的那些数据点。而另一方面，噪声是可以降低分类器的性能的数据点。两者之间的那些数据点被分类为边界样本。</p>
 <p>虽然 MSOMTE 的基本流程与 SMOTE 的基本流程相同，在 MSMOTE 中，选择近邻的策略不同于 SMOTE。该算法是从安全样本出发随机选择 k-最近邻的数据点，并从边界样本出发选择最近邻，并且不对潜在噪声样本进行任何操作。</p>
-<h3 id="2-2-算法集成技术（Algorithmic-Ensemble-Techniques）"><a href="#2-2-算法集成技术（Algorithmic-Ensemble-Techniques）" class="headerlink" title="2.2 算法集成技术（Algorithmic Ensemble Techniques）"></a>2.2 算法集成技术（Algorithmic Ensemble Techniques）</h3><p>上述部分涉及通过重采样原始数据提供平衡类来处理不平衡数据，在本节中，我们将研究一种替代方法：修改现有的分类算法，使其适用于不平衡数据集。</p>
+<h3 id="2-2-算法集成技术（Algorithmic-Ensemble-Techniques）">2.2 算法集成技术（Algorithmic Ensemble Techniques）</h3>
+<p>上述部分涉及通过重采样原始数据提供平衡类来处理不平衡数据，在本节中，我们将研究一种替代方法：修改现有的分类算法，使其适用于不平衡数据集。</p>
 <p>集成方法的主要目的是提高单个分类器的性能。该方法从原始数据中构建几个两级分类器，然后整合它们的预测。</p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8mdwUjdSP9NibLfLdvo39ZFc3vU6p2MRickhbYXQNlGyPQkJNdTty9KUw/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p><em>图 3：基于集成的方法</em></p>
-<h4 id="2-2-1-基于-Bagging-的方法"><a href="#2-2-1-基于-Bagging-的方法" class="headerlink" title="2.2.1 基于 Bagging 的方法"></a>2.2.1 基于 Bagging 的方法</h4><p>Bagging 是 Bootstrap Aggregating 的缩写。传统的 Bagging 算法包括生成「n」个不同替换的引导训练样本，并分别训练每个自举算法上的算法，然后再聚合预测。</p>
+<h4 id="2-2-1-基于-Bagging-的方法">2.2.1 基于 Bagging 的方法</h4>
+<p>Bagging 是 Bootstrap Aggregating 的缩写。传统的 Bagging 算法包括生成「n」个不同替换的引导训练样本，并分别训练每个自举算法上的算法，然后再聚合预测。</p>
 <p>Bagging 常被用于减少过拟合，以提高学习效果生成准确预测。与 boosting 不同，bagging 方法允许在自举样本中进行替换。</p>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8LocuAel0M7vqnNdXhnliaHb3HcwibQUsd1hwarAz0IcJ4icpP6COpfUnA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img" style="zoom:67%;" /></p>
+<img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8LocuAel0M7vqnNdXhnliaHb3HcwibQUsd1hwarAz0IcJ4icpP6COpfUnA/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img" style="zoom:67%;" />
 <p><em>图 4：Bagging 方法</em></p>
 <p>总观测= 1000</p>
 <p>欺诈观察= 20</p>
 <p>非欺诈观察= 980</p>
 <p>事件率= 2％</p>
-<p>​        从具有替换的群体中选择 10 个自举样品。每个样本包含 200 个观察值。每个样本都不同于原始数据集，但类似于分布和变化上与该数据集类似。机器学习算法（如 logistic 回归、神经网络与决策树）拟合包含 200 个观察的自举样本，且分类器 c1，c2 … c10 被聚合以产生复合分类器。这种集成方法能产生更强的复合分类器，因为它组合了各个分类器的结果。</p>
+<p>​		从具有替换的群体中选择 10 个自举样品。每个样本包含 200 个观察值。每个样本都不同于原始数据集，但类似于分布和变化上与该数据集类似。机器学习算法（如 logistic 回归、神经网络与决策树）拟合包含 200 个观察的自举样本，且分类器 c1，c2 … c10 被聚合以产生复合分类器。这种集成方法能产生更强的复合分类器，因为它组合了各个分类器的结果。</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>提高了机器学习算法的稳定性与准确性</li>
 <li>减少方差</li>
 <li>减少了 bagged 分类器的错误分类</li>
 <li>在嘈杂的数据环境中，bagging 的性能优于 boosting</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>bagging 只会在基本分类器效果很好时才有效。错误的分类可能会进一步降低表现。</li>
 </ul>
 </li>
 </ul>
-<h4 id="2-2-2-基于-Boosting-的方法"><a href="#2-2-2-基于-Boosting-的方法" class="headerlink" title="2.2.2 基于 Boosting 的方法"></a>2.2.2 基于 Boosting 的方法</h4><p>Boosting 是一种集成技术，它可以将弱学习器结合起来创造出一个能够进行准确预测的强大学习器。Boosting 开始于在训练数据上准备的基本分类器/弱分类器。</p>
+<h4 id="2-2-2-基于-Boosting-的方法">2.2.2 基于 Boosting 的方法</h4>
+<p>Boosting 是一种集成技术，它可以将弱学习器结合起来创造出一个能够进行准确预测的强大学习器。Boosting 开始于在训练数据上准备的基本分类器/弱分类器。</p>
 <p>基本学习器/分类器是弱学习器，即预测准确度仅略好于平均水平。弱是指当数据的存在小变化时，会引起分类模型出现大的变化。</p>
 <p>在下一次迭代中，新分类器将重点放在那些在上一轮中被错误分类的案例上。</p>
-<p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8teMRguuBaakjXE4ngq69qXGYbbLMPibvZBa1uzVXVL1CTokBDDXWyicg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img" style="zoom: 200%;" /></p>
+<img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8teMRguuBaakjXE4ngq69qXGYbbLMPibvZBa1uzVXVL1CTokBDDXWyicg/640?wx_fmt=png&tp=webp&wxfrom=5&wx_lazy=1&wx_co=1" alt="img" style="zoom: 200%;" />
 <p><em>图 5：Boosting 方法</em></p>
-<h5 id="2-2-2-1-自适应-boosting——Ada-Boost"><a href="#2-2-2-1-自适应-boosting——Ada-Boost" class="headerlink" title="2.2.2.1 自适应 boosting——Ada Boost"></a>2.2.2.1 自适应 boosting——Ada Boost</h5><p>Ada Boost 是最早的 boosting 技术，其能通过许多弱的和不准确的规则的结合来创造高准确度的预测。其中每个训练器都是被串行地训练的，其目标在每一轮正确分类上一轮没能正确分类的实例。</p>
+<h5 id="2-2-2-1-自适应-boosting——Ada-Boost">2.2.2.1 自适应 boosting——Ada Boost</h5>
+<p>Ada Boost 是最早的 boosting 技术，其能通过许多弱的和不准确的规则的结合来创造高准确度的预测。其中每个训练器都是被串行地训练的，其目标在每一轮正确分类上一轮没能正确分类的实例。</p>
 <p>对于一个学习过的分类器，如果要做出强大的预测，其应该具备以下三个条件：</p>
 <ul>
 <li>规则简单</li>
@@ -346,17 +373,20 @@
 <p>然后，那 600 次被错误分类的观察的权重增大为 W2，而这 400 次被正确分类的实例的权重减小为 W3。</p>
 <p>在每一次迭代中，这些更新过的加权观察都会被送入弱的分类器以提升其表现。这个过程会一直持续，直到错误分类率显著降低，从而得到一个强大的分类器。</p>
 <ul>
-<li>优点<ul>
+<li>优点
+<ul>
 <li>非常简单就能实现</li>
 <li>可以很好地泛化——适合任何类型的分类问题且不易过拟合</li>
 </ul>
 </li>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>对噪声数据和异常值敏感</li>
 </ul>
 </li>
 </ul>
-<h5 id="2-2-2-2-梯度树-boosting"><a href="#2-2-2-2-梯度树-boosting" class="headerlink" title="2.2.2.2 梯度树 boosting"></a>2.2.2.2 梯度树 boosting</h5><p>在梯度 Boosting（Gradient Boosting）中，许多模型都是按顺序训练的。其是一种数值优化算法，其中每个模型都使用梯度下降（Gradient Descent）方法来最小化损失函数 y = ax+b+e。</p>
+<h5 id="2-2-2-2-梯度树-boosting">2.2.2.2 梯度树 boosting</h5>
+<p>在梯度 Boosting（Gradient Boosting）中，许多模型都是按顺序训练的。其是一种数值优化算法，其中每个模型都使用梯度下降（Gradient Descent）方法来最小化损失函数 y = ax+b+e。</p>
 <p>在梯度 Boosting 中，决策树（Decision Tree）被用作弱学习器。</p>
 <p>尽管 Ada Boost 和梯度 Boosting 都是基于弱学习器/分类器工作的，而且都是在努力使它们变成强大的学习器，但这两种方法之间存在一些显著的差异。Ada Boost 需要在实际的训练过程之前由用户指定一组弱学习器或随机生成弱学习器。其中每个学习器的权重根据其每步是否正确执行了分类而进行调整。而梯度 Boosting 则是在训练数据集上构建第一个用来预测样本的学习器，然后计算损失（即真实值和第一个学习器的输出之间的差），然后再使用这个损失在第二个阶段构建改进了的学习器。</p>
 <p>在每一个步骤，该损失函数的残差（residual）都是用梯度下降法计算出来的，而新的残差会在后续的迭代中变成目标变量。</p>
@@ -367,32 +397,78 @@
 <p>比如说，决策树拟合的是准确分类仅 5 次观察为欺诈观察的情况。然后基于该步骤的实际输出和预测输出之间的差，计算出一个可微的损失函数。该损失函数的这个残差是下一次迭代的目标变量 F1。</p>
 <p>类似地，该算法内部计算该损失函数，并在每个阶段更新该目标，然后在初始分类器的基础上提出一个改进过的分类器。</p>
 <ul>
-<li>缺点<ul>
+<li>缺点
+<ul>
 <li>梯度增强过的树比随机森林更难拟合</li>
 <li>梯度 Boosting 算法通常有 3 个可以微调的参数：收缩（shrinkage）参数、树的深度和树的数量。要很好拟合，每个参数都需要合适的训练。如果这些参数没有得到很好的调节，那么就可能会导致过拟合。</li>
 </ul>
 </li>
 </ul>
-<h5 id="2-2-2-3-XGBoost"><a href="#2-2-2-3-XGBoost" class="headerlink" title="2.2.2.3 XGBoost"></a>2.2.2.3 XGBoost</h5><p>XGBoost（Extreme Gradient Boosting/极限梯度提升）是 Gradient Boosting 算法的一种更先进和更有效的实现。</p>
+<h5 id="2-2-2-3-XGBoost">2.2.2.3 XGBoost</h5>
+<p>XGBoost（Extreme Gradient Boosting/极限梯度提升）是 Gradient Boosting 算法的一种更先进和更有效的实现。</p>
 <p>相对于其它 Boosting 技术的优点：</p>
 <ul>
 <li>速度比普通的 Gradient Boosting 快 10 倍，因为其可以实现并行处理。它是高度灵活的，因为用户可以自定义优化目标和评估标准，其具有内置的处理缺失值的机制。</li>
 <li>和遇到了负损失就会停止分裂节点的 Gradient Boosting 不同，XGBoost 会分裂到指定的最大深度，然后会对其树进行反向的剪枝（prune），移除仅有一个负损失的分裂。</li>
 </ul>
 <p>XGBoost 可以使用 R 和 Python 中的 （sklearn库中）XGBoost 包实现。</p>
-<h2 id="3-实际案例"><a href="#3-实际案例" class="headerlink" title="3. 实际案例"></a><strong>3. 实际案例</strong></h2><h3 id="3-1-数据描述"><a href="#3-1-数据描述" class="headerlink" title="3.1 数据描述"></a>3.1 数据描述</h3><p>这个例子使用了电信公司的包含了 47241 条顾客记录的数据集，每条记录包含的信息有 27 个关键预测变量</p>
+<h2 id="3-实际案例"><strong>3. 实际案例</strong></h2>
+<h3 id="3-1-数据描述">3.1 数据描述</h3>
+<p>这个例子使用了电信公司的包含了 47241 条顾客记录的数据集，每条记录包含的信息有 27 个关键预测变量</p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8w1KJsX6wyzYuYAGpSQZW88dQY33XBibSh9j20HzDpOPg9yHibNOribiboQ/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p>罕见事件数据集的数据结构如下，缺失值删除、异常值处理以及降维。</p>
 <p><img src="http://mmbiz.qpic.cn/mmbiz_png/KmXPKA19gW8zRspIQNyjaNfjsUI6icwZ8DP7NOOCRtlfUajFdFVicaBanXn1fxIHusVGZLaovGtcYUib3hibE0Vk0g/640?wx_fmt=png&amp;tp=webp&amp;wxfrom=5&amp;wx_lazy=1&amp;wx_co=1" alt="img"></p>
 <p>后面用R代码，这边不用了。</p>
-<h2 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h2><p>遇到不平衡数据集时，没有改善预测模型准确性的一站式解决方案。你可能需要尝试多个办法来搞清楚最适合数据集的采样技术。在绝大多数情况下，诸如 SMOTE 以及 MSMOTE 之类的合成技术会比传统过采样或欠采样的办法要好。</p>
+<h2 id="结论">结论</h2>
+<p>遇到不平衡数据集时，没有改善预测模型准确性的一站式解决方案。你可能需要尝试多个办法来搞清楚最适合数据集的采样技术。在绝大多数情况下，诸如 SMOTE 以及 MSMOTE 之类的合成技术会比传统过采样或欠采样的办法要好。</p>
 <p>为了获得更好的结果，你可以在使用诸如 Gradeint boosting 和 XGBoost 的同时也使用 SMOTE 和 MSMOTE 等合成采样技术。</p>
 <p>通常用于解决不平衡数据集问题的先进 bagging 技术之一是 SMOTE bagging。这个办法采取了一种完全不同于传统 bagging 技术的办法来创造每个 Bag/Bootstrap。通过每次迭代时设置一个 SMOTE 重采样率，它可以借由 SMOTE 算法生成正例。每次迭代时，负例集会被 bootstrap。</p>
 <p>不平衡数据集的特点不同，最有效的技术也会有所不同。对比模型时要考虑相关评估参数。</p>
 <p>在对比通过全面地结合上述技术而构建的多个预测模型时，ROC 曲线下的 Lift &amp; Area 将会在决定最优模型上发挥作用。</p>
 <p>原文链接：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s?__biz=MzA3MzI4MjgzMw==&amp;mid=2650724464&amp;idx=1&amp;sn=1f34358862bacfb4c7ea17c864d8c44d&amp;chksm=871b1c0eb06c95180e717d8316b0380602f638a764530b4b9e35ac812c7c33799d3357d46f00&amp;scene=0&amp;key=0f5e635eeb6bf20a076ad60d7f11c6ef5c5c1c8f02873bc8b458381b629a1e2ae76174d0d4ba34331c71d095e3b3b92aa7fff5e1e11badeaf6c87ff90fd264f3dc6b1eb074eaccb2ac46e8f2d440cefd&amp;ascene=0&amp;uin=MTU1NTY3MTA0Mg==&amp;devicetype=iMac%20MacBookPro12,1%20OSX%20OSX%2010.11.6%20build%2815G1217%29&amp;version=12010310&amp;nettype=WIFI&amp;fontScale=100&amp;pass_ticket=csWk%2bJXfpl7rA8r527fLqF%2bF3EZEeBKpFRjI%2bWMXoPf2PEtPt/LMrscLX4GBl7gg">从重采样到数据合成：如何处理机器学习中的不平衡分类问题？</a></p>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/08/%E4%B8%8D%E5%B9%B3%E8%A1%A1%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/">http://cjh0220.github.io/2022/09/08/%E4%B8%8D%E5%B9%B3%E8%A1%A1%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">数据处理</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/08/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%A1%B6%E7%BA%A7%E6%9C%9F%E5%88%8A%E4%BC%9A%E8%AE%AE%E5%8F%8A%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%9D%80/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">计算机顶级期刊会议及学习网址</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/08/BN%E5%B1%82%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">BN层批量归一化</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/09/08/SMOTE%E8%BF%87%E9%87%87%E6%A0%B7%E7%AE%97%E6%B3%95%E3%80%81/" title="SMOTE过采样算法"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">SMOTE过采样算法</div></div></a></div><div><a href="/2022/09/29/%E5%AE%9A%E9%87%8F%E5%8F%98%E9%87%8F%E4%B8%8E%E5%AE%9A%E6%80%A7%E5%8F%98%E9%87%8F%E7%9A%84%E8%BD%AC%E6%8D%A2/" title="定量变量与定性变量的转换"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-29</div><div class="title">定量变量与定性变量的转换</div></div></a></div><div><a href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-29</div><div class="title">数据预处理概念</div></div></a></div><div><a href="/2022/09/08/%E6%AD%A3%E5%88%99%E5%8C%96%E3%80%81%E7%A6%BB%E6%95%A3%E5%8C%96%E3%80%81%E5%BD%92%E4%B8%80%E5%8C%96/" title="正则化、离散化、归一化、标准化"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">正则化、离散化、归一化、标准化</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">136</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">105</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%95%B0%E6%8D%AE%E9%9B%86%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.</span> <span class="toc-text">1. 不平衡数据集面临的挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E4%B8%8D%E5%B9%B3%E8%A1%A1%E7%B1%BB%E5%88%AB%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1.1不平衡类别的实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%8A%80%E6%9C%AF%E6%97%B6%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.2.</span> <span class="toc-text">1.2使用标准机器学习技术时面临的挑战</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3%E4%B8%8D%E5%B9%B3%E8%A1%A1%E7%B1%BB%E5%88%AB%E7%9A%84%E5%85%B6%E4%BB%96%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">1.3不平衡类别的其他实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.4.</span> <span class="toc-text">1.4使用的数据集</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A4%84%E7%90%86%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. 处理不平衡数据集的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%95%B0%E6%8D%AE%E5%B1%82%E9%9D%A2%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A%E9%87%8D%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 数据层面的方法：重采样技术</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-%E9%9A%8F%E6%9C%BA%E6%AC%A0%E9%87%87%E6%A0%B7%EF%BC%88Random-Under-Sampling%EF%BC%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 随机欠采样（Random Under-Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2%E9%9A%8F%E6%9C%BA%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%88Random-Over-Sampling%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2随机过采样（Random Over-Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-%E5%9F%BA%E4%BA%8E%E8%81%9A%E7%B1%BB%E7%9A%84%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%88Cluster-Based-Over-Sampling%EF%BC%89"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 基于聚类的过采样（Cluster-Based Over Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4%E4%BF%A1%E6%81%AF%E6%80%A7%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%9A%E5%90%88%E6%88%90%E5%B0%91%E6%95%B0%E7%B1%BB%E8%BF%87%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF%EF%BC%88SMOTE%EF%BC%89"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.4信息性过采样：合成少数类过采样技术（SMOTE）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-5-%E6%94%B9%E8%BF%9B%E7%9A%84%E5%90%88%E6%88%90%E5%B0%91%E6%95%B0%E7%B1%BB%E8%BF%87%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF%EF%BC%88MSMOTE%EF%BC%89"><span class="toc-number">2.1.5.</span> <span class="toc-text">2.1.5 改进的合成少数类过采样技术（MSMOTE）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%AE%97%E6%B3%95%E9%9B%86%E6%88%90%E6%8A%80%E6%9C%AF%EF%BC%88Algorithmic-Ensemble-Techniques%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 算法集成技术（Algorithmic Ensemble Techniques）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%9F%BA%E4%BA%8E-Bagging-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 基于 Bagging 的方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E5%9F%BA%E4%BA%8E-Boosting-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 基于 Boosting 的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-1-%E8%87%AA%E9%80%82%E5%BA%94-boosting%E2%80%94%E2%80%94Ada-Boost"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">2.2.2.1 自适应 boosting——Ada Boost</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-2-%E6%A2%AF%E5%BA%A6%E6%A0%91-boosting"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">2.2.2.2 梯度树 boosting</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-3-XGBoost"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">2.2.2.3 XGBoost</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">3. 实际案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%95%B0%E6%8D%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 数据描述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">4.</span> <span class="toc-text">结论</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/27/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E5%8D%81%EF%BC%892D%E8%B6%85%E5%B8%82%E5%BF%83%E5%8A%A8%E5%9B%BE%E8%A7%86%E9%A2%91%E5%88%B03D%E5%BF%83%E8%84%8F%E5%BD%A2%E6%80%81%E9%87%8D%E5%BB%BA/" title="论文精读（十）2D超市心动图视频到3D心脏形态重建"><img src="https://s3.bmp.ovh/imgs/2025/03/25/18c29032fb3d5f5f.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文精读（十）2D超市心动图视频到3D心脏形态重建"/></a><div class="content"><a class="title" href="/2025/03/27/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E5%8D%81%EF%BC%892D%E8%B6%85%E5%B8%82%E5%BF%83%E5%8A%A8%E5%9B%BE%E8%A7%86%E9%A2%91%E5%88%B03D%E5%BF%83%E8%84%8F%E5%BD%A2%E6%80%81%E9%87%8D%E5%BB%BA/" title="论文精读（十）2D超市心动图视频到3D心脏形态重建">论文精读（十）2D超市心动图视频到3D心脏形态重建</a><time datetime="2025-03-27T03:01:52.000Z" title="发表于 2025-03-27 11:01:52">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/27/ROC%E6%9B%B2%E7%BA%BF/" title="ROC曲线"><img src="https://s3.bmp.ovh/imgs/2025/03/13/b1bba9ccc43c79ea.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROC曲线"/></a><div class="content"><a class="title" href="/2025/03/27/ROC%E6%9B%B2%E7%BA%BF/" title="ROC曲线">ROC曲线</a><time datetime="2025-03-27T02:58:14.000Z" title="发表于 2025-03-27 10:58:14">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/01/09/Point%E5%92%8CPointnet/" title="Point和Pointnet++"><img src="https://s3.bmp.ovh/imgs/2024/12/26/632fbd99814d83d7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Point和Pointnet++"/></a><div class="content"><a class="title" href="/2025/01/09/Point%E5%92%8CPointnet/" title="Point和Pointnet++">Point和Pointnet++</a><time datetime="2025-01-09T11:29:10.000Z" title="发表于 2025-01-09 19:29:10">2025-01-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%B9%9D%EF%BC%89ImplicitAtlas%E5%8C%BB%E5%AD%A6%E5%BD%B1%E5%83%8F%E5%8F%AF%E5%8F%98%E5%BD%A2%E7%8A%B6%E6%A8%A1%E6%9D%BF/" title="论文精读（九）ImplicitAtlas医学影像可变形状模板"><img src="https://s3.bmp.ovh/imgs/2024/11/29/e38266cb7540c22e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文精读（九）ImplicitAtlas医学影像可变形状模板"/></a><div class="content"><a class="title" href="/2024/12/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%B9%9D%EF%BC%89ImplicitAtlas%E5%8C%BB%E5%AD%A6%E5%BD%B1%E5%83%8F%E5%8F%AF%E5%8F%98%E5%BD%A2%E7%8A%B6%E6%A8%A1%E6%9D%BF/" title="论文精读（九）ImplicitAtlas医学影像可变形状模板">论文精读（九）ImplicitAtlas医学影像可变形状模板</a><time datetime="2024-12-01T14:11:25.000Z" title="发表于 2024-12-01 22:11:25">2024-12-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/22/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BD%B3%E6%8A%95%E5%BD%B1LOP/" title="局部最佳投影LOP"><img src="https://s3.bmp.ovh/imgs/2024/11/22/a6732ab46fcc2087.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="局部最佳投影LOP"/></a><div class="content"><a class="title" href="/2024/11/22/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BD%B3%E6%8A%95%E5%BD%B1LOP/" title="局部最佳投影LOP">局部最佳投影LOP</a><time datetime="2024-11-22T10:13:43.000Z" title="发表于 2024-11-22 18:13:43">2024-11-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css"><script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/copy-tex.min.js"></script><script>(() => {
-  document.querySelectorAll('#article-container span.katex-display').forEach(item => {
-    btf.wrap(item, 'div', { class: 'katex-wrap'})
-  })
-})()</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2022/09/08/%E4%B8%8D%E5%B9%B3%E8%A1%A1%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/">http://cjh0220.github.io/2022/09/08/%E4%B8%8D%E5%B9%B3%E8%A1%A1%E5%88%86%E7%B1%BB%E7%9A%84%E5%A4%84%E7%90%86%E6%96%B9%E5%BC%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E6%95%B0%E6%8D%AE%E5%A4%84%E7%90%86/">数据处理</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/09/08/%E8%AE%A1%E7%AE%97%E6%9C%BA%E9%A1%B6%E7%BA%A7%E6%9C%9F%E5%88%8A%E4%BC%9A%E8%AE%AE%E5%8F%8A%E5%AD%A6%E4%B9%A0%E7%BD%91%E5%9D%80/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">计算机顶级期刊会议及学习网址</div></div></a></div><div class="next-post pull-right"><a href="/2022/09/08/BN%E5%B1%82%E6%89%B9%E9%87%8F%E5%BD%92%E4%B8%80%E5%8C%96/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">BN层批量归一化</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/09/08/SMOTE%E8%BF%87%E9%87%87%E6%A0%B7%E7%AE%97%E6%B3%95%E3%80%81/" title="SMOTE过采样算法"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">SMOTE过采样算法</div></div></a></div><div><a href="/2022/09/29/%E5%AE%9A%E9%87%8F%E5%8F%98%E9%87%8F%E4%B8%8E%E5%AE%9A%E6%80%A7%E5%8F%98%E9%87%8F%E7%9A%84%E8%BD%AC%E6%8D%A2/" title="定量变量与定性变量的转换"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-29</div><div class="title">定量变量与定性变量的转换</div></div></a></div><div><a href="/2023/01/29/%E6%95%B0%E6%8D%AE%E9%A2%84%E5%A4%84%E7%90%86%E6%A6%82%E5%BF%B5/" title="数据预处理概念"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2023-01-29</div><div class="title">数据预处理概念</div></div></a></div><div><a href="/2022/09/08/%E6%AD%A3%E5%88%99%E5%8C%96%E3%80%81%E7%A6%BB%E6%95%A3%E5%8C%96%E3%80%81%E5%BD%92%E4%B8%80%E5%8C%96/" title="正则化、离散化、归一化、标准化"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-09-08</div><div class="title">正则化、离散化、归一化、标准化</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">136</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">105</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">27</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%95%B0%E6%8D%AE%E9%9B%86%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.</span> <span class="toc-text">1. 不平衡数据集面临的挑战</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1%E4%B8%8D%E5%B9%B3%E8%A1%A1%E7%B1%BB%E5%88%AB%E7%9A%84%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.1.</span> <span class="toc-text">1.1不平衡类别的实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2%E4%BD%BF%E7%94%A8%E6%A0%87%E5%87%86%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E6%8A%80%E6%9C%AF%E6%97%B6%E9%9D%A2%E4%B8%B4%E7%9A%84%E6%8C%91%E6%88%98"><span class="toc-number">1.2.</span> <span class="toc-text">1.2使用标准机器学习技术时面临的挑战</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3%E4%B8%8D%E5%B9%B3%E8%A1%A1%E7%B1%BB%E5%88%AB%E7%9A%84%E5%85%B6%E4%BB%96%E5%AE%9E%E4%BE%8B"><span class="toc-number">1.3.</span> <span class="toc-text">1.3不平衡类别的其他实例</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4%E4%BD%BF%E7%94%A8%E7%9A%84%E6%95%B0%E6%8D%AE%E9%9B%86"><span class="toc-number">1.4.</span> <span class="toc-text">1.4使用的数据集</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E5%A4%84%E7%90%86%E4%B8%8D%E5%B9%B3%E8%A1%A1%E6%95%B0%E6%8D%AE%E9%9B%86%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.</span> <span class="toc-text">2. 处理不平衡数据集的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E6%95%B0%E6%8D%AE%E5%B1%82%E9%9D%A2%E7%9A%84%E6%96%B9%E6%B3%95%EF%BC%9A%E9%87%8D%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF"><span class="toc-number">2.1.</span> <span class="toc-text">2.1 数据层面的方法：重采样技术</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-1-%E9%9A%8F%E6%9C%BA%E6%AC%A0%E9%87%87%E6%A0%B7%EF%BC%88Random-Under-Sampling%EF%BC%89"><span class="toc-number">2.1.1.</span> <span class="toc-text">2.1.1 随机欠采样（Random Under-Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-2%E9%9A%8F%E6%9C%BA%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%88Random-Over-Sampling%EF%BC%89"><span class="toc-number">2.1.2.</span> <span class="toc-text">2.1.2随机过采样（Random Over-Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-3-%E5%9F%BA%E4%BA%8E%E8%81%9A%E7%B1%BB%E7%9A%84%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%88Cluster-Based-Over-Sampling%EF%BC%89"><span class="toc-number">2.1.3.</span> <span class="toc-text">2.1.3 基于聚类的过采样（Cluster-Based Over Sampling）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-4%E4%BF%A1%E6%81%AF%E6%80%A7%E8%BF%87%E9%87%87%E6%A0%B7%EF%BC%9A%E5%90%88%E6%88%90%E5%B0%91%E6%95%B0%E7%B1%BB%E8%BF%87%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF%EF%BC%88SMOTE%EF%BC%89"><span class="toc-number">2.1.4.</span> <span class="toc-text">2.1.4信息性过采样：合成少数类过采样技术（SMOTE）</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-1-5-%E6%94%B9%E8%BF%9B%E7%9A%84%E5%90%88%E6%88%90%E5%B0%91%E6%95%B0%E7%B1%BB%E8%BF%87%E9%87%87%E6%A0%B7%E6%8A%80%E6%9C%AF%EF%BC%88MSMOTE%EF%BC%89"><span class="toc-number">2.1.5.</span> <span class="toc-text">2.1.5 改进的合成少数类过采样技术（MSMOTE）</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E7%AE%97%E6%B3%95%E9%9B%86%E6%88%90%E6%8A%80%E6%9C%AF%EF%BC%88Algorithmic-Ensemble-Techniques%EF%BC%89"><span class="toc-number">2.2.</span> <span class="toc-text">2.2 算法集成技术（Algorithmic Ensemble Techniques）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-1-%E5%9F%BA%E4%BA%8E-Bagging-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.1.</span> <span class="toc-text">2.2.1 基于 Bagging 的方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-2-2-%E5%9F%BA%E4%BA%8E-Boosting-%E7%9A%84%E6%96%B9%E6%B3%95"><span class="toc-number">2.2.2.</span> <span class="toc-text">2.2.2 基于 Boosting 的方法</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-1-%E8%87%AA%E9%80%82%E5%BA%94-boosting%E2%80%94%E2%80%94Ada-Boost"><span class="toc-number">2.2.2.1.</span> <span class="toc-text">2.2.2.1 自适应 boosting——Ada Boost</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-2-%E6%A2%AF%E5%BA%A6%E6%A0%91-boosting"><span class="toc-number">2.2.2.2.</span> <span class="toc-text">2.2.2.2 梯度树 boosting</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#2-2-2-3-XGBoost"><span class="toc-number">2.2.2.3.</span> <span class="toc-text">2.2.2.3 XGBoost</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%9E%E9%99%85%E6%A1%88%E4%BE%8B"><span class="toc-number">3.</span> <span class="toc-text">3. 实际案例</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%95%B0%E6%8D%AE%E6%8F%8F%E8%BF%B0"><span class="toc-number">3.1.</span> <span class="toc-text">3.1 数据描述</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E8%AE%BA"><span class="toc-number">4.</span> <span class="toc-text">结论</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2025/03/27/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E5%8D%81%EF%BC%892D%E8%B6%85%E5%B8%82%E5%BF%83%E5%8A%A8%E5%9B%BE%E8%A7%86%E9%A2%91%E5%88%B03D%E5%BF%83%E8%84%8F%E5%BD%A2%E6%80%81%E9%87%8D%E5%BB%BA/" title="论文精读（十）2D超市心动图视频到3D心脏形态重建"><img src="https://s3.bmp.ovh/imgs/2025/03/25/18c29032fb3d5f5f.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文精读（十）2D超市心动图视频到3D心脏形态重建"/></a><div class="content"><a class="title" href="/2025/03/27/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E5%8D%81%EF%BC%892D%E8%B6%85%E5%B8%82%E5%BF%83%E5%8A%A8%E5%9B%BE%E8%A7%86%E9%A2%91%E5%88%B03D%E5%BF%83%E8%84%8F%E5%BD%A2%E6%80%81%E9%87%8D%E5%BB%BA/" title="论文精读（十）2D超市心动图视频到3D心脏形态重建">论文精读（十）2D超市心动图视频到3D心脏形态重建</a><time datetime="2025-03-27T03:01:52.000Z" title="发表于 2025-03-27 11:01:52">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/03/27/ROC%E6%9B%B2%E7%BA%BF/" title="ROC曲线"><img src="https://s3.bmp.ovh/imgs/2025/03/13/b1bba9ccc43c79ea.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="ROC曲线"/></a><div class="content"><a class="title" href="/2025/03/27/ROC%E6%9B%B2%E7%BA%BF/" title="ROC曲线">ROC曲线</a><time datetime="2025-03-27T02:58:14.000Z" title="发表于 2025-03-27 10:58:14">2025-03-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2025/01/09/Point%E5%92%8CPointnet/" title="Point和Pointnet++"><img src="https://s3.bmp.ovh/imgs/2024/12/26/632fbd99814d83d7.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Point和Pointnet++"/></a><div class="content"><a class="title" href="/2025/01/09/Point%E5%92%8CPointnet/" title="Point和Pointnet++">Point和Pointnet++</a><time datetime="2025-01-09T11:29:10.000Z" title="发表于 2025-01-09 19:29:10">2025-01-09</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/12/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%B9%9D%EF%BC%89ImplicitAtlas%E5%8C%BB%E5%AD%A6%E5%BD%B1%E5%83%8F%E5%8F%AF%E5%8F%98%E5%BD%A2%E7%8A%B6%E6%A8%A1%E6%9D%BF/" title="论文精读（九）ImplicitAtlas医学影像可变形状模板"><img src="https://s3.bmp.ovh/imgs/2024/11/29/e38266cb7540c22e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="论文精读（九）ImplicitAtlas医学影像可变形状模板"/></a><div class="content"><a class="title" href="/2024/12/01/%E8%AE%BA%E6%96%87%E7%B2%BE%E8%AF%BB%EF%BC%88%E4%B9%9D%EF%BC%89ImplicitAtlas%E5%8C%BB%E5%AD%A6%E5%BD%B1%E5%83%8F%E5%8F%AF%E5%8F%98%E5%BD%A2%E7%8A%B6%E6%A8%A1%E6%9D%BF/" title="论文精读（九）ImplicitAtlas医学影像可变形状模板">论文精读（九）ImplicitAtlas医学影像可变形状模板</a><time datetime="2024-12-01T14:11:25.000Z" title="发表于 2024-12-01 22:11:25">2024-12-01</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2024/11/22/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BD%B3%E6%8A%95%E5%BD%B1LOP/" title="局部最佳投影LOP"><img src="https://s3.bmp.ovh/imgs/2024/11/22/a6732ab46fcc2087.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="局部最佳投影LOP"/></a><div class="content"><a class="title" href="/2024/11/22/%E5%B1%80%E9%83%A8%E6%9C%80%E4%BD%B3%E6%8A%95%E5%BD%B1LOP/" title="局部最佳投影LOP">局部最佳投影LOP</a><time datetime="2024-11-22T10:13:43.000Z" title="发表于 2024-11-22 18:13:43">2024-11-22</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2025 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
