@@ -1,0 +1,242 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Dyna3DGR | CJH's blog</title><meta name="keywords" content="论文解读"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Dyna3DGR: 4D Cardiac Motion Tracking with Dynamic 3D Gaussian Representation原博客作者：胡JT,uphome 使用3D高斯来表征心脏模型，并使用MLP来预测把不同时间下的高斯参数，实现了4D心脏跳动。 Dyna3DGR &#x3D; 显式3D高斯（几何表示） + 隐式神经场（运动建模）  具体实现整个过程是由两个部分组成的，使用3D">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dyna3DGR">
+<meta property="og:url" content="http://cjh0220.github.io/2026/06/27/Dyna3DGR/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="Dyna3DGR: 4D Cardiac Motion Tracking with Dynamic 3D Gaussian Representation原博客作者：胡JT,uphome 使用3D高斯来表征心脏模型，并使用MLP来预测把不同时间下的高斯参数，实现了4D心脏跳动。 Dyna3DGR &#x3D; 显式3D高斯（几何表示） + 隐式神经场（运动建模）  具体实现整个过程是由两个部分组成的，使用3D">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png">
+<meta property="article:published_time" content="2026-06-27T11:10:55.000Z">
+<meta property="article:modified_time" content="2026-06-27T11:13:10.491Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="论文解读">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/06/27/Dyna3DGR/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Dyna3DGR',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-06-27 19:13:10'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">146</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">112</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">30</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Dyna3DGR</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-06-27T11:10:55.000Z" title="发表于 2026-06-27 19:10:55">2026-06-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%B8%89%E7%BB%B4%E9%87%8D%E5%BB%BA/">三维重建</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Dyna3DGR"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="Dyna3DGR-4D-Cardiac-Motion-Tracking-with-Dynamic-3D-Gaussian-Representation"><a href="#Dyna3DGR-4D-Cardiac-Motion-Tracking-with-Dynamic-3D-Gaussian-Representation" class="headerlink" title="Dyna3DGR: 4D Cardiac Motion Tracking with Dynamic 3D Gaussian Representation"></a>Dyna3DGR: 4D Cardiac Motion Tracking with Dynamic 3D Gaussian Representation</h1><p>原博客作者：胡JT,<a target="_blank" rel="noopener" href="https://github.com/uphome">uphome</a></p>
+<p>使用3D高斯来表征心脏模型，并使用MLP来预测把不同时间下的高斯参数，实现了4D心脏跳动。</p>
+<p><strong>Dyna3DGR = 显式3D高斯（几何表示） + 隐式神经场（运动建模）</strong></p>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY0A0o"><img src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" alt="image"></a></p>
+<h2 id="具体实现"><a href="#具体实现" class="headerlink" title="具体实现"></a>具体实现</h2><p>整个过程是由两个部分组成的，使用3D高斯来对心脏模型进行建模。使用MLP接受时间戳编码之后，得出在相应的时间戳下的高斯参数（坐标，尺寸，强度，旋转角度）。</p>
+<h4 id="3D高斯建模"><a href="#3D高斯建模" class="headerlink" title="3D高斯建模"></a>3D高斯建模</h4><p><strong>一个高斯椭圆球的参数包括（位置，旋转，缩放，不透明度，颜色）。</strong>位置是这个高斯球的<strong>中心</strong>，形状使用<strong>协方差矩阵</strong>（可以分解成一个旋转矩阵<code>rot</code>以及缩放矩阵<code>scale</code>）进行表示，<code>I</code>决定这个高斯中心的强度值。</p>
+<script type="math/tex; mode=display">
+G_{i}\left(X \mid \phi_{i}\right) = I_{i} \cdot e^{-\frac{1}{2} \left(X - x y z_{i}\right)^{T} \Sigma_{i}^{-1} \left(X - x y z_{i}\right)}
+\\
+\phi_{i} = \left\{ \mathbf{xyz}_{i}, \Sigma_{i}, I_{i} \right\}</script><p>$\phi_{i}$是一个参数集。</p>
+<p>$X$代表的是3D空间中的一个位置。这个公式代表着的是在空间中的$X$点，第$i$个高斯球的强度值。$I_{i}$是这个高斯球中心的最大强度值。后面的等式计算的是一个这个高斯球的强度随离中心距离的衰减的程度。</p>
+<p>同时，一个空间点$X$会被多个高斯球所影响。这里就是简单地将$X$点周围对齐有影响的高斯值加起来。$d_{i}$是高斯球的作用范围。</p>
+<script type="math/tex; mode=display">
+V(X \mid \theta_{i}) = \sum_{i : \|X - xyz_{i}\| \leq d_{i}} G_{i}(X \mid \phi_{i})</script><h4 id="心脏形变"><a href="#心脏形变" class="headerlink" title="心脏形变"></a>心脏形变</h4><p>首先，使用<strong>控制节点（选取关键的高斯核）</strong>来控制整体心脏的形变，而不是全部的高斯核来输入到MLP。<strong>可以用少量的高斯核就可以表示整个心脏的形变。</strong></p>
+<blockquote>
+<p><strong>SC-GS: Sparse-Controlled Gaussian Splatting for Editable Dynamic Scenes</strong></p>
+<p>寻找在模型变化中，<strong>在多个时间步中都出现在对应空间位置附近</strong>的控制点。这个控制点具有坐标以及影响范围。在影响范围内的高斯核的变化方式是相似的。这个控制点控制其影响范围内的所有高斯核的变化。</p>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY3dIT"><img src="https://s1.imagehub.cc/images/2026/06/25/62fae1e62ccd2d83a51c7ceae71debe6.png" alt="image"></a></p>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY0SZb"><img src="https://s1.imagehub.cc/images/2026/06/25/352ad8f52f999f0853de01f548a37c89.png" alt="image"></a></p>
+</blockquote>
+<p>就是在规定的空间范围内随机生成控制点（具有<strong>坐标</strong>以及<strong>其RBF影响范围半径</strong>），这些参数都是可以被学习的。</p>
+<p>使用<strong>神经网络$\mathcal{F}_{\theta}$</strong>来得到控制点影响范围下的高斯参数在不同的时间下的数值。<strong>会输出一个位移量以及一个尺度变化</strong></p>
+<script type="math/tex; mode=display">
+(\Delta xyz,\alpha)=\mathcal{F}_{\theta}(\gamma(\operatorname{sg}(\boldsymbol{x})),\gamma(t))</script><p><code>sg(⋅)</code> 表示停止梯度操作。是因为这里的$x$也是可学习参数，如果不停止的话，会将梯度再次传递给$x$。</p>
+<p>其中，坐标输入以及时间戳的输入需要进行<strong>编码</strong>。</p>
+<script type="math/tex; mode=display">
+\gamma(p)=\left(\sin\left(2^{k}\pi p\right),\cos\left(2^{k}\pi p\right)\right)_{k=0}^{L-1}</script><p><strong>这里的网络的作用是输入控制点的坐标以及时间戳，会输出这个控制点影响范围内的高斯核的位移量以及尺度变化。</strong></p>
+<p>一个高斯核会同时被多个控制点所影响，使用<strong>KNN搜索k个最近控制点</strong>，K个控制点同时对这个高斯核进行影响。是通过加权的方式对其进行影响。</p>
+<script type="math/tex; mode=display">
+\left[\Delta xyz_{i}^{t} \mid \alpha_{i}^{t}\right] = \sum_{j=1}^{k} w_{j} \cdot \left[\Delta xyz_{j}^{t} \mid \alpha_{j}^{t}\right]</script><p>这里的权重是$w<em>{j}$，是需要归一化。$ \quad \hat{w}</em>{i j}$是第$i$个高斯与第$j$个控制点直接的权重，使用径向基函数计算（RBF）。后面的公式就是<strong>径向基函数</strong>（控制点的参数，可学习）。越近影响越大。其中$d_{ij}$是欧式距离，下面的是函数半径（可学习）。</p>
+<script type="math/tex; mode=display">
+w_{j} = \frac{\hat{w}_{i j}}{\sum_{j \in \mathcal{C}_{k}} \hat{w}_{i j}}, \quad \hat{w}_{i j} = \exp \left(-\frac{d_{i j}^{2}}{2 \sigma_{j}^{2}}\right)</script><p>这里论文少说了一部分，会将整个3D模型以与GT相同的角度切开，根据切片进行Loss计算。 </p>
+<p>高斯的切片是通过调整渲染平面实现的，需要与GT的切片位姿相统一。</p>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY3fP4"><img src="https://s1.imagehub.cc/images/2026/06/25/70fc7d8cd748ad0c4a66c036e39f2c84.png" alt="image"></a></p>
+<p>变换好之后，经过体渲染，<strong>得到变换之后的高斯模型与真实心脏体素模型之间的差异。</strong></p>
+<script type="math/tex; mode=display">
+\mathcal{L} = \sum \left\| V\left(G(xyz + \Delta xyz, \alpha \cdot \text{scale}, \text{rot}, I\right) - V_{gt} \right\|_{1}</script><h4 id="训练"><a href="#训练" class="headerlink" title="训练"></a>训练</h4><p><strong>高斯点的初始点</strong>是在ED期分割掩码所定义的<strong>心脏组织区域内</strong>，进行<strong>均匀采样</strong>，从而获得一系列三维空间坐标点。然后，<strong>控制节点</strong>被放置在与此批高斯元<strong>完全相同的位置</strong>上。<strong>因此，初始状态下，一个高斯元对应一个控制节点。</strong></p>
+<p>分部分训练的。</p>
+<ul>
+<li><strong>第一阶段</strong>（前1000轮）：建立稳定的规范空间几何基础。使用高斯来对心脏进行建模。</li>
+<li><strong>第二阶段</strong>：联合优化几何与运动参数，避免耦合振荡，让心脏跳动起来。</li>
+</ul>
+<h2 id="结果"><a href="#结果" class="headerlink" title="结果"></a>结果</h2><p><strong>Dyna3DGR在保持形变场物理合理性方面具有突破性表现</strong>。</p>
+<ul>
+<li><strong>HD（Hausdorff距离）↓</strong>：衡量分割边界的最大误差，值越小越好</li>
+<li><strong>||J|-1|↓</strong>：雅可比行列式与1的绝对偏差，评估体积保持能力</li>
+<li><strong>det(Jφ)≤0↓</strong>：形变场中出现折叠或撕裂的点的数量，要求为0</li>
+<li><strong>Params(M)↓</strong>：模型参数数量（百万级），衡量计算效率</li>
+</ul>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY3rTd"><img src="https://s1.imagehub.cc/images/2026/06/25/1cc77923a62511e2436da6f605c43123.png" alt="image"></a></p>
+<p>number是初始高斯元的数量。SSIM：<strong>结构相似性</strong>。PSNR：<strong>图像保真度</strong>。</p>
+<p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MY3bda"><img src="https://s1.imagehub.cc/images/2026/06/25/0c3cce7782d89927e9420bc552133006.png" alt="image"></a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/06/27/Dyna3DGR/">http://cjh0220.github.io/2026/06/27/Dyna3DGR/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E8%A7%A3%E8%AF%BB/">论文解读</a></div><div class="post_share"><div class="social-share" data-image="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">阶段性文章总结</div></div></a></div><div class="next-post pull-right"><a href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/"><img class="next-cover" src="https://s3.bmp.ovh/2026/06/13/ELmhoNcU.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">杀戮尖塔2系统拆解案</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">146</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">112</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">30</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#Dyna3DGR-4D-Cardiac-Motion-Tracking-with-Dynamic-3D-Gaussian-Representation"><span class="toc-number">1.</span> <span class="toc-text">Dyna3DGR: 4D Cardiac Motion Tracking with Dynamic 3D Gaussian Representation</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0"><span class="toc-number">1.1.</span> <span class="toc-text">具体实现</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3D%E9%AB%98%E6%96%AF%E5%BB%BA%E6%A8%A1"><span class="toc-number">1.1.0.1.</span> <span class="toc-text">3D高斯建模</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%BF%83%E8%84%8F%E5%BD%A2%E5%8F%98"><span class="toc-number">1.1.0.2.</span> <span class="toc-text">心脏形变</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%AE%AD%E7%BB%83"><span class="toc-number">1.1.0.3.</span> <span class="toc-text">训练</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%BB%93%E6%9E%9C"><span class="toc-number">1.2.</span> <span class="toc-text">结果</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="阶段性文章总结"/></a><div class="content"><a class="title" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结">阶段性文章总结</a><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR"><img src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dyna3DGR"/></a><div class="content"><a class="title" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR">Dyna3DGR</a><time datetime="2026-06-27T11:10:55.000Z" title="发表于 2026-06-27 19:10:55">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案"><img src="https://s3.bmp.ovh/2026/06/13/ELmhoNcU.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杀戮尖塔2系统拆解案"/></a><div class="content"><a class="title" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案">杀戮尖塔2系统拆解案</a><time datetime="2026-06-13T10:43:08.000Z" title="发表于 2026-06-13 18:43:08">2026-06-13</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/05/07/%E4%B8%89%E8%A7%92%E6%B4%B2%E8%A1%8C%E5%8A%A8%E7%83%BD%E7%81%AB%E5%9C%B0%E5%B8%A6%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="三角洲行动烽火地带系统拆解案"><img src="https://pic1.imgdb.cn/item/69fbf8524498ed47aaadad1b.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="三角洲行动烽火地带系统拆解案"/></a><div class="content"><a class="title" href="/2026/05/07/%E4%B8%89%E8%A7%92%E6%B4%B2%E8%A1%8C%E5%8A%A8%E7%83%BD%E7%81%AB%E5%9C%B0%E5%B8%A6%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="三角洲行动烽火地带系统拆解案">三角洲行动烽火地带系统拆解案</a><time datetime="2026-05-07T02:23:57.000Z" title="发表于 2026-05-07 10:23:57">2026-05-07</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/03/25/Agent%E6%A1%8C%E6%B8%B8%E5%9B%A2%E9%98%9F%E8%AE%BE%E8%AE%A1/" title="Agent桌游团队设计"><img src="https://pic1.imgdb.cn/item/69c33e7413399d9f516721bc.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Agent桌游团队设计"/></a><div class="content"><a class="title" href="/2026/03/25/Agent%E6%A1%8C%E6%B8%B8%E5%9B%A2%E9%98%9F%E8%AE%BE%E8%AE%A1/" title="Agent桌游团队设计">Agent桌游团队设计</a><time datetime="2026-03-25T01:39:52.000Z" title="发表于 2026-03-25 09:39:52">2026-03-25</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
