@@ -1,0 +1,281 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>AgentLoop调优方法综述 | CJH's blog</title><meta name="keywords" content="Agent技术"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Agent Loop 调优方法综述 1. Agent Loop 概述 Agent 与传统的 LLM Chat 最大的区别在于，它不仅需要生成自然语言，还需要具备规划（Planning）、推理（Reasoning）、工具调用（Tool Calling）、环境交互（Environment Interaction）以及自我修正（Reflection）等能力。因此，一个完整的 Agent 通常采用循环执行">
+<meta property="og:type" content="article">
+<meta property="og:title" content="AgentLoop调优方法综述">
+<meta property="og:url" content="http://cjh0220.github.io/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="Agent Loop 调优方法综述 1. Agent Loop 概述 Agent 与传统的 LLM Chat 最大的区别在于，它不仅需要生成自然语言，还需要具备规划（Planning）、推理（Reasoning）、工具调用（Tool Calling）、环境交互（Environment Interaction）以及自我修正（Reflection）等能力。因此，一个完整的 Agent 通常采用循环执行">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
+<meta property="article:published_time" content="2026-07-17T03:29:27.000Z">
+<meta property="article:modified_time" content="2026-07-17T03:31:11.208Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="Agent技术">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'AgentLoop调优方法综述',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-07-17 11:31:11'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">AgentLoop调优方法综述</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-07-17T03:29:27.000Z" title="发表于 2026-07-17 11:29:27">2026-07-17</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E4%BA%BA%E5%B7%A5%E6%99%BA%E8%83%BD/">人工智能</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="AgentLoop调优方法综述"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Agent Loop 调优方法综述</h1>
+<h2 id="1-Agent-Loop-概述">1. Agent Loop 概述</h2>
+<p>Agent 与传统的 LLM Chat 最大的区别在于，它不仅需要生成自然语言，还需要具备规划（Planning）、推理（Reasoning）、工具调用（Tool Calling）、环境交互（Environment Interaction）以及自我修正（Reflection）等能力。因此，一个完整的 Agent 通常采用循环执行（Agent Loop）的方式完成复杂任务，而不是一次性生成最终答案。</p>
+<p>典型的 Agent Loop 可以表示为：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">User Input</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line"> Reasoning（理解任务）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line"> Planning（制定计划）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line"> Action（调用工具）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line"> Observation（获取反馈）</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line"> 是否完成？</span><br><span class="line">      │</span><br><span class="line">   否 ───────► 回到 Reasoning</span><br><span class="line">      │</span><br><span class="line">     是</span><br><span class="line">      ▼</span><br><span class="line"> Final Answer</span><br></pre></td></tr></table></figure>
+<p>这一流程实际上来源于经典的 ReAct（Reason + Act）思想。Agent 根据当前状态不断进行&quot;思考—执行—观察&quot;循环，直到满足终止条件。因此，所谓 Agent Loop 调优，本质上就是提升整个循环过程的效率、稳定性和成功率，而不仅仅是优化 Prompt。</p>
+<p>目前工业界对于 Agent Loop 的优化主要集中在 Prompt Engineering、Context Engineering、Harness Engineering、Planning、Tool Engineering、Memory Engineering 和 Reflection 等几个方向。</p>
+<hr>
+<h1>2. Prompt Engineering</h1>
+<p>Prompt Engineering 是 Agent 最基础也是最直接的优化方式，其目标是通过设计更加合理的输入模板，提高模型对于任务的理解能力和输出稳定性。</p>
+<p>在早期的大模型应用中，人们通常直接向模型输入一句自然语言，例如&quot;请帮我设计一个桌游&quot;，模型需要自行完成需求理解、任务规划以及最终生成。然而，对于复杂任务而言，这种方式容易导致模型遗漏约束条件或者输出格式不一致。因此，目前更加主流的方法是采用结构化 Prompt。</p>
+<p>首先是 <strong>Role Prompt</strong>。通过赋予模型明确的角色身份，可以显著提高输出的一致性。例如，在游戏设计平台中，可以分别设计&quot;规则设计师 Agent&quot;、“程序员 Agent”、&quot;测试 Agent&quot;等不同角色，每个角色拥有独立的 System Prompt，从而避免不同任务之间相互干扰。</p>
+<p>其次是 <strong>Task Decomposition（任务拆解）</strong>。研究发现，大模型更擅长解决一系列简单问题，而不是直接完成复杂问题。因此，对于复杂任务，通常先要求 Agent 生成执行计划，再依次完成每个子任务。例如，桌游设计任务可以拆分为&quot;设计世界观&quot;、“制定规则”、&quot;设计胜利条件&quot;和&quot;生成代码&quot;等多个阶段，而不是一次性生成全部内容。</p>
+<p>另外，<strong>Few-shot Prompting</strong> 也是常见方法。通过提供少量高质量示例，使模型学习目标任务的输出模式，从而减少输出格式错误，提高推理稳定性。</p>
+<p>最后，目前工程实践中普遍采用 <strong>Structured Output</strong>。即要求模型严格按照 JSON Schema、Pydantic Model 或 XML 等结构输出，而不是自由文本。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&#123;</span><br><span class="line">    &quot;action&quot;: &quot;Search&quot;,</span><br><span class="line">    &quot;query&quot;: &quot;2025 AI Agent Survey&quot;,</span><br><span class="line">    &quot;confidence&quot;: 0.94</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>这种方式能够保证 Agent 后续模块能够直接解析结果，也是目前 OpenAI Function Calling、LangGraph、AutoGen 等框架广泛采用的方法。</p>
+<hr>
+<h1>3. Context Engineering</h1>
+<p>近年来，Context Engineering 被认为是影响 Agent 性能最重要的因素之一。很多研究认为，大模型能力不足并非来源于 Prompt，而是来源于 Context（上下文）的组织方式。</p>
+<p>所谓 Context，不仅包括当前用户输入，还包括历史对话、外部知识库（RAG）、长期记忆、工具返回结果以及系统规则等信息。因此，一个 Agent 每一次推理实际上都是基于完整 Context 完成的。</p>
+<p>Context Engineering 的核心目标是在有限 Token 长度内，为模型提供最有价值的信息。</p>
+<p>首先是 <strong>动态上下文构建（Dynamic Context Construction）</strong>。并不是每次都将全部历史记录输入模型，而是根据当前任务动态检索最相关的信息。例如，在 RAG 系统中，仅检索与当前问题最相关的文档，而不是整个知识库。</p>
+<p>其次是 <strong>Context Compression（上下文压缩）</strong>。随着对话轮数增加，历史聊天长度不断增长，模型容易出现 Context Drift（上下文漂移）问题。因此，通常采用摘要（Summarization）方法，将长对话压缩成结构化摘要，再继续参与后续推理。</p>
+<p>第三是 <strong>Context Window Management（上下文窗口管理）</strong>。即根据不同任务的重要程度，为不同信息设置优先级。例如：</p>
+<ul>
+<li>当前任务描述（最高优先级）</li>
+<li>当前工具执行结果</li>
+<li>最近几轮对话</li>
+<li>用户长期偏好</li>
+<li>历史摘要</li>
+</ul>
+<p>通过这种方式，可以避免大量无关信息占据 Context Window，提高模型注意力利用效率。</p>
+<p>近年来，包括 Anthropic、OpenAI 在内的研究均指出，相比 Prompt Engineering，Context Engineering 往往能够带来更加显著的性能提升。</p>
+<hr>
+<h1>4. Harness Engineering</h1>
+<p>Harness Engineering 可以理解为 Agent 的自动化测试与评估体系。传统的软件开发通常依赖单元测试和集成测试，而 Agent 系统由于具有随机性和开放性，因此需要更加系统化的 Benchmark。</p>
+<p>Harness 的目标并不是提升 Agent，而是衡量 Agent 是否真正变得更好。</p>
+<p>典型流程如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Benchmark Dataset</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">     Agent</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line"> Tool Calling</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line">    Evaluation</span><br><span class="line">        │</span><br><span class="line">        ▼</span><br><span class="line"> Statistical Report</span><br></pre></td></tr></table></figure>
+<p>一个完善的 Harness 通常包含多个评估指标。</p>
+<p>首先是 <strong>Task Success Rate（任务完成率）</strong>，用于衡量 Agent 是否真正完成目标任务。</p>
+<p>其次是 <strong>Tool Accuracy（工具调用正确率）</strong>，即 Agent 是否选择了正确的工具。例如，对于互联网搜索问题，应调用 Search Tool，而不是 Python Tool。</p>
+<p>另外，还需要评估 <strong>Latency（响应时延）</strong>、<strong>Token Cost（推理成本）</strong>、<strong>Hallucination Rate（幻觉率）</strong>、**Multi-turn Success Rate（多轮任务完成率）**等多个维度。</p>
+<p>工业界通常不会依赖人工逐条测试，而是建立自动 Benchmark，每次 Prompt 或 Agent 修改后自动运行数千条测试样例，从而形成持续评估（Continuous Evaluation）体系。</p>
+<hr>
+<h1>5. Planning Engineering</h1>
+<p>复杂任务通常需要多个步骤才能完成，因此 Planning Engineering 成为近年来 Agent 研究的重要方向。</p>
+<p>传统的大模型通常采用 One-shot Generation，即直接生成最终答案。然而，对于需要搜索、分析、计算等多个阶段的问题，这种方式容易导致遗漏步骤或逻辑错误。</p>
+<p>因此，目前很多 Agent 会采用&quot;先规划，再执行&quot;（Plan-then-Execute）的策略。</p>
+<p>例如，对于&quot;分析某家公司经营状况&quot;这一任务，Agent 首先生成如下计划：</p>
+<ol>
+<li>搜索公司基本信息；</li>
+<li>获取最新财务数据；</li>
+<li>查询相关新闻；</li>
+<li>综合分析经营状况；</li>
+<li>输出分析报告。</li>
+</ol>
+<p>随后再依次执行各个步骤。</p>
+<p>这种方法能够显著提高复杂任务的成功率，也方便中间步骤进行错误恢复和人工干预。目前 LangGraph、CrewAI、AutoGen 等框架均采用类似思想。</p>
+<hr>
+<h1>6. Tool Engineering</h1>
+<p>Agent 的核心能力之一是 Tool Calling，因此 Tool Engineering 也是 Agent Loop 优化的重要组成部分。</p>
+<p>一个工具不仅包括实际接口，还包括工具描述（Tool Description）、输入参数、返回格式以及调用约束。</p>
+<p>实践中发现，模型能否正确调用工具，很大程度上取决于工具描述是否准确。例如，一个简单描述为&quot;Search Tool&quot;的工具，其调用准确率往往低于描述为&quot;用于互联网搜索实时新闻、公司信息及公开资料，不适用于数学计算&quot;的工具。</p>
+<p>此外，还需要设计 Tool Routing（工具路由）机制。当系统存在多个工具（如 Search、Python、SQL、Browser）时，Agent 需要能够自动判断当前任务最适合调用哪一个工具，而不是盲目尝试。</p>
+<p>为了保证系统稳定性，Tool Engineering 通常还包括超时控制、失败重试、异常恢复以及工具结果校验等机制。</p>
+<hr>
+<h1>7. Memory Engineering</h1>
+<p>Memory Engineering 的目标是赋予 Agent 持续学习和长期记忆能力。</p>
+<p>传统 LLM 每次推理都是无状态的，一旦 Context 被截断，模型便无法记住之前的信息。而 Agent 则需要能够长期保存用户偏好、历史任务以及重要知识。</p>
+<p>目前普遍采用短期记忆（Short-term Memory）与长期记忆（Long-term Memory）相结合的方法。</p>
+<p>短期记忆主要保存当前任务相关信息，生命周期较短；长期记忆则通常存储于向量数据库或知识库中，包括用户画像、历史项目、业务规则等内容，并通过 RAG 在需要时动态检索。</p>
+<p>这种设计能够避免每次重复输入全部历史信息，同时提升 Agent 的个性化能力和长期任务执行能力。</p>
+<hr>
+<h1>8. Reflection Engineering</h1>
+<p>Reflection（反思机制）是近年来 Agent 领域的重要研究方向，其思想来源于人类解决问题时的自我检查过程。</p>
+<p>传统 Agent 在完成任务后直接输出答案，而 Reflection Agent 会增加一个额外阶段，对已有结果进行再次分析。例如：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">Draft Answer</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">Reflection</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">Error Detection</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">Revision</span><br><span class="line">      │</span><br><span class="line">      ▼</span><br><span class="line">Final Answer</span><br></pre></td></tr></table></figure>
+<p>典型代表包括 Reflexion、Self-Refine、Critic Agent 等工作。</p>
+<p>这种机制能够有效降低幻觉率，提高复杂推理任务的正确率。目前不少工业 Agent 系统都会引入 Reviewer Agent 或 Critic Agent，对 Planner 或 Executor 的输出进行二次校验。</p>
+<hr>
+<h1>9. 总结</h1>
+<p>当前 Agent Loop 的优化已经从单纯的 Prompt Engineering，逐渐发展为覆盖 Prompt、Context、Planning、Tool、Memory、Reflection 以及 Harness Evaluation 的完整工程体系。整个优化目标可以概括为四个方面：</p>
+<ol>
+<li><strong>提升任务成功率</strong>：通过 Prompt、Planning 和 Reflection，提高复杂任务的完成能力。</li>
+<li><strong>提升系统稳定性</strong>：通过结构化输出、Tool Engineering 和异常恢复机制，降低执行失败率。</li>
+<li><strong>降低推理成本</strong>：通过 Context Compression、Memory 管理和动态检索，减少 Token 消耗和响应时延。</li>
+<li><strong>建立持续优化闭环</strong>：通过 Harness Engineering 构建自动化评估体系，以数据驱动 Agent Loop 的持续迭代。</li>
+</ol>
+<p>目前 OpenAI、Anthropic、Google DeepMind 以及 LangGraph、AutoGen、CrewAI 等主流 Agent 框架均围绕上述几个方向展开设计。因此，对于 Agent 平台研发岗位而言，真正需要掌握的不仅是 Prompt 编写技巧，而是理解整个 Agent Loop 的工程化优化思路，并能够根据具体业务场景设计稳定、高效、可评估的智能体系统。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/">http://cjh0220.github.io/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Agent%E6%8A%80%E6%9C%AF/">Agent技术</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">《禅游斗地主》综合分析案AI辅助</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Agent Loop 调优方法综述</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Agent-Loop-%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.</span> <span class="toc-text">1. Agent Loop 概述</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">2.</span> <span class="toc-text">2. Prompt Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">3.</span> <span class="toc-text">3. Context Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">4.</span> <span class="toc-text">4. Harness Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">5.</span> <span class="toc-text">5. Planning Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">6.</span> <span class="toc-text">6. Tool Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">7.</span> <span class="toc-text">7. Memory Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">8.</span> <span class="toc-text">8. Reflection Engineering</span></a></li><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">9.</span> <span class="toc-text">9. 总结</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AgentLoop调优方法综述"/></a><div class="content"><a class="title" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述">AgentLoop调优方法综述</a><time datetime="2026-07-17T03:29:27.000Z" title="发表于 2026-07-17 11:29:27">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助"><img src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《禅游斗地主》综合分析案AI辅助"/></a><div class="content"><a class="title" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助">《禅游斗地主》综合分析案AI辅助</a><time datetime="2026-07-17T03:28:43.000Z" title="发表于 2026-07-17 11:28:43">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="阶段性文章总结"/></a><div class="content"><a class="title" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结">阶段性文章总结</a><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR"><img src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dyna3DGR"/></a><div class="content"><a class="title" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR">Dyna3DGR</a><time datetime="2026-06-27T11:10:55.000Z" title="发表于 2026-06-27 19:10:55">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案"><img src="https://s3.bmp.ovh/2026/06/13/ELmhoNcU.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杀戮尖塔2系统拆解案"/></a><div class="content"><a class="title" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案">杀戮尖塔2系统拆解案</a><time datetime="2026-06-13T10:43:08.000Z" title="发表于 2026-06-13 18:43:08">2026-06-13</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
