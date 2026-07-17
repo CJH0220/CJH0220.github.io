@@ -1,9 +1,9 @@
-<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>阶段性文章总结 | CJH's blog</title><meta name="keywords" content="论文总结"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="阶段性总结 整理医学超声图像处理、3D Gaussian Splatting（3DGS）及大语言模型（LLM）相关文献，按发表时间排序，供后续研究参考。   目录 1 医学超声图像处理 1.1 U-Net（2015） 1.2 EchoNet-Dynamic（2020） 1.3 nnU-Net（2020&#x2F;2021） 1.4 SAM-Med2D（2023） 1.5 超声分割系统综述（2025） 1.6">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>阶段性文章总结 | CJH's blog</title><meta name="keywords" content="论文总结"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="阶段性总结  整理医学超声图像处理、3D Gaussian Splatting（3DGS）及大语言模型（LLM）相关文献，按发表时间排序，供后续研究参考。   目录  1 医学超声图像处理  1.1 U-Net（2015） 1.2 EchoNet-Dynamic（2020） [1.3 nnU-Net（2020&#x2F;2021）](#13-nnu-net20202021) 1.4 SAM-Med2D（20">
 <meta property="og:type" content="article">
 <meta property="og:title" content="阶段性文章总结">
 <meta property="og:url" content="http://cjh0220.github.io/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/index.html">
 <meta property="og:site_name" content="CJH&#39;s blog">
-<meta property="og:description" content="阶段性总结 整理医学超声图像处理、3D Gaussian Splatting（3DGS）及大语言模型（LLM）相关文献，按发表时间排序，供后续研究参考。   目录 1 医学超声图像处理 1.1 U-Net（2015） 1.2 EchoNet-Dynamic（2020） 1.3 nnU-Net（2020&#x2F;2021） 1.4 SAM-Med2D（2023） 1.5 超声分割系统综述（2025） 1.6">
+<meta property="og:description" content="阶段性总结  整理医学超声图像处理、3D Gaussian Splatting（3DGS）及大语言模型（LLM）相关文献，按发表时间排序，供后续研究参考。   目录  1 医学超声图像处理  1.1 U-Net（2015） 1.2 EchoNet-Dynamic（2020） [1.3 nnU-Net（2020&#x2F;2021）](#13-nnu-net20202021) 1.4 SAM-Med2D（20">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
 <meta property="article:published_time" content="2026-06-27T11:11:17.000Z">
@@ -142,21 +142,25 @@
       }
     }
     detectApple()
-    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">阶段性文章总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="阶段性文章总结"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="阶段性总结"><a href="#阶段性总结" class="headerlink" title="阶段性总结"></a>阶段性总结</h1><blockquote>
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">阶段性文章总结</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="阶段性文章总结"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>阶段性总结</h1>
+<blockquote>
 <p>整理医学超声图像处理、3D Gaussian Splatting（3DGS）及大语言模型（LLM）相关文献，按发表时间排序，供后续研究参考。</p>
 </blockquote>
 <hr>
-<h2 id="目录"><a href="#目录" class="headerlink" title="目录"></a>目录</h2><ul>
-<li><a href="#1-医学超声图像处理">1 医学超声图像处理</a><ul>
+<h2 id="目录">目录</h2>
+<ul>
+<li><a href="#1-%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86">1 医学超声图像处理</a>
+<ul>
 <li><a href="#11-u-net2015">1.1 U-Net（2015）</a></li>
 <li><a href="#12-echonet-dynamic2020">1.2 EchoNet-Dynamic（2020）</a></li>
-<li><a href="#13-nnu-net20202021"><a href="#13-nnu-net20202021">1.3 nnU-Net（2020/2021）</a></a></li>
+<li>[<a href="#13-nnu-net20202021">1.3 nnU-Net（2020/2021）</a>](#13-nnu-net20202021)</li>
 <li><a href="#14-sam-med2d2023">1.4 SAM-Med2D（2023）</a></li>
-<li><a href="#15-超声分割系统综述2025">1.5 超声分割系统综述（2025）</a></li>
-<li><a href="#16-超声-ai-综合综述2025">1.6 超声 AI 综合综述（2025）</a></li>
+<li><a href="#15-%E8%B6%85%E5%A3%B0%E5%88%86%E5%89%B2%E7%B3%BB%E7%BB%9F%E7%BB%BC%E8%BF%B02025">1.5 超声分割系统综述（2025）</a></li>
+<li><a href="#16-%E8%B6%85%E5%A3%B0-ai-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B02025">1.6 超声 AI 综合综述（2025）</a></li>
 </ul>
 </li>
-<li><a href="#2-3dgs-系列含-nerf">2 3DGS 系列（含 NeRF）</a><ul>
+<li><a href="#2-3dgs-%E7%B3%BB%E5%88%97%E5%90%AB-nerf">2 3DGS 系列（含 NeRF）</a>
+<ul>
 <li><a href="#21-nerf2020">2.1 NeRF（2020）</a></li>
 <li><a href="#22-3d-gaussian-splatting2023">2.2 3D Gaussian Splatting（2023）</a></li>
 <li><a href="#23-mip-splatting20232024">2.3 Mip-Splatting（2023/2024）</a></li>
@@ -164,10 +168,11 @@
 <li><a href="#25-4d-gaussian-splatting2024">2.5 4D Gaussian Splatting（2024）</a></li>
 <li><a href="#26-fastgs2025">2.6 FastGS（2025）</a></li>
 <li><a href="#27-medgs2025">2.7 MedGS（2025）</a></li>
-<li><a href="#28-3dgs-综合综述2024">2.8 3DGS 综合综述（2024）</a></li>
+<li><a href="#28-3dgs-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B02024">2.8 3DGS 综合综述（2024）</a></li>
 </ul>
 </li>
-<li><a href="#3-llm-及医学超声-llm-自主性">3 LLM 及医学超声 LLM 自主性</a><ul>
+<li><a href="#3-llm-%E5%8F%8A%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0-llm-%E8%87%AA%E4%B8%BB%E6%80%A7">3 LLM 及医学超声 LLM 自主性</a>
+<ul>
 <li><a href="#31-llama2023">3.1 LLaMA（2023）</a></li>
 <li><a href="#32-med-palm20222023">3.2 Med-PaLM（2022/2023）</a></li>
 <li><a href="#33-gpt-4-technical-report2023">3.3 GPT-4 Technical Report（2023）</a></li>
@@ -176,16 +181,17 @@
 <li><a href="#36-uspilot2025">3.6 USPilot（2025）</a></li>
 <li><a href="#37-medfound2025">3.7 MedFound（2025）</a></li>
 <li><a href="#38-amie2025">3.8 AMIE（2025）</a></li>
-<li><a href="#39-医学-llm-综合综述2024">3.9 医学 LLM 综合综述（2024）</a></li>
+<li><a href="#39-%E5%8C%BB%E5%AD%A6-llm-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B02024">3.9 医学 LLM 综合综述（2024）</a></li>
 </ul>
 </li>
 </ul>
 <hr>
-<h2 id="1-医学超声图像处理"><a href="#1-医学超声图像处理" class="headerlink" title="1 医学超声图像处理"></a>1 医学超声图像处理</h2><blockquote>
+<h2 id="1-医学超声图像处理">1 医学超声图像处理</h2>
+<blockquote>
 <p>本节按时间顺序梳理超声图像/视频分割、分类与智能分析的代表性工作，从经典 U-Net 到基础模型 SAM 及最新综述。</p>
 </blockquote>
 <hr>
-<h3 id="1-1-U-Net（2015）"><a href="#1-1-U-Net（2015）" class="headerlink" title="1.1 U-Net（2015）"></a>1.1 U-Net（2015）</h3><div class="table-container">
+<h3 id="1-1-U-Net（2015）">1.1 U-Net（2015）</h3>
 <table>
 <thead>
 <tr>
@@ -220,7 +226,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出对称的编码器–解码器 U 形结构，通过跳跃连接融合浅层细节与深层语义，成为医学图像（含超声）分割的奠基架构。</li>
@@ -228,7 +233,6 @@
 <li>挑战：超声图像存在散斑噪声、低对比度、探头依赖性强，原始 U-Net 对复杂超声场景泛化有限，后续大量改进工作基于此展开。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -243,7 +247,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>ISBI 2012 EM 分割挑战赛</strong>：果蝇 VNC 连续切片 TEM 图像，30 张 512×512 训练图，二值标注（细胞/膜）；（2）<strong>ISBI Cell Tracking Challenge 2014/2015</strong>：PhC-U373 胶质瘤细胞相差显微镜 35 张部分标注图；DIC-HeLa 微分干涉对比显微镜 20 张部分标注图。</li>
@@ -261,7 +264,7 @@
 <p><strong>对比实验结果</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSql4d"><img src="https://s1.imagehub.cc/images/2026/06/24/a59d2e5e28d7faf5a83b3506a40b616f.md.png" alt="img"></a></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSq0aa"><img src="https://s1.imagehub.cc/images/2026/06/24/af0bf96d1bac5f61e66371d72b7d2ab5.md.png" alt="img"></a></p>
-<h3 id="1-2-EchoNet-Dynamic（2020）"><a href="#1-2-EchoNet-Dynamic（2020）" class="headerlink" title="1.2 EchoNet-Dynamic（2020）"></a>1.2 EchoNet-Dynamic（2020）</h3><div class="table-container">
+<h3 id="1-2-EchoNet-Dynamic（2020）">1.2 EchoNet-Dynamic（2020）</h3>
 <table>
 <thead>
 <tr>
@@ -296,7 +299,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>发布 EchoNet-Dynamic 数据集（10,030 例心超视频），含射血分数（EF）、左心室容积及专家描记标注。</li>
@@ -304,7 +306,6 @@
 <li>挑战：超声视频帧间运动大、心搏周期变化、探头角度差异；需处理长时序依赖与 beat-to-beat 变异性。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -319,7 +320,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：<strong>EchoNet-Dynamic</strong>，Stanford 单中心 <strong>10,030</strong> 例 apical-4-chamber 心超视频（去标识化 AVI），含专家标注的 <strong>EF、EDV、ESV</strong> 及左心室心内膜/心外膜描记；覆盖正常、低 EF、心律失常等典型采集条件。</li>
@@ -335,7 +335,7 @@
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSqHir"><img src="https://s1.imagehub.cc/images/2026/06/24/a2b56168373e4858d4ab82e1b7b1ed36.md.png" alt="img"></a></p>
 <hr>
-<h3 id="1-3-nnU-Net（2020-2021）"><a href="#1-3-nnU-Net（2020-2021）" class="headerlink" title="1.3 nnU-Net（2020/2021）"></a>1.3 nnU-Net（2020/2021）</h3><div class="table-container">
+<h3 id="1-3-nnU-Net（2020-2021）">1.3 nnU-Net（2020/2021）</h3>
 <table>
 <thead>
 <tr>
@@ -370,15 +370,13 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
-<li>提出”自配置”分割框架：自动分析数据集指纹（分辨率、体素间距、强度分布等），自适应选择预处理、网络拓扑、训练策略与后处理。</li>
+<li>提出&quot;自配置&quot;分割框架：自动分析数据集指纹（分辨率、体素间距、强度分布等），自适应选择预处理、网络拓扑、训练策略与后处理。</li>
 <li>在 23 个国际生物医学分割竞赛数据集上超越大量手工定制方案，成为 MICCAI 挑战赛主流基线。</li>
 <li>挑战：超声数据各向异性、噪声大、标注不一致；nnU-Net 需针对超声数据集进行指纹分析与配置验证。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -393,7 +391,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：<strong>23 个</strong>国际生物医学分割竞赛公开数据集（覆盖 MRI、CT、显微镜、超声等多模态），含 Medical Segmentation Decathlon、KiTS、LiTS 等经典 benchmark。</li>
@@ -408,7 +405,7 @@
 <p><strong>框图</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSqJet"><img src="https://s1.imagehub.cc/images/2026/06/24/e80740ad00dcffe39ac3e84ca4d50674.png" alt="img"></a></p>
 <hr>
-<h3 id="1-4-SAM-Med2D（2023）"><a href="#1-4-SAM-Med2D（2023）" class="headerlink" title="1.4 SAM-Med2D（2023）"></a>1.4 SAM-Med2D（2023）</h3><div class="table-container">
+<h3 id="1-4-SAM-Med2D（2023）">1.4 SAM-Med2D（2023）</h3>
 <table>
 <thead>
 <tr>
@@ -443,7 +440,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>构建 SA-Med2D-20M 大规模医学分割数据集（460 万张图像、1970 万个掩码，覆盖 10 种模态含超声）。</li>
@@ -451,7 +447,6 @@
 <li>挑战：SAM 在自然图像上预训练，直接迁移至超声模态性能大幅下降（超声 Dice 约 15.89 vs SAM 基线）；需领域自适应与大规模微调。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -466,7 +461,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：自构建 <strong>SA-Med2D-20M</strong>——<strong>460 万</strong>张图像、<strong>1970 万</strong>个掩码，覆盖 <strong>10 种模态</strong>（含 Ultrasound、CT、MR、X-ray 等）、<strong>4 类解剖结构 + 病灶</strong>、<strong>31 个主要器官</strong>；训练集用于微调，<strong>9 个 MICCAI 2023 挑战赛数据集</strong>用于外部泛化测试。</li>
@@ -481,7 +475,7 @@
 <p><strong>框图位置</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│  [预留] SAM-Med2D 微调框架：SAM encoder/decoder + 适配层  │</span><br><span class="line">│  建议插入：SA-Med2D-20M 模态分布（含 Ultrasound）       │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 <hr>
-<h3 id="1-5-超声分割系统综述（2025）"><a href="#1-5-超声分割系统综述（2025）" class="headerlink" title="1.5 超声分割系统综述（2025）"></a>1.5 超声分割系统综述（2025）</h3><div class="table-container">
+<h3 id="1-5-超声分割系统综述（2025）">1.5 超声分割系统综述（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -516,7 +510,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>系统回顾 80+ 篇超声图像/视频分割文献，涵盖 CNN、Transformer、扩散模型、SAM 等范式。</li>
@@ -524,7 +517,6 @@
 <li>挑战：超声散斑噪声、伪影、探头依赖、标注稀缺、跨设备/跨中心泛化困难。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -539,11 +531,10 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>摘要（中文）</strong></p>
 <p>超声图像和视频中的复杂成像结构、伪影和噪声给精确分割带来重大挑战。深度学习已成为医学图像处理的重要方向。本文综述基于深度学习的超声图像和视频分割方法，总结扩散模型、Segment Anything 模型及经典方法的最新进展。方法按分割特性分为四大类，每类在对应章节中阐述和评估。我们提供全面的方法概述、评估指标和常用超声数据集介绍，分析各方法优缺点，并讨论挑战与未来趋势。</p>
 <hr>
-<h3 id="1-6-超声-AI-综合综述（2025）"><a href="#1-6-超声-AI-综合综述（2025）" class="headerlink" title="1.6 超声 AI 综合综述（2025）"></a>1.6 超声 AI 综合综述（2025）</h3><div class="table-container">
+<h3 id="1-6-超声-AI-综合综述（2025）">1.6 超声 AI 综合综述（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -578,7 +569,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>全面回顾 AI 在超声成像中的应用，从传统机器学习到深度学习及 LLM 多模态方法。</li>
@@ -586,7 +576,6 @@
 <li>挑战：标注数据有限、模型可解释性不足、多中心临床环境适配、LLM 与视觉模型融合的安全性问题。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -601,18 +590,18 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>摘要（中文）</strong></p>
 <p>人工智能在超声成像中的应用正从传统机器学习向深度学习及大语言模型驱动的多模态分析演进。本文全面回顾 AI 在超声中的关键任务，包括分割、分类、检测和报告生成，重点介绍方法创新、临床应用及当前挑战。我们讨论了大规模数据集构建、多模态基础模型、可解释性提升及临床转化等未来方向，为智能超声研究提供系统性参考。</p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MS5zIS"><img src="https://s1.imagehub.cc/images/2026/06/24/03619089a943eafc0545cbee900cda39.png" alt="img"></a></p>
-<h2 id="2-3DGS-系列（含-NeRF）"><a href="#2-3DGS-系列（含-NeRF）" class="headerlink" title="2 3DGS 系列（含 NeRF）"></a>2 3DGS 系列（含 NeRF）</h2><blockquote>
+<h2 id="2-3DGS-系列（含-NeRF）">2 3DGS 系列（含 NeRF）</h2>
+<blockquote>
 <p>本节按时间顺序梳理神经辐射场（NeRF）至 3D Gaussian Splatting 及其主要变体，涵盖静态/动态场景重建与实时渲染。</p>
 </blockquote>
 <hr>
-<h3 id="2-1-NeRF（2020）"><a href="#2-1-NeRF（2020）" class="headerlink" title="2.1 NeRF（2020）"></a>2.1 NeRF（2020）</h3><blockquote>
+<h3 id="2-1-NeRF（2020）">2.1 NeRF（2020）</h3>
+<blockquote>
 <p>为什么放NeRF呢，因为3DGS踩着NeRF开创了3D重建的盛世天下。</p>
 </blockquote>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -647,7 +636,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出神经辐射场（NeRF）：用 MLP 将 5D 坐标（空间位置 + 视角方向）映射为体密度和视角相关颜色，通过可微体渲染合成新视角。</li>
@@ -655,7 +643,6 @@
 <li>挑战：训练慢（每场景数小时）、渲染慢（非实时）、无法编辑/导出显式几何；为后续 3DGS 等显式表示奠定基础。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -670,7 +657,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>Synthetic NeRF (Blender)</strong>：8 个合成场景，800×800，100 训练 + 200 测试视角；（2）<strong>LLFF</strong>：8 个真实前向场景（fern、flower 等），约 20–62 张图像；（3）<strong>DTU</strong>：15 个扫描场景；（4）<strong>Tanks &amp; Temples</strong>：5 个室外大场景。</li>
@@ -684,7 +670,7 @@
 <p><strong>摘要（中文）</strong></p>
 <p>我们提出一种通过优化连续体素场景函数来实现高质量新视角合成的方法。算法使用全连接深度网络表示场景，输入为 5D 坐标（空间位置 x,y,z 和视角方向 θ,φ），输出为该位置的体密度和视角相关辐射度。沿相机光线查询 5D 坐标，利用经典体渲染技术将颜色和密度投影为图像。由于体渲染天然可微，仅需已知位姿的多视角图像即可优化。实验表明，NeRF 在复杂几何和外观场景的新视角合成上超越先前神经渲染方法。</p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSA03A"><img src="https://s1.imagehub.cc/images/2026/06/24/ab426838f21ef897fb7e036efe0ae292.md.png" alt="img"></a></p>
-<h3 id="2-2-3D-Gaussian-Splatting（2023）"><a href="#2-2-3D-Gaussian-Splatting（2023）" class="headerlink" title="2.2 3D Gaussian Splatting（2023）"></a>2.2 3D Gaussian Splatting（2023）</h3><div class="table-container">
+<h3 id="2-2-3D-Gaussian-Splatting（2023）">2.2 3D Gaussian Splatting（2023）</h3>
 <table>
 <thead>
 <tr>
@@ -699,7 +685,7 @@
 </tr>
 <tr>
 <td style="text-align:left"><strong>作者与机构</strong></td>
-<td style="text-align:left">Bernhard Kerbl<em>, Georgios Kopanas</em>, Thomas Leimkühler, George Drettakis；INRIA / Université Côte d’Azur（* 同等贡献）</td>
+<td style="text-align:left">Bernhard Kerbl*, Georgios Kopanas*, Thomas Leimkühler, George Drettakis；INRIA / Université Côte d’Azur（* 同等贡献）</td>
 </tr>
 <tr>
 <td style="text-align:left"><strong>发布时间</strong></td>
@@ -719,7 +705,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>用 3D 高斯椭球体显式表示场景，每个高斯含位置、协方差、不透明度、球谐系数（颜色）。</li>
@@ -727,7 +712,6 @@
 <li>挑战：多视角不一致导致几何模糊、缩放/变焦时走样（aliasing）、高斯数量膨胀、动态场景需扩展。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -742,7 +726,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>Mip-NeRF 360</strong>：9 个无界/室内真实场景；（2）<strong>Tanks &amp; Temples</strong>：Train、Truck 共 2 场景；（3）<strong>Deep Blending</strong>：DrJohnson、Playroom 共 2 场景；（4）<strong>Blender Synthetic NeRF</strong>：8 个合成场景。共 <strong>13 个真实场景</strong> + 8 合成场景。</li>
@@ -758,7 +741,7 @@
 <p>辐射场方法在 novel view synthesis 上取得高质量结果，但训练与渲染代价高。3D 高斯光栅化（3DGS）用 3D 高斯集合表示场景，配合可微光栅化管道，在保持视觉质量的同时实现实时渲染。引入自适应密度控制（克隆/分裂/修剪），使高斯数量与场景复杂度匹配。在 Mip-NeRF 360、Tanks &amp; Temples 等数据集上达到 SOTA 或可比质量，渲染速度提升数个数量级。</p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSAoad"><img src="https://s1.imagehub.cc/images/2026/06/24/f7dc78a8f51029255b161d4a004bb78c.png" alt="img"></a></p>
 <hr>
-<h3 id="2-3-Mip-Splatting（2023-2024）"><a href="#2-3-Mip-Splatting（2023-2024）" class="headerlink" title="2.3 Mip-Splatting（2023/2024）"></a>2.3 Mip-Splatting（2023/2024）</h3><div class="table-container">
+<h3 id="2-3-Mip-Splatting（2023-2024）">2.3 Mip-Splatting（2023/2024）</h3>
 <table>
 <thead>
 <tr>
@@ -793,7 +776,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>针对 3DGS 在变焦/变距时的走样与闪烁问题，引入 <strong>3D 平滑滤波器</strong>（约束高斯频率）和 <strong>2D Mip 滤波器</strong>（替代 dilation）。</li>
@@ -801,7 +783,6 @@
 <li>挑战：滤波器参数选择、与原始 3DGS 密度控制的兼容性、大场景扩展。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -816,7 +797,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：与 3DGS 相同——<strong>Mip-NeRF 360、Tanks &amp; Temples、Deep Blending</strong> 全部场景；额外设计<strong>单尺度训练、多尺度测试</strong>（zoom-in/zoom-out）实验验证走样消除。</li>
@@ -833,7 +813,7 @@
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│  [预留] Mip-Splatting：3D 平滑滤波 + 2D Mip 滤波流程      │</span><br><span class="line">│  建议插入：不同 zoom factor 下 3DGS vs Mip-Splatting 对比 │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSAXAa"><img src="https://s1.imagehub.cc/images/2026/06/24/cf43f18f2724186d4d7be01f69fccfe4.md.png" alt="img"></a></p>
 <hr>
-<h3 id="2-4-2D-Gaussian-Splatting（2024）"><a href="#2-4-2D-Gaussian-Splatting（2024）" class="headerlink" title="2.4 2D Gaussian Splatting（2024）"></a>2.4 2D Gaussian Splatting（2024）</h3><div class="table-container">
+<h3 id="2-4-2D-Gaussian-Splatting（2024）">2.4 2D Gaussian Splatting（2024）</h3>
 <table>
 <thead>
 <tr>
@@ -868,7 +848,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>将 3D 高斯坍缩为 <strong>2D 定向圆盘（surfel）</strong>，提供视角一致的几何表示，解决 3DGS 表面重建不准确问题。</li>
@@ -876,7 +855,6 @@
 <li>挑战：非流形场景、薄结构重建、与 NeRF/3DGS 的外观质量权衡。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -891,7 +869,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>Mip-NeRF 360、Tanks &amp; Temples</strong>——新视角合成；（2）<strong>DTU</strong>——几何重建（Chamfer Distance）；（3）作者提供的 <strong>DTU+COLMAP</strong> 预处理数据（3.5 GB）。</li>
@@ -905,7 +882,7 @@
 <p>3D 高斯光栅化革新了辐射场重建，但 3D 高斯的多视角不一致性导致表面表示不准确。我们提出 2D 高斯光栅化（2DGS），将 3D 体素坍缩为一组 2D 定向平面高斯圆盘，提供视角一致的几何。引入透视正确的 2D splatting（光线–面元求交 + 光栅化），并加入深度畸变和法向一致性正则项。实验表明，2DGS 在无噪声几何重建上表现优异，同时保持竞争性外观质量、快速训练和实时渲染。</p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSA5hJ"><img src="https://s1.imagehub.cc/images/2026/06/24/99e37e31a908ad696e2921684bffbc22.md.png" alt="img"></a></p>
 <hr>
-<h3 id="2-5-4D-Gaussian-Splatting（2024）"><a href="#2-5-4D-Gaussian-Splatting（2024）" class="headerlink" title="2.5 4D Gaussian Splatting（2024）"></a>2.5 4D Gaussian Splatting（2024）</h3><div class="table-container">
+<h3 id="2-5-4D-Gaussian-Splatting（2024）">2.5 4D Gaussian Splatting（2024）</h3>
 <table>
 <thead>
 <tr>
@@ -940,7 +917,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>将 3DGS 扩展至 <strong>动态场景</strong>：用 3D 高斯 + 4D 神经体素（HexPlane 分解）表示时空变化。</li>
@@ -948,7 +924,6 @@
 <li>挑战：长序列存储膨胀、复杂非刚性运动建模、与 NeRF 动态方法的精度对比。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -963,7 +938,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>D-NeRF</strong>（合成动态场景，8 场景）；（2）<strong>HyperNeRF / Nerfies</strong>（真实动态场景，如 broom、apple 等）；（3）<strong>Neural 3D Video (N3V)</strong> 部分场景。</li>
@@ -977,7 +951,7 @@
 <p>动态场景表示与渲染是重要但充满挑战的任务，准确建模复杂运动的同时保持高效率通常难以兼顾。我们提出 4D 高斯光栅化（4D-GS），作为动态场景的整体表示而非逐帧 3DGS。方法包含 3D 高斯与 4D 神经体素的显式表示，采用 HexPlane 启发的分解神经体素编码构建高斯特征，轻量 MLP 预测新时间戳的高斯形变。4D-GS 在高分辨率下实现实时渲染（RTX 3090 上 800×800 约 82 FPS），质量与先前 SOTA 相当或更优。</p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSDHiO"><img src="https://s1.imagehub.cc/images/2026/06/24/3d114b18af5769a88b808b94ba31a149.md.png" alt="img"></a></p>
 <hr>
-<h3 id="2-6-FastGS（2025）"><a href="#2-6-FastGS（2025）" class="headerlink" title="2.6 FastGS（2025）"></a>2.6 FastGS（2025）</h3><div class="table-container">
+<h3 id="2-6-FastGS（2025）">2.6 FastGS（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1012,7 +986,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出基于 <strong>多视角一致性</strong> 的加速框架：View-Consistent Densification（VCD）与 View-Consistent Pruning（VCP）。</li>
@@ -1021,7 +994,6 @@
 <li>挑战：极速训练下的几何精度、与 Mip/2DGS 等变体结合时的稳定性。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1036,7 +1008,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：<strong>Mip-NeRF 360</strong>（全场景）、<strong>Tanks &amp; Temples</strong>（Train 等）、<strong>Deep Blending</strong>（Playroom、DrJohnson）；另在动态重建、表面重建、稀疏视角、大场景、SLAM 等 <strong>6 类任务</strong>验证泛化。</li>
@@ -1050,7 +1021,7 @@
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSDj2A"><img src="https://s1.imagehub.cc/images/2026/06/24/5d60a3e0ad8be18084283b7c6d41c68b.png" alt="img"></a></p>
 <hr>
-<h3 id="2-7-MedGS（2025）"><a href="#2-7-MedGS（2025）" class="headerlink" title="2.7 MedGS（2025）"></a>2.7 MedGS（2025）</h3><div class="table-container">
+<h3 id="2-7-MedGS（2025）">2.7 MedGS（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1085,7 +1056,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出首个面向 <strong>序列化医学影像</strong>（超声、MRI、CT）的 Gaussian Splatting 框架，用于高保真 3D 解剖结构重建。</li>
@@ -1095,7 +1065,6 @@
 <li>挑战：仅提供结构估计而非直接组织测量，存在固有不确定性；低对比度区域单任务变体（MedGSs）性能下降；临床部署需专家复核。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1110,22 +1079,21 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：（1）<strong>Prostate Ultrasound</strong>（MR→US Registration Challenge，specimens 65–70）；（2）<strong>TotalSegmentator MRI</strong>（heart、lung、kidney 等）；（3）<strong>Skull-Stripped T1 MRI</strong>；（4）<strong>CTA</strong> 纵向病例（主动脉瘤、肾肿瘤监测）。</li>
 <li><strong>模型变体</strong>：<strong>MedGS</strong>（双任务联合）、<strong>MedGSi</strong>（仅插值）、<strong>MedGSs</strong>（仅分割/网格）；基于 <strong>VeGaS Folded-Gaussian</strong>，初始 <strong>10 万</strong>高斯分量；时间形变函数 f 为 <strong>7 阶多项式</strong>。</li>
-<li><strong>训练设置</strong>：<strong>PyTorch + NVIDIA A100</strong>；每对象约 <strong>20 min</strong>；λ<em>seg=0.001，λ</em>σ=0.001；损失 L<em>total = L_img + λ<em>seg·L_seg + λ</em>σ·L</em>σ；L_img 含 L1 + SSIM + <strong>IBFR 帧间正则</strong>（α~U(0.2,0.8) 合成中间帧）。</li>
+<li><strong>训练设置</strong>：<strong>PyTorch + NVIDIA A100</strong>；每对象约 <strong>20 min</strong>；λ<em>seg=0.001，λ</em>σ=0.001；损失 L_total = L_img + λ<em>seg·L_seg + λ</em>σ·L_σ；L_img 含 L1 + SSIM + <strong>IBFR 帧间正则</strong>（α~U(0.2,0.8) 合成中间帧）。</li>
 <li><strong>插值评估</strong>：<strong>leave-frame-out</strong> 协议——训练每 n 帧取 1 帧（n∈{2,3,5}），测试其余帧；对比 <strong>Linear 插值、Optical Flow</strong>；指标 <strong>PSNR↑、SSIM↑</strong>。</li>
 <li><strong>网格重建评估</strong>：对比 <strong>ISO-surface（Marching Cubes）、Poisson Reconstruction、FUNSR</strong>；指标 <strong>Chamfer Distance↓、HD95↓</strong>。</li>
-<li><strong>消融实验</strong>：移除 L<em>interp* 或 L</em>σ 单独/联合评估对插值 PSNR/SSIM 的影响；MedGS vs MedGSs 验证双任务耦合收益。</li>
+<li><strong>消融实验</strong>：移除 L_interp* 或 L_σ 单独/联合评估对插值 PSNR/SSIM 的影响；MedGS vs MedGSs 验证双任务耦合收益。</li>
 </ul>
 <p><strong>摘要（中文）</strong></p>
 <p>超声、MRI 和 CT 等多模态三维医学影像广泛用于无创解剖可视化，但准确建模依赖表面重建与帧间插值，传统方法在图像噪声和稀疏帧之间信息不完整时表现不佳。我们提出 MedGS，一种基于 Gaussian Splatting 的高保真 3D 解剖重建框架。MedGS 采用多任务架构，通过统一几何表示同时执行帧插值与分割，利用图像合成的稠密信号正则化几何，即使输入帧数量有限也能实现高质量表面提取。医学数据被建模为具有双颜色属性的 Folded-Gaussian，并辅以帧间正则化（IBFR）机制。实验表明，MedGS 在隐式神经表示方法上取得更高指标分数，并改善插值质量。</p>
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSSX8A"><img src="https://s1.imagehub.cc/images/2026/06/24/257fcaa53b8c66f34576d2f873772bf1.png" alt="img"></a></p>
 <hr>
-<h3 id="2-8-3DGS-综合综述（2024）"><a href="#2-8-3DGS-综合综述（2024）" class="headerlink" title="2.8 3DGS 综合综述（2024）"></a>2.8 3DGS 综合综述（2024）</h3><div class="table-container">
+<h3 id="2-8-3DGS-综合综述（2024）">2.8 3DGS 综合综述（2024）</h3>
 <table>
 <thead>
 <tr>
@@ -1160,7 +1128,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>从任务、技术、挑战与机遇多视角系统梳理 3DGS 相关研究，帮助新人快速入门并辅助研究者归纳现有技术路线。</li>
@@ -1169,7 +1136,6 @@
 <li>挑战：3DGS 领域论文爆发式增长，综述需持续更新；不同变体（2DGS、4DGS、SLAM 等）标准不统一。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1184,15 +1150,15 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>摘要（中文）</strong></p>
 <p>3D 高斯光栅化（3DGS）已成为具有主流潜力的新视角合成与 3D 表示方法，可通过高效训练将多视角图像转为显式 3D 高斯表示，并实现实时渲染。本综述从交叉视角分析现有 3DGS 相关工作，涵盖相关任务、技术、挑战与机遇，旨在帮助新人快速理解该领域并辅助研究者系统整理现有技术与难点。我们深入探讨 3DGS 的优化、应用与扩展并按侧重点分类，总结现有工作中 9 类技术模块及改进；在此基础上进一步分析跨任务共性挑战与技术，提出潜在研究方向。</p>
 <hr>
-<h2 id="3-LLM-及医学超声-LLM-自主性"><a href="#3-LLM-及医学超声-LLM-自主性" class="headerlink" title="3 LLM 及医学超声 LLM 自主性"></a>3 LLM 及医学超声 LLM 自主性</h2><blockquote>
+<h2 id="3-LLM-及医学超声-LLM-自主性">3 LLM 及医学超声 LLM 自主性</h2>
+<blockquote>
 <p>本节按时间顺序梳理通用 LLM 基础、医学领域 LLM 及超声场景下的视觉-语言模型与具身自主系统。</p>
 </blockquote>
 <hr>
-<h3 id="3-1-LLaMA（2023）"><a href="#3-1-LLaMA（2023）" class="headerlink" title="3.1 LLaMA（2023）"></a>3.1 LLaMA（2023）</h3><div class="table-container">
+<h3 id="3-1-LLaMA（2023）">3.1 LLaMA（2023）</h3>
 <table>
 <thead>
 <tr>
@@ -1227,7 +1193,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>发布 7B–65B 参数的开源基础语言模型系列，仅使用公开数据集训练。</li>
@@ -1235,7 +1200,6 @@
 <li>挑战：医学/超声领域需进一步微调；幻觉、安全性、多模态能力需 VLM 扩展。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1250,7 +1214,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>预训练数据</strong>：仅使用<strong>公开数据集</strong>——CommonCrawl、C4、GitHub、Wikipedia、Books、ArXiv、StackExchange 等；总计约 <strong>1.0T–1.4T tokens</strong>（依模型规模）。</li>
@@ -1263,7 +1226,7 @@
 <p><strong>摘要（中文）</strong></p>
 <p>我们介绍 LLaMA，一系列 70 亿至 650 亿参数的基础语言模型。模型在数万亿 token 上训练，证明仅使用公开可用数据集即可训练出最先进模型，无需依赖专有数据。LLaMA-13B 在多数基准上超越 GPT-3（175B），LLaMA-65B 与最佳大模型竞争。我们将所有模型发布给研究社区，促进 LLM 研究的民主化。</p>
 <hr>
-<h3 id="3-2-Med-PaLM（2022-2023）"><a href="#3-2-Med-PaLM（2022-2023）" class="headerlink" title="3.2 Med-PaLM（2022/2023）"></a>3.2 Med-PaLM（2022/2023）</h3><div class="table-container">
+<h3 id="3-2-Med-PaLM（2022-2023）">3.2 Med-PaLM（2022/2023）</h3>
 <table>
 <thead>
 <tr>
@@ -1298,16 +1261,14 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出 MultiMedQA 基准（6 个医学 QA 数据集 + HealthSearchQA），系统评估 LLM 临床知识。</li>
 <li>提出 <strong>instruction prompt tuning</strong>，将 Flan-PaLM（540B）对齐至医学领域，得到 Med-PaLM。</li>
-<li>Med-PaLM 在 MedQA（USMLE 风格）上达 67.6% 准确率，首次超过”及格线”；长回答与临床共识对齐度 92.6%。</li>
+<li>Med-PaLM 在 MedQA（USMLE 风格）上达 67.6% 准确率，首次超过&quot;及格线&quot;；长回答与临床共识对齐度 92.6%。</li>
 <li>挑战：仍低于临床医生水平；有害回答风险需持续降低；未覆盖超声影像多模态。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1322,7 +1283,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>评估基准 MultiMedQA</strong>（7 数据集）：<strong>MedQA (USMLE)</strong>、<strong>MedMCQA</strong>、<strong>PubMedQA</strong>、<strong>MMLU 临床子集</strong>、<strong>LiveQA</strong>、<strong>MedicationQA</strong>、新建 <strong>HealthSearchQA</strong>（3375 条网络健康搜索问题）。</li>
@@ -1336,7 +1296,7 @@
 <p>大语言模型展示了令人印象深刻的能力，但医学临床应用的门槛很高。我们提出 MultiMedQA 基准和人类评估框架（涵盖事实性、理解力、推理、潜在危害和偏见等维度）。基于 Flan-PaLM，通过 instruction prompt tuning 构建 Med-PaLM。Med-PaLM 在 MedQA 上达 67.6% 准确率，超越先前 SOTA 17% 以上。人类评估显示 Med-PaLM 长回答的临床共识对齐度（92.6%）接近医生（92.9%），潜在危害率（5.8%）也与医生（6.5%）相当，但仍有改进空间。</p>
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSDQSs"><img src="https://s1.imagehub.cc/images/2026/06/24/19f993664eca47af56304b6bd5712242.png" alt="img"></a></p>
-<h3 id="3-3-GPT-4-Technical-Report（2023）"><a href="#3-3-GPT-4-Technical-Report（2023）" class="headerlink" title="3.3 GPT-4 Technical Report（2023）"></a>3.3 GPT-4 Technical Report（2023）</h3><div class="table-container">
+<h3 id="3-3-GPT-4-Technical-Report（2023）">3.3 GPT-4 Technical Report（2023）</h3>
 <table>
 <thead>
 <tr>
@@ -1371,7 +1331,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>发布大规模多模态模型 GPT-4，接受图像和文本输入，输出文本。</li>
@@ -1380,7 +1339,6 @@
 <li>挑战：闭源、医学场景幻觉与安全风险、超声影像需专用 VLM 扩展。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1395,7 +1353,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>模型训练</strong>：大规模 Transformer <strong>预训练</strong>（预测下一 token）+ <strong>RLHF 后训练对齐</strong>（提升事实性与指令遵循）；具体架构与训练数据规模<strong>未公开</strong>。</li>
@@ -1408,7 +1365,7 @@
 <p><strong>摘要（中文）</strong></p>
 <p>我们报告 GPT-4 的开发进展，这是一种大规模多模态模型，可接受图像和文本输入并产生文本输出。GPT-4 在多种专业和学术基准上展现人类水平性能，包括模拟律师资格考试取得前 10% 成绩。GPT-4 是基于 Transformer 的预训练模型，经后训练对齐流程提升事实性和行为可控性。本项目的核心组成部分是开发跨尺度可预测的基础设施和优化方法。</p>
 <hr>
-<h3 id="3-4-Med-PaLM-2（2024）"><a href="#3-4-Med-PaLM-2（2024）" class="headerlink" title="3.4 Med-PaLM 2（2024）"></a>3.4 Med-PaLM 2（2024）</h3><div class="table-container">
+<h3 id="3-4-Med-PaLM-2（2024）">3.4 Med-PaLM 2（2024）</h3>
 <table>
 <thead>
 <tr>
@@ -1443,7 +1400,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>基于 PaLM 2 + 医学领域微调 + ensemble refinement + chain-of-retrieval 构建 Med-PaLM 2。</li>
@@ -1451,7 +1407,6 @@
 <li>挑战：专科医生回答仍整体更优；真实临床工作流验证有限；未集成超声影像。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1466,7 +1421,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>基础模型</strong>：<strong>PaLM 2</strong> + 医学领域<strong>继续预训练与微调</strong>（MedQA、MedMCQA、PubMedQA、MMLU clinical 等数据）。</li>
@@ -1478,12 +1432,12 @@
 <li><strong>对比基线</strong>：<strong>Med-PaLM、GPT-4、专科/全科医生人类回答</strong>。</li>
 </ul>
 <p><strong>摘要（中文）</strong></p>
-<p>LLM 在医学问答中展现潜力，Med-PaLM 首次在 USMLE 风格题目上超过”及格线”，但在长形式回答和真实工作流处理上仍有差距。我们提出 Med-PaLM 2，结合基础 LLM 改进、医学领域微调和 ensemble refinement、chain-of-retrieval 等推理增强策略。Med-PaLM 2 在 MedQA 上达 86.5%，在 MedMCQA、PubMedQA 等数据集上大幅提升。详细人类评估显示，医生在 9 个临床维度中 8 个更偏好 Med-PaLM 2 的回答，安全性与医生回答相当。</p>
+<p>LLM 在医学问答中展现潜力，Med-PaLM 首次在 USMLE 风格题目上超过&quot;及格线&quot;，但在长形式回答和真实工作流处理上仍有差距。我们提出 Med-PaLM 2，结合基础 LLM 改进、医学领域微调和 ensemble refinement、chain-of-retrieval 等推理增强策略。Med-PaLM 2 在 MedQA 上达 86.5%，在 MedMCQA、PubMedQA 等数据集上大幅提升。详细人类评估显示，医生在 9 个临床维度中 8 个更偏好 Med-PaLM 2 的回答，安全性与医生回答相当。</p>
 <p><strong>框图位置</strong></p>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"></span><br></pre></td></tr></table></figure>
 <figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">┌─────────────────────────────────────────────────────────┐</span><br><span class="line">│  [预留] Med-PaLM 2：PaLM 2 + 医学微调 + 检索增强推理       │</span><br><span class="line">└─────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
 <hr>
-<h3 id="3-5-EchoVLM（2025）"><a href="#3-5-EchoVLM（2025）" class="headerlink" title="3.5 EchoVLM（2025）"></a>3.5 EchoVLM（2025）</h3><div class="table-container">
+<h3 id="3-5-EchoVLM（2025）">3.5 EchoVLM（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1518,7 +1472,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>首个开源 <strong>100 亿参数级</strong> 超声专用视觉-语言模型，基于 Qwen2-VL + Dual-path MoE 架构。</li>
@@ -1527,7 +1480,6 @@
 <li>挑战：MoE 路由稳定性、vLLM 推理兼容性、跨中心泛化、临床安全性验证。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1542,7 +1494,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>数据集</strong>：15 家医院 <strong>208,941</strong> 病例、<strong>147 万</strong>关键帧、<strong>180 万</strong>指令对（7 大解剖系统）；held-out 测试集 <strong>27,577</strong> 图像 + <strong>3,000</strong> 报告；补充 <strong>OOD</strong> 公开数据集（Li et al. 2024b，乳腺/肝/甲状腺）。</li>
@@ -1557,7 +1508,7 @@
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSDuNI"><img src="https://s1.imagehub.cc/images/2026/06/24/f460dfc6419ffc7fe4dc07e3ecd05530.png" alt="img"></a></p>
 <hr>
-<h3 id="3-6-USPilot（2025）"><a href="#3-6-USPilot（2025）" class="headerlink" title="3.6 USPilot（2025）"></a>3.6 USPilot（2025）</h3><div class="table-container">
+<h3 id="3-6-USPilot（2025）">3.6 USPilot（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1592,7 +1543,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出 <strong>具身超声机器人系统</strong> USPilot，LLM 微调理解超声领域问答，LLM 增强 GNN 作为任务规划器。</li>
@@ -1600,7 +1550,6 @@
 <li>挑战：机器人 API 调用可靠性、安全关键场景下的 LLM 幻觉、真实临床验证不足。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1615,7 +1564,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>系统组成</strong>：（1）<strong>LLM 微调模块</strong>——理解超声领域问答；（2）<strong>LLM 增强 GNN 任务规划器</strong>——将自然语言意图映射为超声机器人 API 调用序列；（3）<strong>具身超声机器人</strong>——执行扫描动作。</li>
@@ -1630,7 +1578,7 @@
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSDVlr"><img src="https://s1.imagehub.cc/images/2026/06/24/b9096f1cb2302b18e0eea6639eab7095.md.png" alt="img"></a></p>
 <hr>
-<h3 id="3-7-MedFound（2025）"><a href="#3-7-MedFound（2025）" class="headerlink" title="3.7 MedFound（2025）"></a>3.7 MedFound（2025）</h3><div class="table-container">
+<h3 id="3-7-MedFound（2025）">3.7 MedFound（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1665,7 +1613,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>发布 <strong>1760 亿参数</strong> 通用医学 LLM MedFound，基于大规模医学文本和真实临床记录预训练。</li>
@@ -1674,7 +1621,6 @@
 <li>挑战：超大模型部署成本、超声影像未直接集成、监管审批路径。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1689,7 +1635,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>模型</strong>：<strong>MedFound-176B</strong> 通用医学 LLM；预训练语料含多样化医学文本 + <strong>真实临床记录</strong>（EHR 风格）。</li>
@@ -1705,7 +1650,7 @@
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSS9dT"><img src="https://s1.imagehub.cc/images/2026/06/24/f51646a84692cb0c11dbbba245f15b01.png" alt="img"></a></p>
 <hr>
-<h3 id="3-8-AMIE（2025）"><a href="#3-8-AMIE（2025）" class="headerlink" title="3.8 AMIE（2025）"></a>3.8 AMIE（2025）</h3><div class="table-container">
+<h3 id="3-8-AMIE（2025）">3.8 AMIE（2025）</h3>
 <table>
 <thead>
 <tr>
@@ -1740,7 +1685,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>提出 <strong>AMIE</strong>（Articulate Medical Intelligence Explorer），针对临床诊断推理优化的 LLM。</li>
@@ -1749,7 +1693,6 @@
 <li>挑战：文本-only 未集成超声影像；对话安全性；真实临床部署监管。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1764,7 +1707,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>实验方法</strong></p>
 <ul>
 <li><strong>评估病例</strong>：<strong>NEJM Clinicopathological Conferences (CPC)</strong> 真实复杂病例报告（高诊断难度）。</li>
@@ -1777,7 +1719,7 @@
 <p><strong>摘要（中文）</strong></p>
 <p>鉴别诊断（DDx）是临床决策的核心认知任务，LLM 为构建交互式诊断工具提供机遇。我们介绍 AMIE，针对临床诊断推理优化的 LLM，为复杂真实医学病例生成 DDx。除独立性能评估外，我们将模型集成至交互界面，评估 AMIE 辅助医师与使用传统检索工具（网络搜索等）的对比。AMIE 在 DDx Top-10/Top-1 准确率上表现优异，DDx 列表质量显著优于当时 GPT-4。更重要的是，AMIE 显著提升了医师的鉴别诊断能力。</p>
 <hr>
-<h3 id="3-9-医学-LLM-综合综述（2024）"><a href="#3-9-医学-LLM-综合综述（2024）" class="headerlink" title="3.9 医学 LLM 综合综述（2024）"></a>3.9 医学 LLM 综合综述（2024）</h3><div class="table-container">
+<h3 id="3-9-医学-LLM-综合综述（2024）">3.9 医学 LLM 综合综述（2024）</h3>
 <table>
 <thead>
 <tr>
@@ -1812,7 +1754,6 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>主要工作与挑战</strong></p>
 <ul>
 <li>系统追踪 Med-LLM 从通用 LLM 到医学专用应用的演进，涵盖基础技术、应用场景与可信性。</li>
@@ -1821,7 +1762,6 @@
 <li>挑战：医学数据隐私合规、幻觉与有害输出、多模态（含超声影像）融合、临床工作流集成。</li>
 </ul>
 <p><strong>输入 / 输出</strong></p>
-<div class="table-container">
 <table>
 <thead>
 <tr>
@@ -1836,13 +1776,12 @@
 </tr>
 </tbody>
 </table>
-</div>
 <p><strong>摘要（中文）</strong></p>
 <p>随着大语言模型的出现，医学人工智能经历了 substantial 的技术进步与范式转变，LLM 在简化医疗服务和改善患者结局方面展现潜力。本综述追踪 Med-LLM 的最新进展，包括背景、关键发现与主流技术，尤其关注从通用模型到医学专用应用的演进。我们首先深入 Med-LLM 的基础技术，说明通用模型如何逐步适配复杂医学任务；其次调研 Med-LLM 在医疗健康各领域的广泛应用及现有模型清单；同时讨论确保公平性、问责制、隐私和鲁棒性的挑战。我们强调持续审查与开发的必要性，并展望 Med-LLM 未来发展方向，为从业者提供 Med-LLM 优势与局限的全面理解。</p>
 <p><strong>框图位置</strong></p>
 <p><a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image.MSSTW4"><img src="https://s1.imagehub.cc/images/2026/06/24/1998423e2bbf6a308fc6edf03d3ebe68.png" alt="img"></a></p>
 <hr>
-<h2 id="附录：阅读建议"><a href="#附录：阅读建议" class="headerlink" title="附录：阅读建议"></a>附录：阅读建议</h2><div class="table-container">
+<h2 id="附录：阅读建议">附录：阅读建议</h2>
 <table>
 <thead>
 <tr>
@@ -1869,8 +1808,7 @@
 </tr>
 </tbody>
 </table>
-</div>
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/">http://cjh0220.github.io/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/">论文总结</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/"><img class="prev-cover" src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">《禅游斗地主》综合分析案AI辅助</div></div></a></div><div class="next-post pull-right"><a href="/2026/06/27/Dyna3DGR/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Dyna3DGR</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E9%98%B6%E6%AE%B5%E6%80%A7%E6%80%BB%E7%BB%93"><span class="toc-number">1.</span> <span class="toc-text">阶段性总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">1 医学超声图像处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-U-Net%EF%BC%882015%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 U-Net（2015）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-EchoNet-Dynamic%EF%BC%882020%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 EchoNet-Dynamic（2020）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-nnU-Net%EF%BC%882020-2021%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3 nnU-Net（2020&#x2F;2021）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-SAM-Med2D%EF%BC%882023%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.4 SAM-Med2D（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E8%B6%85%E5%A3%B0%E5%88%86%E5%89%B2%E7%B3%BB%E7%BB%9F%E7%BB%BC%E8%BF%B0%EF%BC%882025%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.5 超声分割系统综述（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E8%B6%85%E5%A3%B0-AI-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882025%EF%BC%89"><span class="toc-number">1.2.6.</span> <span class="toc-text">1.6 超声 AI 综合综述（2025）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3DGS-%E7%B3%BB%E5%88%97%EF%BC%88%E5%90%AB-NeRF%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">2 3DGS 系列（含 NeRF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-NeRF%EF%BC%882020%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 NeRF（2020）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3D-Gaussian-Splatting%EF%BC%882023%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 3D Gaussian Splatting（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Mip-Splatting%EF%BC%882023-2024%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 Mip-Splatting（2023&#x2F;2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-2D-Gaussian-Splatting%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4 2D Gaussian Splatting（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-4D-Gaussian-Splatting%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.5.</span> <span class="toc-text">2.5 4D Gaussian Splatting（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-FastGS%EF%BC%882025%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">2.6 FastGS（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-MedGS%EF%BC%882025%EF%BC%89"><span class="toc-number">1.3.7.</span> <span class="toc-text">2.7 MedGS（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-3DGS-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.8.</span> <span class="toc-text">2.8 3DGS 综合综述（2024）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-LLM-%E5%8F%8A%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0-LLM-%E8%87%AA%E4%B8%BB%E6%80%A7"><span class="toc-number">1.4.</span> <span class="toc-text">3 LLM 及医学超声 LLM 自主性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-LLaMA%EF%BC%882023%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 LLaMA（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Med-PaLM%EF%BC%882022-2023%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Med-PaLM（2022&#x2F;2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-GPT-4-Technical-Report%EF%BC%882023%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 GPT-4 Technical Report（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Med-PaLM-2%EF%BC%882024%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">3.4 Med-PaLM 2（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-EchoVLM%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">3.5 EchoVLM（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-USPilot%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.6.</span> <span class="toc-text">3.6 USPilot（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-MedFound%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.7.</span> <span class="toc-text">3.7 MedFound（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-AMIE%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.8.</span> <span class="toc-text">3.8 AMIE（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-9-%E5%8C%BB%E5%AD%A6-LLM-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882024%EF%BC%89"><span class="toc-number">1.4.9.</span> <span class="toc-text">3.9 医学 LLM 综合综述（2024）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E9%98%85%E8%AF%BB%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.5.</span> <span class="toc-text">附录：阅读建议</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AgentLoop调优方法综述"/></a><div class="content"><a class="title" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述">AgentLoop调优方法综述</a><time datetime="2026-07-17T03:29:27.000Z" title="发表于 2026-07-17 11:29:27">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助"><img src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《禅游斗地主》综合分析案AI辅助"/></a><div class="content"><a class="title" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助">《禅游斗地主》综合分析案AI辅助</a><time datetime="2026-07-17T03:28:43.000Z" title="发表于 2026-07-17 11:28:43">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="阶段性文章总结"/></a><div class="content"><a class="title" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结">阶段性文章总结</a><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR"><img src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dyna3DGR"/></a><div class="content"><a class="title" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR">Dyna3DGR</a><time datetime="2026-06-27T11:10:55.000Z" title="发表于 2026-06-27 19:10:55">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案"><img src="https://s3.bmp.ovh/2026/06/13/ELmhoNcU.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杀戮尖塔2系统拆解案"/></a><div class="content"><a class="title" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案">杀戮尖塔2系统拆解案</a><time datetime="2026-06-13T10:43:08.000Z" title="发表于 2026-06-13 18:43:08">2026-06-13</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/">http://cjh0220.github.io/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%BA%E6%96%87%E6%80%BB%E7%BB%93/">论文总结</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/"><img class="prev-cover" src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">《禅游斗地主》综合分析案AI辅助</div></div></a></div><div class="next-post pull-right"><a href="/2026/06/27/Dyna3DGR/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Dyna3DGR</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">148</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">113</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">31</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">阶段性总结</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86"><span class="toc-number">1.2.</span> <span class="toc-text">1 医学超声图像处理</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-U-Net%EF%BC%882015%EF%BC%89"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 U-Net（2015）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-EchoNet-Dynamic%EF%BC%882020%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 EchoNet-Dynamic（2020）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-nnU-Net%EF%BC%882020-2021%EF%BC%89"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3 nnU-Net（2020&#x2F;2021）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4-SAM-Med2D%EF%BC%882023%EF%BC%89"><span class="toc-number">1.2.4.</span> <span class="toc-text">1.4 SAM-Med2D（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E8%B6%85%E5%A3%B0%E5%88%86%E5%89%B2%E7%B3%BB%E7%BB%9F%E7%BB%BC%E8%BF%B0%EF%BC%882025%EF%BC%89"><span class="toc-number">1.2.5.</span> <span class="toc-text">1.5 超声分割系统综述（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E8%B6%85%E5%A3%B0-AI-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882025%EF%BC%89"><span class="toc-number">1.2.6.</span> <span class="toc-text">1.6 超声 AI 综合综述（2025）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-3DGS-%E7%B3%BB%E5%88%97%EF%BC%88%E5%90%AB-NeRF%EF%BC%89"><span class="toc-number">1.3.</span> <span class="toc-text">2 3DGS 系列（含 NeRF）</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-NeRF%EF%BC%882020%EF%BC%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 NeRF（2020）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-3D-Gaussian-Splatting%EF%BC%882023%EF%BC%89"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 3D Gaussian Splatting（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Mip-Splatting%EF%BC%882023-2024%EF%BC%89"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 Mip-Splatting（2023&#x2F;2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-2D-Gaussian-Splatting%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4 2D Gaussian Splatting（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-4D-Gaussian-Splatting%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.5.</span> <span class="toc-text">2.5 4D Gaussian Splatting（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-6-FastGS%EF%BC%882025%EF%BC%89"><span class="toc-number">1.3.6.</span> <span class="toc-text">2.6 FastGS（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-7-MedGS%EF%BC%882025%EF%BC%89"><span class="toc-number">1.3.7.</span> <span class="toc-text">2.7 MedGS（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-8-3DGS-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882024%EF%BC%89"><span class="toc-number">1.3.8.</span> <span class="toc-text">2.8 3DGS 综合综述（2024）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-LLM-%E5%8F%8A%E5%8C%BB%E5%AD%A6%E8%B6%85%E5%A3%B0-LLM-%E8%87%AA%E4%B8%BB%E6%80%A7"><span class="toc-number">1.4.</span> <span class="toc-text">3 LLM 及医学超声 LLM 自主性</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-LLaMA%EF%BC%882023%EF%BC%89"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 LLaMA（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-Med-PaLM%EF%BC%882022-2023%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 Med-PaLM（2022&#x2F;2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-GPT-4-Technical-Report%EF%BC%882023%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 GPT-4 Technical Report（2023）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Med-PaLM-2%EF%BC%882024%EF%BC%89"><span class="toc-number">1.4.4.</span> <span class="toc-text">3.4 Med-PaLM 2（2024）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-EchoVLM%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">3.5 EchoVLM（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-USPilot%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.6.</span> <span class="toc-text">3.6 USPilot（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-MedFound%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.7.</span> <span class="toc-text">3.7 MedFound（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-AMIE%EF%BC%882025%EF%BC%89"><span class="toc-number">1.4.8.</span> <span class="toc-text">3.8 AMIE（2025）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-9-%E5%8C%BB%E5%AD%A6-LLM-%E7%BB%BC%E5%90%88%E7%BB%BC%E8%BF%B0%EF%BC%882024%EF%BC%89"><span class="toc-number">1.4.9.</span> <span class="toc-text">3.9 医学 LLM 综合综述（2024）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E9%98%85%E8%AF%BB%E5%BB%BA%E8%AE%AE"><span class="toc-number">1.5.</span> <span class="toc-text">附录：阅读建议</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="AgentLoop调优方法综述"/></a><div class="content"><a class="title" href="/2026/07/17/AgentLoop%E8%B0%83%E4%BC%98%E6%96%B9%E6%B3%95%E7%BB%BC%E8%BF%B0/" title="AgentLoop调优方法综述">AgentLoop调优方法综述</a><time datetime="2026-07-17T03:29:27.000Z" title="发表于 2026-07-17 11:29:27">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助"><img src="https://s1.imagehub.cc/images/2026/07/15/d5577494ea146c7f46ca31c443cc5d92.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="《禅游斗地主》综合分析案AI辅助"/></a><div class="content"><a class="title" href="/2026/07/17/%E3%80%8A%E7%A6%85%E6%B8%B8%E6%96%97%E5%9C%B0%E4%B8%BB%E3%80%8B%E7%BB%BC%E5%90%88%E5%88%86%E6%9E%90%E6%A1%88AI%E8%BE%85%E5%8A%A9/" title="《禅游斗地主》综合分析案AI辅助">《禅游斗地主》综合分析案AI辅助</a><time datetime="2026-07-17T03:28:43.000Z" title="发表于 2026-07-17 11:28:43">2026-07-17</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="阶段性文章总结"/></a><div class="content"><a class="title" href="/2026/06/27/%E9%98%B6%E6%AE%B5%E6%80%A7%E6%96%87%E7%AB%A0%E6%80%BB%E7%BB%93/" title="阶段性文章总结">阶段性文章总结</a><time datetime="2026-06-27T11:11:17.000Z" title="发表于 2026-06-27 19:11:17">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR"><img src="https://s1.imagehub.cc/images/2026/06/25/17607dd6e1879d471b055442b70f904c.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Dyna3DGR"/></a><div class="content"><a class="title" href="/2026/06/27/Dyna3DGR/" title="Dyna3DGR">Dyna3DGR</a><time datetime="2026-06-27T11:10:55.000Z" title="发表于 2026-06-27 19:10:55">2026-06-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案"><img src="https://s3.bmp.ovh/2026/06/13/ELmhoNcU.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="杀戮尖塔2系统拆解案"/></a><div class="content"><a class="title" href="/2026/06/13/%E6%9D%80%E6%88%AE%E5%B0%96%E5%A1%942%E7%B3%BB%E7%BB%9F%E6%8B%86%E8%A7%A3%E6%A1%88/" title="杀戮尖塔2系统拆解案">杀戮尖塔2系统拆解案</a><time datetime="2026-06-13T10:43:08.000Z" title="发表于 2026-06-13 18:43:08">2026-06-13</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
   window.MathJax = {
     tex: {
       inlineMath: [ ['$','$'], ["\\(","\\)"]],
