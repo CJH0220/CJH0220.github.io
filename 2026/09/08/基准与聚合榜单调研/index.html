@@ -1,0 +1,688 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>基准与聚合榜单调研 | CJH's blog</title><meta name="keywords" content="AI调研"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="公开基准与聚合榜单调研  调研日期：2026-08-13 问题：benchlm.ai &#x2F; llm-stats.com 这类聚合榜单背后的基准数据集有多大？跑一遍需要多少时间和算力？   一句话结论 基准数据集小得出乎意料，算力几乎不是问题——真正的成本来自推理 token 和 agent 多轮，而不是数据量。 更值得注意的是第二点：这些聚合站大多不自己跑基准，而是抓取公开分数，而公开分数之间的可比">
+<meta property="og:type" content="article">
+<meta property="og:title" content="基准与聚合榜单调研">
+<meta property="og:url" content="http://cjh0220.github.io/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="公开基准与聚合榜单调研  调研日期：2026-08-13 问题：benchlm.ai &#x2F; llm-stats.com 这类聚合榜单背后的基准数据集有多大？跑一遍需要多少时间和算力？   一句话结论 基准数据集小得出乎意料，算力几乎不是问题——真正的成本来自推理 token 和 agent 多轮，而不是数据量。 更值得注意的是第二点：这些聚合站大多不自己跑基准，而是抓取公开分数，而公开分数之间的可比">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
+<meta property="article:published_time" content="2026-09-08T11:49:09.000Z">
+<meta property="article:modified_time" content="2026-09-08T11:54:20.093Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="AI调研">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '基准与聚合榜单调研',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-09-08 19:54:20'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">155</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">117</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">基准与聚合榜单调研</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-09-08T11:49:09.000Z" title="发表于 2026-09-08 19:49:09">2026-09-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">AI应用开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="基准与聚合榜单调研"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>公开基准与聚合榜单调研</h1>
+<blockquote>
+<p>调研日期：2026-08-13<br>
+问题：<a target="_blank" rel="noopener" href="http://benchlm.ai">benchlm.ai</a> / <a target="_blank" rel="noopener" href="http://llm-stats.com">llm-stats.com</a> 这类聚合榜单背后的基准数据集有多大？跑一遍需要多少时间和算力？</p>
+</blockquote>
+<hr>
+<h2 id="一句话结论">一句话结论</h2>
+<p><strong>基准数据集小得出乎意料，算力几乎不是问题——真正的成本来自推理 token 和 agent 多轮，而不是数据量。</strong></p>
+<p>更值得注意的是第二点：<strong>这些聚合站大多不自己跑基准，而是抓取公开分数</strong>，而公开分数之间的可比性远比想象中差。</p>
+<hr>
+<h2 id="一、基准到底有多大">一、基准到底有多大</h2>
+<h3 id="主流基准的规模">主流基准的规模</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th style="text-align:right">题量</th>
+<th>类型</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>AIME（单年）</td>
+<td style="text-align:right"><strong>30</strong></td>
+<td>数学竞赛，数值答案</td>
+</tr>
+<tr>
+<td>CritPt</td>
+<td style="text-align:right">70</td>
+<td>物理推理</td>
+</tr>
+<tr>
+<td>Terminal-Bench v2.1</td>
+<td style="text-align:right">89</td>
+<td>终端 agent 任务</td>
+</tr>
+<tr>
+<td>𝜏³-Banking</td>
+<td style="text-align:right">97</td>
+<td>工具调用 agent</td>
+</tr>
+<tr>
+<td>AA-LCR</td>
+<td style="text-align:right">100</td>
+<td>长上下文推理</td>
+</tr>
+<tr>
+<td>ARC-AGI-2（公开评测集）</td>
+<td style="text-align:right">~120</td>
+<td>视觉推理</td>
+</tr>
+<tr>
+<td>HumanEval</td>
+<td style="text-align:right"><strong>164</strong></td>
+<td>Python 函数补全</td>
+</tr>
+<tr>
+<td><strong>GPQA Diamond</strong></td>
+<td style="text-align:right"><strong>198</strong></td>
+<td>研究生级四选一</td>
+</tr>
+<tr>
+<td>GDPval-AA v2</td>
+<td style="text-align:right">220</td>
+<td>真实工作任务</td>
+</tr>
+<tr>
+<td>SciCode</td>
+<td style="text-align:right">288 子问题</td>
+<td>科研代码</td>
+</tr>
+<tr>
+<td><strong>SWE-bench Verified</strong></td>
+<td style="text-align:right"><strong>500</strong></td>
+<td>真实 GitHub issue</td>
+</tr>
+<tr>
+<td>MATH500</td>
+<td style="text-align:right">500</td>
+<td>竞赛数学</td>
+</tr>
+<tr>
+<td>LiveCodeBench v2</td>
+<td style="text-align:right">511</td>
+<td>竞赛编程（滚动更新）</td>
+</tr>
+<tr>
+<td>MBPP</td>
+<td style="text-align:right">~974</td>
+<td>Python 基础题</td>
+</tr>
+<tr>
+<td>GSM8K（测试集）</td>
+<td style="text-align:right">1,319</td>
+<td>小学应用题</td>
+</tr>
+<tr>
+<td><strong>HLE</strong></td>
+<td style="text-align:right"><strong>2,500</strong></td>
+<td>前沿学科难题</td>
+</tr>
+<tr>
+<td>MATH（测试集）</td>
+<td style="text-align:right">5,000</td>
+<td>竞赛数学</td>
+</tr>
+<tr>
+<td>AA-Omniscience</td>
+<td style="text-align:right">6,000</td>
+<td>知识+幻觉</td>
+</tr>
+<tr>
+<td>MMLU-Pro</td>
+<td style="text-align:right">12,032</td>
+<td>十选一</td>
+</tr>
+<tr>
+<td>MMLU（测试集）</td>
+<td style="text-align:right">14,079</td>
+<td>四选一</td>
+</tr>
+</tbody>
+</table>
+<p><strong>注意最上面那几行。</strong> GPQA Diamond —— 被当作衡量前沿推理能力的主力基准之一 —— 只有 <strong>198 道题</strong>。AIME 只有 <strong>30 道</strong>。HumanEval 只有 <strong>164 道</strong>。</p>
+<h3 id="一个对照：整个-Artificial-Analysis-智能指数">一个对照：整个 Artificial Analysis 智能指数</h3>
+<p>AA 的 Intelligence Index v4.1.1 由 9 个评测组成，<a target="_blank" rel="noopener" href="https://artificialanalysis.ai/methodology/intelligence-benchmarking">方法论页面</a>公开了完整构成：</p>
+<table>
+<thead>
+<tr>
+<th>评测</th>
+<th>类别</th>
+<th style="text-align:right">题量</th>
+<th style="text-align:right">重复次数</th>
+<th style="text-align:right">权重</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>GDPval-AA v2</td>
+<td>Agents</td>
+<td style="text-align:right">220</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">20%</td>
+</tr>
+<tr>
+<td>𝜏³-Banking</td>
+<td>Agents</td>
+<td style="text-align:right">97</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">14%</td>
+</tr>
+<tr>
+<td>Terminal-Bench v2.1</td>
+<td>Coding</td>
+<td style="text-align:right">89</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">16%</td>
+</tr>
+<tr>
+<td>SciCode</td>
+<td>Coding</td>
+<td style="text-align:right">288</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">8%</td>
+</tr>
+<tr>
+<td>AA-LCR</td>
+<td>General</td>
+<td style="text-align:right">100</td>
+<td style="text-align:right">3</td>
+<td style="text-align:right">6%</td>
+</tr>
+<tr>
+<td>AA-Omniscience</td>
+<td>General</td>
+<td style="text-align:right">6,000</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">12%</td>
+</tr>
+<tr>
+<td>HLE</td>
+<td>Scientific</td>
+<td style="text-align:right">2,158</td>
+<td style="text-align:right">1</td>
+<td style="text-align:right">12%</td>
+</tr>
+<tr>
+<td>GPQA Diamond</td>
+<td>Scientific</td>
+<td style="text-align:right">198</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">6%</td>
+</tr>
+<tr>
+<td>CritPt</td>
+<td>Scientific</td>
+<td style="text-align:right">70</td>
+<td style="text-align:right">5</td>
+<td style="text-align:right">6%</td>
+</tr>
+</tbody>
+</table>
+<p>算上重复采样，<strong>整个指数一共约 11,600 次任务执行</strong>。</p>
+<p>作为对照：<strong>光一个 MMLU 测试集（14,079 题）就比整个 AA 指数还大。</strong></p>
+<h3 id="存储">存储</h3>
+<p>纯文本基准全是 JSON/JSONL，<strong>MB 量级</strong>，GitHub 或 HuggingFace 直接下载。GPQA Diamond 这种 198 题的文件只有几百 KB。</p>
+<p>唯一存储占大头的是 <strong>SWE-bench 类</strong>——每个仓库要构建 Docker 环境（数十 GB 量级，属粗略估计）。但即便如此，也远不到需要专门集群的程度，一台开发机就能装下。</p>
+<hr>
+<h2 id="二、算力：一个常见的误解">二、算力：一个常见的误解</h2>
+<p><strong>评测是纯推理，不涉及任何训练。</strong> 如果通过 API 调用模型，<strong>你这边需要的 GPU 是零</strong>。算力开销全在服务商那边，你付的是 token 费。</p>
+<p>Epoch AI 在 <a target="_blank" rel="noopener" href="https://epoch.ai/benchmarks/swe-bench-verified">SWE-bench Verified 页面</a>描述的环境是一个「最小 Linux Docker 容器、无网络访问」——判分侧跑在 CPU 上。瓶颈是 <strong>API 吞吐和 Docker 启动</strong>，不是本地算力。</p>
+<p>只有一种情况需要自备 GPU：<strong>评测开源权重模型且自己部署推理</strong>。那是另一件事，成本结构完全不同。</p>
+<hr>
+<h2 id="三、真正的成本来自哪里">三、真正的成本来自哪里</h2>
+<p>数据量小，但费用可以很高——因为成本不由题量决定，由三个别的因素决定。</p>
+<h3 id="驱动因素-1：推理-token">驱动因素 1：推理 token</h3>
+<p>推理模型在一道题上可能烧掉几万 token 的思考过程。Epoch 对 SWE-bench Verified 的设定是<strong>每个任务上限 200 万 uncached token + 2000 万 cached 读取</strong>，并且在 2025 年 11 月把 FrontierMath 的 token 预算<strong>提高了 10 倍</strong>，原因是观察到模型频繁超限。</p>
+<h3 id="驱动因素-2：Agent-多轮">驱动因素 2：Agent 多轮</h3>
+<p>Agentic 基准里每个「任务」不是一次请求，而是一个多轮循环。SWE-bench 的一个任务可能是几十轮对话，且<strong>每轮都要重发完整历史，输入量呈二次增长</strong>（Epoch 明确指出了这一点）。</p>
+<h3 id="驱动因素-3：重复采样">驱动因素 3：重复采样</h3>
+<p>看上表：GPQA Diamond、𝜏³-Banking、CritPt 都跑 <strong>5 次</strong>重复。198 道题实际是 990 次调用。</p>
+<h3 id="实测数字">实测数字</h3>
+<p>普林斯顿 <a target="_blank" rel="noopener" href="https://hal.cs.princeton.edu/swebench">HAL 榜单</a>公布了复现运行的真实 API 花费，<strong>SWE-bench Verified 全量 500 题</strong>：</p>
+<table>
+<thead>
+<tr>
+<th>模型</th>
+<th style="text-align:right">得分</th>
+<th style="text-align:right">花费</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>claude-3-5-sonnet-20241022</td>
+<td style="text-align:right">38.00%</td>
+<td style="text-align:right"><strong>$67.09</strong></td>
+</tr>
+<tr>
+<td>gpt-4o-2024-08-06</td>
+<td style="text-align:right">29.80%</td>
+<td style="text-align:right"><strong>$79.84</strong></td>
+</tr>
+<tr>
+<td>o1-mini-2024-09-12</td>
+<td style="text-align:right">27.20%</td>
+<td style="text-align:right"><strong>$366.81</strong></td>
+</tr>
+</tbody>
+</table>
+<p>注意 o1-mini：<strong>得分最低，花费却是前两者的 5 倍</strong>——这就是推理 token 的代价。</p>
+<p><a target="_blank" rel="noopener" href="https://arcprize.org/leaderboard">ARC Prize 榜单</a>直接把「每任务成本」作为坐标轴之一：</p>
+<table>
+<thead>
+<tr>
+<th>方案</th>
+<th style="text-align:right">得分</th>
+<th style="text-align:right">每任务成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Kaggle 冠军（4B 微调模型）</td>
+<td style="text-align:right">24%</td>
+<td style="text-align:right">$0.20</td>
+</tr>
+<tr>
+<td>GPT-5.2 (X-High)</td>
+<td style="text-align:right">52.9%</td>
+<td style="text-align:right">$1.90</td>
+</tr>
+<tr>
+<td>Opus 4.5 (Thinking 64k)</td>
+<td style="text-align:right">37.6%</td>
+<td style="text-align:right">$2.20</td>
+</tr>
+<tr>
+<td>Imbue 代码演化 + Gemini 3.1 Pro</td>
+<td style="text-align:right">95.1%</td>
+<td style="text-align:right">$8.71</td>
+</tr>
+<tr>
+<td>Gemini 3 Deep Think</td>
+<td style="text-align:right">—</td>
+<td style="text-align:right">$13.62</td>
+</tr>
+<tr>
+<td>精调方案（Poetiq）</td>
+<td style="text-align:right">54%</td>
+<td style="text-align:right">$30</td>
+</tr>
+<tr>
+<td><strong>人类</strong></td>
+<td style="text-align:right">~100%</td>
+<td style="text-align:right"><strong>~$17</strong></td>
+</tr>
+</tbody>
+</table>
+<p>ARC-AGI-2 公开评测集约 120 题，按 $2–30/题算，<strong>单次全量运行 $240–3,600</strong>。这是最贵的那一档。</p>
+<h3 id="成本量级速查">成本量级速查</h3>
+<table>
+<thead>
+<tr>
+<th>基准</th>
+<th>单次全量运行的量级</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>HumanEval / GSM8K / MATH500</td>
+<td><strong>几美元</strong></td>
+</tr>
+<tr>
+<td>GPQA Diamond（198 题 ×5 次）</td>
+<td><strong>十几到几十美元</strong>（推理模型可到数百）</td>
+</tr>
+<tr>
+<td>MMLU / MMLU-Pro</td>
+<td><strong>几十美元</strong>（题多但每题输出短）</td>
+</tr>
+<tr>
+<td>HLE（2,500 题，推理模型）</td>
+<td><strong>数百美元</strong></td>
+</tr>
+<tr>
+<td>SWE-bench Verified</td>
+<td><strong>$67–367</strong>（实测），推理模型上千</td>
+</tr>
+<tr>
+<td>ARC-AGI-2</td>
+<td><strong>数百到数千</strong></td>
+</tr>
+</tbody>
+</table>
+<p>一个关键观察：<a target="_blank" rel="noopener" href="https://www.morphllm.com/swe-bench-pro">有分析指出</a>，SWE-bench Verified 榜单上<strong>最后 7–15 分的提升，每输出 token 的代价要贵 20–50 倍</strong>。</p>
+<h3 id="时间">时间</h3>
+<p><strong>瓶颈是限流和并发，不是算力。</strong></p>
+<p>粗算：一个 500 任务的 agentic 基准，每任务 20 轮 = 10,000 次 API 调用；4 并发、每次 10 秒 → 约 7 小时。提高并发就能线性缩短，直到撞上服务商的 rate limit。</p>
+<p>纯问答类基准（MMLU 这种）在合理并发下<strong>几小时内可以跑完</strong>。</p>
+<hr>
+<h2 id="四、聚合榜单是怎么来的：自己跑-vs-抓分数">四、聚合榜单是怎么来的：自己跑 vs 抓分数</h2>
+<p>这是我认为比「数据集多大」更重要的发现。</p>
+<h3 id="三家的做法完全不同">三家的做法完全不同</h3>
+<table>
+<thead>
+<tr>
+<th>站点</th>
+<th>分数来源</th>
+<th>聚合方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Artificial Analysis</strong></td>
+<td><strong>自己跑</strong></td>
+<td>9 个评测按类别加权（Agents 34% / Coding 24% / Scientific 24% / General 18%）</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="http://llm-stats.com">llm-stats.com</a></strong></td>
+<td><strong>混合</strong>，逐条标注</td>
+<td>TrueSkill 竞技评分，公开分取 <strong>μ − 3σ</strong> 保守估计</td>
+</tr>
+<tr>
+<td><strong><a target="_blank" rel="noopener" href="http://benchlm.ai">benchlm.ai</a></strong></td>
+<td><strong>抓取公开分数</strong></td>
+<td>BenchAlign 归一化 + 类别加权（Agentic 22%），另分「加权」与「仅展示」两类</td>
+</tr>
+</tbody>
+</table>
+<p><a target="_blank" rel="noopener" href="https://deepwiki.com/JonathanChavezTamales/LLMStats/4-benchmarks-and-evaluation">llm-stats 的数据结构</a>里每条分数都带 <code>is_self_reported</code>（是否厂商自报）、<code>analysis_method</code>、<code>source_link</code>。<a target="_blank" rel="noopener" href="https://llm-stats.com/methodology/llm-stats-score">它的评分方法页</a>说明：缺数据的模型不按 0 分处理，而是保留更大的不确定度 σ，因此被扣得更多——这个设计是合理的。</p>
+<p><a target="_blank" rel="noopener" href="https://benchlm.ai/methodology">BenchLM 的方法论</a>明确说「不同难度的测试之间绝不直接平均原始百分比」，并给每个基准打上版本、刷新频率、是否饱和的元数据。它的数据来自 OpenBench、厂商官方表格、模型卡、发布公告和各基准原生榜单。</p>
+<h3 id="可比性问题有多严重">可比性问题有多严重</h3>
+<p>这才是要点。公开分数之间的差异，<strong>很多不是模型差异，是测量条件差异</strong>：</p>
+<p><strong>① 自报 vs 独立测量</strong><br>
+调研中反复出现的数字：MMLU 上自报与独立测量<strong>相差 5 分是常态</strong>；SWE-bench 上几乎所有头条成绩都是自报，而<strong>单是 scaffold（脚手架）差异就能造成 28 分以上的落差</strong>。</p>
+<p><strong>② 连题量都不一致</strong><br>
+Epoch 在 SWE-bench Verified 上跑 <strong>484</strong> 题（排除 16 个在其环境里跑不稳的样本），而它记录的其他方报告：<strong>GPT-5 用了 477 题，Claude 3.7 Sonnet 用了 489 题，Anthropic 后续版本用了全部 500 题</strong>。</p>
+<p><strong>③ 同一模型，换个 harness 分数就变</strong><br>
+Epoch 的 changelog 直白写着：2026-02-12 的 v2.0.0 脚手架/环境/token 上限升级「<strong>led to model performance improving significantly</strong>」。</p>
+<p>也就是说，<strong>同一个模型、同一个基准、只是评测框架升级了，分数就显著变了</strong>。任何混用了升级前后数据的榜单，都在拿苹果比橘子。</p>
+<p><strong>④ zero-shot / few-shot 不统一</strong><br>
+同一模型在同一基准上，zero-shot 和 few-shot 的分数可以差很多，而多数榜单不一致地混报两者。</p>
+<p><strong>⑤ 等权重掩盖样本量差异</strong><br>
+有分析指出：GPQA Diamond 只有 198 题、MMLU 有 14,079 题，但聚合时等权重对待——<strong>198 题的分数，其统计噪声远大于 14,079 题的</strong>，等权重等于放大了噪声。</p>
+<h3 id="一个自相矛盾的地方">一个自相矛盾的地方</h3>
+<p>llm-stats 的公开基准页宣称所有分数都是「independently verified」，但其数据结构里明确存在 <code>is_self_reported</code> 字段。<strong>页面级的宣称和数据级的事实对不上</strong>。</p>
+<p>如果要用它的数据，建议直接读 <a target="_blank" rel="noopener" href="https://deepwiki.com/JonathanChavezTamales/LLMStats/4-benchmarks-and-evaluation">JSON 仓库</a>而不是渲染后的榜单，并按 <code>is_self_reported</code> 和 <code>analysis_method</code> 分层看。</p>
+<hr>
+<h2 id="五、对我们自己这套工具的启示">五、对我们自己这套工具的启示</h2>
+<h3 id="1-我们的题库规模完全够用">1. 我们的题库规模完全够用</h3>
+<p><code>04_eval_engine/banks/core.jsonl</code> 有 <strong>85 题</strong>。对照上表：</p>
+<ul>
+<li>GPQA Diamond：198 题</li>
+<li>HumanEval：164 题</li>
+<li>AIME：30 题</li>
+</ul>
+<p><strong>我们的题库和主流基准是同一个量级</strong>，不需要为「题太少」焦虑。真正要担心的从来不是题量，而是<strong>区分度</strong>——这正是 <code>01/analysis.py items</code> 用 IRT 在解决的问题。</p>
+<h3 id="2-跑一遍的成本可以精确估算">2. 跑一遍的成本可以精确估算</h3>
+<p>83 题 × 3 次采样 = <strong>249 次请求</strong>。</p>
+<table>
+<thead>
+<tr>
+<th>模型类型</th>
+<th style="text-align:right">估算输出 token</th>
+<th style="text-align:right">估算成本</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>非推理模型（~500 tok/题）</td>
+<td style="text-align:right">~12.5 万</td>
+<td style="text-align:right"><strong>$2 上下</strong></td>
+</tr>
+<tr>
+<td>推理模型（~5,000 tok/题）</td>
+<td style="text-align:right">~125 万</td>
+<td style="text-align:right"><strong>$20 上下</strong></td>
+</tr>
+</tbody>
+</table>
+<p><strong>全量跑一次的量级是几美元到几十美元。</strong> 这个数字意味着：按周监控完全负担得起，怀疑有差异时把 <code>--trials</code> 调到 10 也只是三倍成本。</p>
+<h3 id="3-我们做对的几件事，恰好是聚合榜单做不到的">3. 我们做对的几件事，恰好是聚合榜单做不到的</h3>
+<table>
+<thead>
+<tr>
+<th>聚合榜单的问题</th>
+<th>我们的对策</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>混用自报与独立测量</td>
+<td>全部自己跑，同一 harness</td>
+</tr>
+<tr>
+<td>题量不一致（477/484/489/500）</td>
+<td>题库冻结，<code>bank.py</code> 校验题号唯一性</td>
+</tr>
+<tr>
+<td>harness 升级导致分数变化</td>
+<td>判分器与题库同库版本管理</td>
+</tr>
+<tr>
+<td>点估计不带不确定性</td>
+<td>所有通过率配 Wilson 95% 区间</td>
+</tr>
+<tr>
+<td>等权重放大小样本噪声</td>
+<td>维度权重可配，且 <code>analysis.py</code> 会标出无区分度的题</td>
+</tr>
+<tr>
+<td>单次采样</td>
+<td><code>trials &lt; 3</code> 直接警告</td>
+</tr>
+<tr>
+<td>条件不一致（思考模式/联网/渠道）</td>
+<td>写进 <code>config.meta</code> 备查，README 列为硬约束</td>
+</tr>
+</tbody>
+</table>
+<h3 id="4-值得借鉴的两点">4. 值得借鉴的两点</h3>
+<p><strong>① 把成本作为一等指标。</strong> ARC Prize 把「每任务成本」直接做成坐标轴，AA 把「Cost per Task」「Tokens per Task」列进方法论。我们的引擎已经记录了延迟和 token，但<strong>没有把成本做进报告</strong>——建议在 <code>config</code> 里加单价，<code>report.md</code> 里出「每题成本」和「质量/成本前沿」。</p>
+<p><strong>② 保守估计而非点估计。</strong> llm-stats 用 <strong>μ − 3σ</strong> 作为公开分，缺数据的模型被自动扣分。这个思路比我们现在的「加权平均」更稳健，值得在总评分里考虑——尤其是当某些维度题量很少时。</p>
+<hr>
+<h2 id="六、直接回答最初的问题">六、直接回答最初的问题</h2>
+<p><strong>基准数据集大吗？</strong><br>
+不大。绝大多数是<strong>几百到一万条</strong>文本，MB 量级。GPQA Diamond 198 题、HumanEval 164 题、AIME 30 题。整个 AA 智能指数算上重复也只有约 11,600 次任务执行，比单个 MMLU 还小。</p>
+<p><strong>需要很久吗？</strong><br>
+纯问答基准几小时；agentic 基准（SWE-bench 类）因为多轮和 Docker 启动，可能跑一整天。<strong>瓶颈是 API 限流和并发，不是算力。</strong></p>
+<p><strong>需要很大算力吗？</strong><br>
+<strong>用 API 的话完全不需要 GPU。</strong> 判分侧跑在 CPU 上。只有自己部署开源模型时才需要推理卡。</p>
+<p><strong>那为什么有的评测很贵？</strong><br>
+成本不由题量决定，由三件事决定：<strong>推理 token 用量</strong>（o1-mini 在 SWE-bench 上得分最低却花了 $367）、<strong>agent 多轮的历史重发</strong>（输入呈二次增长）、<strong>重复采样次数</strong>（AA 对 GPQA 跑 5 次）。</p>
+<p><strong>最该注意的是什么？</strong><br>
+不是成本，是<strong>可比性</strong>。这些聚合榜单的分数来自不同 harness、不同题量、不同 shot 设定、部分是厂商自报。已知的落差：MMLU 自报 vs 独立测量常差 5 分，SWE-bench 的 scaffold 差异可超 28 分，Epoch 自己的脚手架升级就让分数「显著提升」。</p>
+<p><strong>把这些数字加权平均成一个综合排名，数学上做得再精巧，也无法消除底层测量条件的不一致。</strong> 这正是为什么自建私有题库、固定测量条件仍然有不可替代的价值——不是为了比公开榜单更准，而是为了让<strong>你自己的历史数据之间可比</strong>。</p>
+<hr>
+<h2 id="参考来源">参考来源</h2>
+<ul>
+<li><a target="_blank" rel="noopener" href="https://artificialanalysis.ai/methodology/intelligence-benchmarking">Artificial Analysis · Intelligence Benchmarking Methodology</a> —— 指数构成、题量、重复次数、成本口径</li>
+<li><a target="_blank" rel="noopener" href="https://epoch.ai/benchmarks/swe-bench-verified">Epoch AI · SWE-bench Verified</a> —— 484/500 题、token 上限、脚手架变更日志</li>
+<li><a target="_blank" rel="noopener" href="https://hal.cs.princeton.edu/swebench">HAL Leaderboard · SWE-bench</a> —— 复现运行的真实 API 花费</li>
+<li><a target="_blank" rel="noopener" href="https://arcprize.org/leaderboard">ARC Prize · Leaderboard</a> 与 <a target="_blank" rel="noopener" href="https://arcprize.org/blog/arc-prize-2025-results-analysis">2025 Results Analysis</a> —— 每任务成本</li>
+<li><a target="_blank" rel="noopener" href="https://imbue.com/blog/2026-02-27-arc-agi-2-evolution">Imbue · Beating ARC-AGI-2 with Code Evolution</a> —— 95.1% @ $8.71/task</li>
+<li><a target="_blank" rel="noopener" href="https://llm-stats.com/methodology/llm-stats-score">LLM Stats · Score Methodology</a> —— TrueSkill 与 μ−3σ</li>
+<li><a target="_blank" rel="noopener" href="https://deepwiki.com/JonathanChavezTamales/LLMStats/4-benchmarks-and-evaluation">LLMStats 数据结构（DeepWiki）</a> —— <code>is_self_reported</code> 字段</li>
+<li><a target="_blank" rel="noopener" href="https://benchlm.ai/methodology">BenchLM · Methodology</a> —— BenchAlign 与类别权重</li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/pdf/2311.12022">GPQA 原论文</a> —— 448/546/198 三个子集</li>
+<li><a target="_blank" rel="noopener" href="https://agi.safe.ai/">Humanity’s Last Exam</a> —— 2,500 题</li>
+<li><a target="_blank" rel="noopener" href="https://www.swebench.com/verified.html">SWE-bench Verified 官方页</a></li>
+<li><a target="_blank" rel="noopener" href="https://arxiv.org/html/2511.23455v2">The Price of Progress（arXiv 2026）</a> —— 基准运行价格的系统性分析</li>
+<li><a target="_blank" rel="noopener" href="https://www.evidentlyai.com/llm-guide/llm-benchmarks">Evidently AI · 30 LLM evaluation benchmarks</a> —— 各基准题量汇总</li>
+<li><a target="_blank" rel="noopener" href="https://www.morphllm.com/swe-bench-pro">SWE-bench Pro Leaderboard（morphllm）</a> —— 最后 7–15 分的边际成本</li>
+</ul>
+<blockquote>
+<p><strong>数字可信度提示</strong>：AA 方法论、Epoch、HAL、ARC Prize 属一手来源，数字可靠。<br>
+部分聚合站与营销向页面的具体分数和价格为二手，已在文中标注为「量级估计」。<br>
+各站数据持续更新，本文数字为 2026-08 快照。</p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/">http://cjh0220.github.io/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/AI%E8%B0%83%E7%A0%94/">AI调研</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/09/08/TSvsPYTHON%E5%9C%A8Agent%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">TSvsPYTHON在Agent应用开发的优劣势</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">155</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">117</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">公开基准与聚合榜单调研</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E5%8F%A5%E8%AF%9D%E7%BB%93%E8%AE%BA"><span class="toc-number">1.1.</span> <span class="toc-text">一句话结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E5%9F%BA%E5%87%86%E5%88%B0%E5%BA%95%E6%9C%89%E5%A4%9A%E5%A4%A7"><span class="toc-number">1.2.</span> <span class="toc-text">一、基准到底有多大</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%BB%E6%B5%81%E5%9F%BA%E5%87%86%E7%9A%84%E8%A7%84%E6%A8%A1"><span class="toc-number">1.2.1.</span> <span class="toc-text">主流基准的规模</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E5%AF%B9%E7%85%A7%EF%BC%9A%E6%95%B4%E4%B8%AA-Artificial-Analysis-%E6%99%BA%E8%83%BD%E6%8C%87%E6%95%B0"><span class="toc-number">1.2.2.</span> <span class="toc-text">一个对照：整个 Artificial Analysis 智能指数</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AD%98%E5%82%A8"><span class="toc-number">1.2.3.</span> <span class="toc-text">存储</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AE%97%E5%8A%9B%EF%BC%9A%E4%B8%80%E4%B8%AA%E5%B8%B8%E8%A7%81%E7%9A%84%E8%AF%AF%E8%A7%A3"><span class="toc-number">1.3.</span> <span class="toc-text">二、算力：一个常见的误解</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E7%9C%9F%E6%AD%A3%E7%9A%84%E6%88%90%E6%9C%AC%E6%9D%A5%E8%87%AA%E5%93%AA%E9%87%8C"><span class="toc-number">1.4.</span> <span class="toc-text">三、真正的成本来自哪里</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%B1%E5%8A%A8%E5%9B%A0%E7%B4%A0-1%EF%BC%9A%E6%8E%A8%E7%90%86-token"><span class="toc-number">1.4.1.</span> <span class="toc-text">驱动因素 1：推理 token</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%B1%E5%8A%A8%E5%9B%A0%E7%B4%A0-2%EF%BC%9AAgent-%E5%A4%9A%E8%BD%AE"><span class="toc-number">1.4.2.</span> <span class="toc-text">驱动因素 2：Agent 多轮</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%A9%B1%E5%8A%A8%E5%9B%A0%E7%B4%A0-3%EF%BC%9A%E9%87%8D%E5%A4%8D%E9%87%87%E6%A0%B7"><span class="toc-number">1.4.3.</span> <span class="toc-text">驱动因素 3：重复采样</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9E%E6%B5%8B%E6%95%B0%E5%AD%97"><span class="toc-number">1.4.4.</span> <span class="toc-text">实测数字</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%88%90%E6%9C%AC%E9%87%8F%E7%BA%A7%E9%80%9F%E6%9F%A5"><span class="toc-number">1.4.5.</span> <span class="toc-text">成本量级速查</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%97%B6%E9%97%B4"><span class="toc-number">1.4.6.</span> <span class="toc-text">时间</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E6%98%AF%E6%80%8E%E4%B9%88%E6%9D%A5%E7%9A%84%EF%BC%9A%E8%87%AA%E5%B7%B1%E8%B7%91-vs-%E6%8A%93%E5%88%86%E6%95%B0"><span class="toc-number">1.5.</span> <span class="toc-text">四、聚合榜单是怎么来的：自己跑 vs 抓分数</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%89%E5%AE%B6%E7%9A%84%E5%81%9A%E6%B3%95%E5%AE%8C%E5%85%A8%E4%B8%8D%E5%90%8C"><span class="toc-number">1.5.1.</span> <span class="toc-text">三家的做法完全不同</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8F%AF%E6%AF%94%E6%80%A7%E9%97%AE%E9%A2%98%E6%9C%89%E5%A4%9A%E4%B8%A5%E9%87%8D"><span class="toc-number">1.5.2.</span> <span class="toc-text">可比性问题有多严重</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E8%87%AA%E7%9B%B8%E7%9F%9B%E7%9B%BE%E7%9A%84%E5%9C%B0%E6%96%B9"><span class="toc-number">1.5.3.</span> <span class="toc-text">一个自相矛盾的地方</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E5%AF%B9%E6%88%91%E4%BB%AC%E8%87%AA%E5%B7%B1%E8%BF%99%E5%A5%97%E5%B7%A5%E5%85%B7%E7%9A%84%E5%90%AF%E7%A4%BA"><span class="toc-number">1.6.</span> <span class="toc-text">五、对我们自己这套工具的启示</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E6%88%91%E4%BB%AC%E7%9A%84%E9%A2%98%E5%BA%93%E8%A7%84%E6%A8%A1%E5%AE%8C%E5%85%A8%E5%A4%9F%E7%94%A8"><span class="toc-number">1.6.1.</span> <span class="toc-text">1. 我们的题库规模完全够用</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-%E8%B7%91%E4%B8%80%E9%81%8D%E7%9A%84%E6%88%90%E6%9C%AC%E5%8F%AF%E4%BB%A5%E7%B2%BE%E7%A1%AE%E4%BC%B0%E7%AE%97"><span class="toc-number">1.6.2.</span> <span class="toc-text">2. 跑一遍的成本可以精确估算</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-%E6%88%91%E4%BB%AC%E5%81%9A%E5%AF%B9%E7%9A%84%E5%87%A0%E4%BB%B6%E4%BA%8B%EF%BC%8C%E6%81%B0%E5%A5%BD%E6%98%AF%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E5%81%9A%E4%B8%8D%E5%88%B0%E7%9A%84"><span class="toc-number">1.6.3.</span> <span class="toc-text">3. 我们做对的几件事，恰好是聚合榜单做不到的</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-%E5%80%BC%E5%BE%97%E5%80%9F%E9%89%B4%E7%9A%84%E4%B8%A4%E7%82%B9"><span class="toc-number">1.6.4.</span> <span class="toc-text">4. 值得借鉴的两点</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E7%9B%B4%E6%8E%A5%E5%9B%9E%E7%AD%94%E6%9C%80%E5%88%9D%E7%9A%84%E9%97%AE%E9%A2%98"><span class="toc-number">1.7.</span> <span class="toc-text">六、直接回答最初的问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E6%9D%A5%E6%BA%90"><span class="toc-number">1.8.</span> <span class="toc-text">参考来源</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/" title="基准与聚合榜单调研"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="基准与聚合榜单调研"/></a><div class="content"><a class="title" href="/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/" title="基准与聚合榜单调研">基准与聚合榜单调研</a><time datetime="2026-09-08T11:49:09.000Z" title="发表于 2026-09-08 19:49:09">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/TSvsPYTHON%E5%9C%A8Agent%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF/" title="TSvsPYTHON在Agent应用开发的优劣势"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TSvsPYTHON在Agent应用开发的优劣势"/></a><div class="content"><a class="title" href="/2026/09/08/TSvsPYTHON%E5%9C%A8Agent%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF/" title="TSvsPYTHON在Agent应用开发的优劣势">TSvsPYTHON在Agent应用开发的优劣势</a><time datetime="2026-09-08T11:48:53.000Z" title="发表于 2026-09-08 19:48:53">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%84%E4%BD%93%E7%B3%BB-%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95/" title="模型测评体系_项目总结与实际测试"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="模型测评体系_项目总结与实际测试"/></a><div class="content"><a class="title" href="/2026/09/08/%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%84%E4%BD%93%E7%B3%BB-%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95/" title="模型测评体系_项目总结与实际测试">模型测评体系_项目总结与实际测试</a><time datetime="2026-09-08T11:47:53.000Z" title="发表于 2026-09-08 19:47:53">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/" title="TencentDB_技术解析与体验分析"><img src="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TencentDB_技术解析与体验分析"/></a><div class="content"><a class="title" href="/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/" title="TencentDB_技术解析与体验分析">TencentDB_技术解析与体验分析</a><time datetime="2026-09-08T11:47:17.000Z" title="发表于 2026-09-08 19:47:17">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/" title="OpenViking_记忆库理论与工具分析及个人体验（初期探索）"><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OpenViking_记忆库理论与工具分析及个人体验（初期探索）"/></a><div class="content"><a class="title" href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/" title="OpenViking_记忆库理论与工具分析及个人体验（初期探索）">OpenViking_记忆库理论与工具分析及个人体验（初期探索）</a><time datetime="2026-09-08T11:46:34.000Z" title="发表于 2026-09-08 19:46:34">2026-09-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

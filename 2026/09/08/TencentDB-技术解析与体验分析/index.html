@@ -1,0 +1,838 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>TencentDB_技术解析与体验分析 | CJH's blog</title><meta name="keywords" content="记忆知识库"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="TencentDB-技术解析与体验分析  项目： Tencent&#x2F;TencentDB-Agent-Memory — 让 Agent 沉淀经验，让人专注创造。 GitHub： https:&#x2F;&#x2F;github.com&#x2F;Tencent&#x2F;TencentDB-Agent-Memory   目录  项目定位与核心命题 竞品格局 技术栈与技术实现路线 功能清单 使用方法与工作流程 实现效果与用户价值 可提炼的方法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="TencentDB_技术解析与体验分析">
+<meta property="og:url" content="http://cjh0220.github.io/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="TencentDB-技术解析与体验分析  项目： Tencent&#x2F;TencentDB-Agent-Memory — 让 Agent 沉淀经验，让人专注创造。 GitHub： https:&#x2F;&#x2F;github.com&#x2F;Tencent&#x2F;TencentDB-Agent-Memory   目录  项目定位与核心命题 竞品格局 技术栈与技术实现路线 功能清单 使用方法与工作流程 实现效果与用户价值 可提炼的方法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png">
+<meta property="article:published_time" content="2026-09-08T11:47:17.000Z">
+<meta property="article:modified_time" content="2026-09-08T12:35:51.027Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="记忆知识库">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'TencentDB_技术解析与体验分析',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-09-08 20:35:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">155</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">117</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">TencentDB_技术解析与体验分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-09-08T11:47:17.000Z" title="发表于 2026-09-08 19:47:17">2026-09-08</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">AI应用开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="TencentDB_技术解析与体验分析"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>TencentDB-技术解析与体验分析</h1>
+<blockquote>
+<p><strong>项目：</strong> <a target="_blank" rel="noopener" href="https://github.com/Tencent/TencentDB-Agent-Memory">Tencent/TencentDB-Agent-Memory</a> — 让 Agent 沉淀经验，让人专注创造。<br>
+<strong>GitHub：</strong> <a target="_blank" rel="noopener" href="https://github.com/Tencent/TencentDB-Agent-Memory">https://github.com/Tencent/TencentDB-Agent-Memory</a></p>
+</blockquote>
+<hr>
+<h2 id="目录">目录</h2>
+<ol>
+<li><a href="#%E4%B8%80%E9%A1%B9%E7%9B%AE%E5%AE%9A%E4%BD%8D%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%91%BD%E9%A2%98">项目定位与核心命题</a></li>
+<li><a href="#%E4%BA%8C%E7%AB%9E%E5%93%81%E6%A0%BC%E5%B1%80">竞品格局</a></li>
+<li><a href="#%E4%B8%89%E6%8A%80%E6%9C%AF%E6%A0%88%E4%B8%8E%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0%E8%B7%AF%E7%BA%BF">技术栈与技术实现路线</a></li>
+<li><a href="#%E5%9B%9B%E5%8A%9F%E8%83%BD%E6%B8%85%E5%8D%95">功能清单</a></li>
+<li><a href="#%E4%BA%94%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B">使用方法与工作流程</a></li>
+<li><a href="#%E5%85%AD%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C%E4%B8%8E%E7%94%A8%E6%88%B7%E4%BB%B7%E5%80%BC">实现效果与用户价值</a></li>
+<li><a href="#%E4%B8%83%E5%8F%AF%E6%8F%90%E7%82%BC%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA">可提炼的方法论</a></li>
+<li><a href="#%E5%85%AB%E5%B1%80%E9%99%90%E4%B8%8E%E9%A3%8E%E9%99%A9">局限与风险</a></li>
+<li><a href="#%E4%B9%9D%E5%8F%AF%E4%BC%98%E5%8C%96%E9%A1%B9">可优化项</a></li>
+<li><a href="#%E7%9C%9F%E5%AE%9E%E4%BD%93%E9%AA%8C">真实体验与体验分析</a></li>
+<li><a href="#%E9%99%84%E5%BD%95%E5%85%B3%E9%94%AE%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%B3%A8%E9%87%8A">附录：关键文件索引与注释</a></li>
+</ol>
+<hr>
+<h2 id="一、项目定位与核心命题">一、项目定位与核心命题</h2>
+<h3 id="定位">定位</h3>
+<p>面向 AI Agent 团队的**「记忆 Hub」<strong>。核心理念一句话——</strong>「让经验沉淀、流动，然后被下一位 Agent 直接继承」**。其价值主张链条：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">已有信息 → 可复用记忆资产 → 更少 Turns → 更少返工 → 更稳定的结果和更高的效率</span><br></pre></td></tr></table></figure>
+<h3 id="要解决的实际痛点">要解决的实际痛点</h3>
+<ul>
+<li>换一个 Session，同样的背景（项目、文档、结论）要重新讲一遍</li>
+<li>换一个 Agent，文档要从第一页重读</li>
+<li>一套已经跑通的做法，下次还要从头摸索一遍</li>
+<li>关键约束（如「别重构旧鉴权模块，移动端还在用」）这种高代价上下文，不该靠人每次提醒</li>
+</ul>
+<h3 id="核心命题">核心命题</h3>
+<p>作者用一句自述概括——<strong>「TencentDB Agent Memory 不追求『存下所有东西』，而是解决三个问题：什么值得留下、谁可以使用、下一次怎样少拿但拿对。」</strong></p>
+<p>展开即三条设计主线：</p>
+<ol>
+<li><strong>沉淀（Distill）</strong>：对话先落为 L0 原始记录，再由异步 Pipeline 提炼为不同粒度的记忆（L1/L2/L3）。</li>
+<li><strong>治理（Govern）</strong>：记忆资产带 Owner / 版本 / 状态 / 可见性，不是人人可读的聊天记录仓库。</li>
+<li><strong>装配（Loadout）</strong>：通过 Fixed Binding + ACL 精准注入某个 Agent 该带的资产，少给噪音、多给完成工作真正需要的记忆。</li>
+</ol>
+<h3 id="一个贯穿始终的立场边界">一个贯穿始终的立场边界</h3>
+<p><strong>Memory 是「让每一轮 Loop 继承上一轮成果」的电梯，不是替 Agent 跑 Loop 的马达。</strong></p>
+<blockquote>
+<p>「没有 Memory，Loop 可能只是更快地重复；能继承记忆，每一轮才有机会比上一轮更好。」</p>
+</blockquote>
+<p>项目刻意<strong>不碰 Agent 编排 / Loop 执行</strong>，只做记忆与治理层，与编排框架（LangGraph/AutoGen 等）边界清晰、不重叠。</p>
+<h3 id="与-RAG-聊天历史的边界">与 RAG / 聊天历史的边界</h3>
+<p>RAG 只解决「能查到什么」；本项目额外解决「<strong>谁可以用、哪个版本有效、应该给哪个 Agent</strong>」。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left"></th>
+<th style="text-align:center">聊天历史</th>
+<th style="text-align:center">普通 RAG</th>
+<th style="text-align:center">TencentDB Agent Memory</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">跨会话理解用户</td>
+<td style="text-align:center">△</td>
+<td style="text-align:center">△</td>
+<td style="text-align:center">✅ Chat Memory</td>
+</tr>
+<tr>
+<td style="text-align:left">沉淀可执行经验</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">✅ Skill</td>
+</tr>
+<tr>
+<td style="text-align:left">文档结构与关系</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">△ 切片检索</td>
+<td style="text-align:center">✅ Wiki + Link Graph</td>
+</tr>
+<tr>
+<td style="text-align:left">代码调用与影响范围</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">△ 文本命中</td>
+<td style="text-align:center">✅ CodeGraph</td>
+</tr>
+<tr>
+<td style="text-align:left">Owner / 版本 / 状态</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">团队分享与 Agent 配装</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">✅</td>
+</tr>
+<tr>
+<td style="text-align:left">私有 / 团队 / ACL</td>
+<td style="text-align:center">—</td>
+<td style="text-align:center">△</td>
+<td style="text-align:center">✅</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="二、竞品格局">二、竞品格局</h2>
+<p>README 明确将<strong>普通 RAG / 聊天历史</strong>作为对照系（而非「另一套 Agent Memory」）。横向看同类赛道（Agent 记忆 / Agent 上下文 / 团队 AgentOps），主要玩家与差异点：</p>
+<table>
+<thead>
+<tr>
+<th>方向</th>
+<th>代表</th>
+<th>与它的差异</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>单 Agent 会话记忆</strong></td>
+<td>Claude 原生 Memory、ChatGPT 记忆、mem0、Zep 等</td>
+<td>多为「跨会话记住偏好」的轻量层，偏单 Agent；本项目升级为<strong>团队级、带 ACL、多框架</strong></td>
+</tr>
+<tr>
+<td><strong>RAG / 向量库</strong></td>
+<td>LangChain、Milvus / Pinecone / Qdrant 等</td>
+<td>RAG 只管检索；本项目在检索之上叠加了<strong>治理、装配、逐层提炼</strong></td>
+</tr>
+<tr>
+<td><strong>Agent 编排</strong></td>
+<td>LangGraph、AutoGen、多 Agent 框架</td>
+<td>它们负责跑 Loop；本项目刻意<strong>只做记忆层、不碰编排</strong>（边界清晰）</td>
+</tr>
+<tr>
+<td><strong>给 Agent 配装备</strong></td>
+<td>Claude Code 原生 memory、各类记忆插件</td>
+<td>本项目以 <strong>Loadout + Fixed Binding + ACL</strong> 为差异点，且<strong>框架中立、可迁移</strong></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>补充观察：</strong> Claude 等原生 Memory 大多存在<strong>长度上限</strong>，在大型或团队级项目场景下有明显劣势——这也是需要外部记忆 Hub 的客观原因之一。</p>
+</blockquote>
+<p><strong>护城河</strong>：① 四类资产（Chat Memory / Skill / Wiki / CodeGraph）统一成一个 Memory Asset 模型；② <strong>框架解耦</strong>——同一份记忆资产可配给 OpenClaw / Hermes / Claude Code / CodeBuddy / SDK 任一 Agent，切换不重新训练。</p>
+<p><strong>技术继承（致谢）</strong>：CodeGraph（<code>@colbymchenry/codegraph</code>）、Hermes Agent（Skill 资产部分）、Andrej Karpathy 的**「LLM Wiki」**思路。这些也构成它的实现基座。</p>
+<blockquote>
+<p><strong>行业印证：</strong> LLM-Wiki 项目也有借鉴 Karpathy 的思路，这说明业界基本认可「以 Wiki 方式存储知识有助于 Agent 记忆召回」这一点。</p>
+</blockquote>
+<hr>
+<h2 id="三、技术栈与技术实现路线">三、技术栈与技术实现路线</h2>
+<h3 id="3-1-技术栈总览">3.1 技术栈总览</h3>
+<p>全部 <strong>Node 22+ / TypeScript（ESM）</strong>，Web 层统一 <strong>Hono</strong>（轻量、跨运行时），monorepo（无根 package.json，各模块独立版本/安装/测试）。</p>
+<table>
+<thead>
+<tr>
+<th>组件</th>
+<th>关键栈</th>
+<th>存储</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>MemoryCore</strong>（记忆内核）</td>
+<td>Node22、TS、原生 <code>node:http</code> Gateway、Vercel AI SDK（<code>ai</code> + <code>@ai-sdk/openai</code>）<code>sqlite-vec</code>、<code>@node-rs/jieba</code>(BM25 中文分词)、<code>js-tiktoken</code>、zod、OpenTelemetry</td>
+<td>SQLite（向量+FTS5+BM25），可选 <strong>TCVDB</strong>、ClickHouse、Redis、COS、MongoDB、Kafka</td>
+</tr>
+<tr>
+<td><strong>MemoryKnowledge</strong>（知识）</td>
+<td>Hono、Drizzle ORM、<code>better-sqlite3</code>、<code>@colbymchenry/codegraph</code>、<code>graphology</code>、<code>minisearch</code>、Vercel AI SDK（openai+anthropic）、MCP SDK、Swagger</td>
+<td>SQLite + 磁盘（wiki 页 / git clone / codegraph）</td>
+</tr>
+<tr>
+<td><strong>MemoryPanel</strong>（控制面）</td>
+<td>Hono 后端 + React18/Vite/Tailwind 前端、<code>zustand</code>、<code>react-router-dom</code>、<code>i18next</code>、<code>sigma</code>+<code>graphology</code>(图可视化)、<code>tea-component</code>(腾讯UI)</td>
+<td>无状态，转发</td>
+</tr>
+<tr>
+<td><strong>MemoryProxy</strong>（转发接入）</td>
+<td>Hono、<code>@hono/node-server</code>、<code>tsx</code> 运行时直跑 TS、<strong>硬要求 node v22</strong>、Langfuse / Opik、ioredis、better-sqlite3</td>
+<td>不存记忆；storage 抽象（Redis / COS / SQLite / FS）</td>
+</tr>
+<tr>
+<td><strong>SDK</strong></td>
+<td>TS（npm）+ Python（pip、httpx）</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>端口（实际部署为准）</strong>：MemoryCore <code>8420</code>、Panel <code>8125</code>、Knowledge <code>8424</code>、Proxy <code>8096</code>。<br>
+⚠️ 源码内默认值与文档（8123 / 8421）和实际部署不一致，排查时以 <code>deploy/global-images/.env.example</code> 为准。</p>
+</blockquote>
+<h3 id="3-2-四大自由度的技术选型理由（实现路线）">3.2 四大自由度的技术选型理由（实现路线）</h3>
+<ol>
+<li><strong>全 TS + Hono</strong>：TypeScript 保证跨模块类型安全与 monorepo 协作；Hono 比 Express/Fastify 更轻、可跑 Node/Bun/Edge、依赖极少，契合「多服务、各自独立演进」。</li>
+<li><strong>SQLite 优先 + 向量可选</strong>：本地一键起不依赖外部 DB；<code>sqlite-vec</code> 提供向量检索、FTS5 提供全文、BM25（jieba 中文分词）提供稀疏召回，三路混合 <strong>RRF</strong> 融合。数据层留了 <strong>TCVDB（腾讯云向量库）后端抽象</strong>，答上规模场景。</li>
+<li><strong>Vercel AI SDK（<code>ai</code>）</strong>：统一封装 openai / anthropic / 本地 llama 提供方，一套代码换供应商，不为每家 LLM 写适配。</li>
+<li><strong>Embedding 双模</strong>：远程（openai 兼容）或<strong>完全本地离线</strong>（node-llama-cpp + <code>embeddinggemma-300m</code> GGUF）——隐私 / 离线场景可用。</li>
+</ol>
+<h3 id="3-3-四层记忆管线（最核心的实现路线）">3.3 四层记忆管线（最核心的实现路线）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">对话 → L0 Conversation（原始记录，落库可核对原文/时间）</span><br><span class="line">      ↓ 异步 LLM 抽取（JSON-mode 结构化输出）+ batch 冲突去重</span><br><span class="line">      → L1 Atom（事实/偏好/约束/事件）              [可精确召回，走检索不常驻]</span><br><span class="line">      ↓ 场景化</span><br><span class="line">      → L2 Scenario（围绕项目/场景的知识块）         [注入 system prompt]</span><br><span class="line">      ↓ 画像触发（checkpoint 5 条件）</span><br><span class="line">      → L3 Core/Persona（长期画像/稳定模式）          [注入 system prompt]</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">层级</th>
+<th style="text-align:left">保存什么</th>
+<th style="text-align:left">主要用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>L0 Conversation</strong></td>
+<td style="text-align:left">原始对话与完整上下文</td>
+<td style="text-align:left">核对原话、时间和来源</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>L1 Atom</strong></td>
+<td style="text-align:left">从对话提取的事实、偏好、约束与事件</td>
+<td style="text-align:left">精确召回可执行信息</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>L2 Scenario</strong></td>
+<td style="text-align:left">围绕项目或场景组织的知识块</td>
+<td style="text-align:left">快速恢复一个工作场景</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>L3 Core / Persona</strong></td>
+<td style="text-align:left">长期画像、稳定模式与高层认知</td>
+<td style="text-align:left">让 Agent 迅速进入用户和团队语境</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>生成侧</strong>：<code>l1-extractor</code>（L0→L1）、<code>scene-extractor</code>（L1→L2）、<code>persona-generator/trigger</code>（→L3）。</li>
+<li><strong>召回侧</strong>：平时用 L2 / L3 快速进语境；需要具体事实时 BM25 + 向量 + <strong>RRF（Reciprocal Rank Fusion，<code>RRF_K=60</code>）</strong> 下沉到 L1 / L0。结果经过「条数、字符预算、超时」三重约束，避免记忆反过来占满上下文。</li>
+</ul>
+<h3 id="3-4-装配与治理路线">3.4 装配与治理路线</h3>
+<ul>
+<li>所有资产登记为 <strong>Memory Asset</strong>，通过 <strong>Fixed Binding + ACL</strong> 决定某个 Agent 能带走哪些——先按 Team、User、Agent、可见性缩小权限范围，再按当前问题召回。</li>
+<li><strong>Knowledge 不整库注入、按需调用</strong>：Agent 先 <code>/v3/tools/list</code> 发现能力，再用 <code>/v3/tools/call</code> 读取相关页面、源码或影响路径——文档/代码平时只是可用工具，需要时才进上下文。</li>
+</ul>
+<h3 id="3-5-三层鉴权（微服务安全路线）">3.5 三层鉴权（微服务安全路线）</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Layer 1: Bearer（gateway key，带凭证才可到达业务接口）</span><br><span class="line">Layer 2: x-tdai-service-id（memory 实例标识，本地固定 &quot;default&quot;）</span><br><span class="line">Layer 3: x-tdai-user-key（用户身份，解析为 userId / isSystemAdmin）</span><br></pre></td></tr></table></figure>
+<p>proxy 拿 user_key → core <code>/v3/meta/auth/verify</code> 反查 user_id，按用户维度控制资产可见性。</p>
+<h3 id="3-6-L1-抽取机制（一个关键实现细节）">3.6 L1 抽取机制（一个关键实现细节）</h3>
+<p><code>l1-extractor.ts</code> 用<strong>单次 LLM 调用 + JSON-mode 结构化输出</strong>，一次完成「scene 切分 + memory 抽取」，随后做 batch 冲突检测去重，写 L1。失败时 pipeline 会把任务标记为 <code>Task completed</code>（extracted=0）——<strong>这是本系统最容易忽略的静默失效点</strong>（详见第八节）。</p>
+<hr>
+<h2 id="四、功能清单">四、功能清单</h2>
+<h3 id="四大记忆资产">四大记忆资产</h3>
+<ol>
+<li><strong>Chat Memory</strong> — L0 原始 → L1 事实 → L2 场景 → L3 画像；跨会话保留偏好、决策、交互历史</li>
+<li><strong>Skill</strong> — 从跑通的任务提炼可复用 SOP，带版本 / 资源文件 / 触发边界 / 执行步骤 / 验证规则；私有 → 审核 → 团队共享 → 配装</li>
+<li><strong>Wiki</strong> — 导入文档 → LLM 生成结构化页面 + 链接图谱（灵感源自 Karpathy LLM 知识库）</li>
+<li><strong>CodeGraph</strong> — 索引符号 / 文件 / 调用关系 / 影响路径，支持 impact analysis；定时自动同步代码库</li>
+</ol>
+<h3 id="Memory-Hub（管理面板）">Memory Hub（管理面板）</h3>
+<ul>
+<li>建 Team / Agent / Task，资产按 Owner / 版本 / 状态 / 可见性统一管理</li>
+<li>四级可见性：<code>private</code> / <code>team</code> / <code>restricted</code>(User/Role/Agent ACL) / <code>agent</code>(定向装配)</li>
+<li>双层角色：全局 System Admin + Team 内 Admin / Member</li>
+<li>Agent Loadout：给不同 Agent 绑定不同资产、调优先级与使用方式</li>
+<li>图可视化（CodeGraph / Wiki 链接图谱）、中英双语切换</li>
+</ul>
+<h3 id="Memory-Proxy（接入层）">Memory Proxy（接入层）</h3>
+<ul>
+<li><strong>Anthropic / OpenAI 双协议</strong>：<code>/claude-code/&lt;spaceId&gt;/v1/messages</code>、<code>/v1/chat/completions</code></li>
+<li><strong>SessionInit</strong>：首轮用 <code>AskUserQuestion</code> 表单选 team / agent / task；后续轮 proxy 记住绑定</li>
+<li><strong>Header 预选</strong>：<code>x-team-id</code> / <code>x-agent-id</code> / <code>x-task-id</code>（三头齐全可跳过表单直接注册）</li>
+<li><strong>每轮注入</strong>：把该 agent 的 L2/L3 记忆、matched skill、wiki/code-graph 拼进 system prompt</li>
+<li><strong>L0 回流</strong>：原始对话自动写 memory-core SQLite</li>
+<li><code>**mem:</code> 会话指令**：<code>mem:sync</code> / <code>mem:create-skill [提示词]</code> / <code>mem:help</code></li>
+<li><strong>鉴权 + Cost Guard</strong>：让不同 Agent 用不同模型以降低成本</li>
+</ul>
+<h3 id="接入形态">接入形态</h3>
+<p>Claude Code / CodeBuddy / Hermes / OpenClaw / 通用 OpenAI 兼容平台 / SDK（TS + Python）</p>
+<h3 id="运维能力">运维能力</h3>
+<p><code>start-all.sh</code> 一键三件套 · <code>verify.sh</code> 干跑预检 · <code>stop-all.sh</code> 清理 · 数据迁移工具（v2→v3、sqlite→tcvdb）· <code>export-tencent-vdb</code> · <code>read-local-memory</code></p>
+<hr>
+<h2 id="五、使用方法与工作流程">五、使用方法与工作流程</h2>
+<h3 id="①-部署（三件套）">① 部署（三件套）</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/Tencent/TencentDB-Agent-Memory.git</span><br><span class="line"><span class="built_in">cd</span> deploy/global-images</span><br><span class="line"><span class="built_in">cp</span> .env.example .<span class="built_in">env</span></span><br><span class="line"><span class="variable">$EDITOR</span> .<span class="built_in">env</span>              <span class="comment"># 填两组 LLM 参数</span></span><br><span class="line"><span class="comment">#   MEMORY_LLM_*   → memory + hub 内部所用（embed / summarize / wiki ingest）</span></span><br><span class="line"><span class="comment">#   PROXY_UPSTREAM_* → proxy 转发到的上游 LLM</span></span><br><span class="line">./verify.sh               <span class="comment"># 可选：干跑 LLM 通路预检（--skip-llm 跳过）</span></span><br><span class="line">./start-all.sh            <span class="comment"># 一键起，启动后打印可直接复制的 claude 命令</span></span><br></pre></td></tr></table></figure>
+<p>面板：<a target="_blank" rel="noopener" href="http://localhost:8125">http://localhost:8125</a>（首次用 <code>.admin-key</code> 里的 <code>sk-mem-…</code> 登录）</p>
+<h3 id="②-接-Claude-Code">② 接 Claude Code</h3>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> ANTHROPIC_BASE_URL=http://127.0.0.1:8096/claude-code/default</span><br><span class="line"><span class="built_in">export</span> ANTHROPIC_AUTH_TOKEN=<span class="string">&quot;&lt;业务用户的 user_key / admin user_key&gt;&quot;</span></span><br><span class="line">claude --model [[ORCA_RICH_MD:9bef3f918c00c31832fcd140e9d654a8:inline-html:%3CPROXY_UPSTREAM_MODEL%20%E9%87%8C%E9%85%8D%E7%9A%84%E4%B8%8A%E6%B8%B8%E6%A8%A1%E5%9E%8B%3E]]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>URL 里的 <code>default</code> = memory 实例 ID（<code>x-tdai-service-id</code>），本地固定</li>
+<li><code>ANTHROPIC_AUTH_TOKEN</code> = 用户 <code>user_key</code>，proxy 用它反查 user_id，只暴露该用户 own 的 team/agent/task</li>
+</ul>
+<h3 id="③-工作流闭环">③ 工作流闭环</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">新 CC 会话 → 弹 Team→Agent→Task 表单 → proxy 记住绑定</span><br><span class="line">  → 每轮注入该 agent 的 L2/L3 记忆 + Skill + Knowledge</span><br><span class="line">  → L0 原始对话自动落库 → 后台 L1→L2→L3 逐步提炼</span><br><span class="line">  → 面板审阅 / 审核 / 分享 / 配装 → 冷启动读档（导入旧代码/文档/会话直接复用）</span><br></pre></td></tr></table></figure>
+<h3 id="④-进阶">④ 进阶</h3>
+<ul>
+<li>面板看图图谱、审 Skill、配置 ACL / Loadout</li>
+<li>会话内指令 <code>mem:sync</code> / <code>mem:create-skill</code></li>
+<li>对接 CodeBuddy / Hermes / OpenClaw / 其他平台（改各自配置文件，header 方式带四件套 <code>x-*</code>）</li>
+</ul>
+<hr>
+<h2 id="六、实现效果与用户价值">六、实现效果与用户价值</h2>
+<h3 id="量化-Benchmark">量化 Benchmark</h3>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">Benchmark</th>
+<th style="text-align:center">无 TencentDB Agent Memory</th>
+<th style="text-align:center">启用后</th>
+<th style="text-align:center">相对提升</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>PersonaMem</strong></td>
+<td style="text-align:center">48%</td>
+<td style="text-align:center"><strong>76%</strong></td>
+<td style="text-align:center"><strong>+59%</strong></td>
+</tr>
+</tbody>
+</table>
+<p>（PersonaMem 检验 Agent 能否在长期交互后正确理解和运用用户信息。）</p>
+<h3 id="质性效果-价值">质性效果 / 价值</h3>
+<ul>
+<li><strong>减少 Tunknows</strong>：跨会话不重复自我介绍 / 重读文档 → 更少 Turn、更少返工</li>
+<li><strong>团队经验复利</strong>：「公司可以很小，经验可以一直复利」——新成员读档，不必重新训练</li>
+<li><strong>共享经验不共享隐私</strong>：默认私有，分享是显式动作，不是默认泄漏</li>
+<li><strong>可塑性成本低</strong>：换 Agent / 换框架只重新装配，不重训</li>
+<li><strong>防经验丢失</strong>：关键约束沉淀为记忆资产，不靠人每次口头提醒</li>
+</ul>
+<hr>
+<h2 id="七、可提炼的方法论">七、可提炼的方法论</h2>
+<ol>
+<li><strong>分层沉淀、逐层提炼</strong>：L0 原始 → L1 原子 → L2 场景 → L3 画像。既保可核对原文，又让高价值信息进入 system prompt。</li>
+<li><strong>召回也要分层</strong>：常走快捷通道（L2/L3）+ 精确通道（BM25+向量+RRF 下沉 L1/L0），并加三重预算约束防上下文膨胀。</li>
+<li><strong>资产即治理对象</strong>：Owner / 版本 / 状态 / 可见性 / 使用次数——知识管理不只存还要管。</li>
+<li><strong>装配优先于灌入</strong>：<code>Fixed Binding + ACL</code> 先收权限、再按问题召回，力求「少拿但拿对」。</li>
+<li><strong>框架中立、解耦迁移</strong>：资产模型与 Agent 框架隔离，一套资产多框架复用。</li>
+<li><strong>冷启动即读档</strong>：把已付的学习成本变成存档，缩短新团队 / 新成员上手曲线。</li>
+<li><strong>不碰 Loop、只做记忆</strong>：与编排框架边界清晰，避免功能重叠。</li>
+</ol>
+<blockquote>
+<p><strong>两条反面方法论（实战总结）</strong>：</p>
+<ul>
+<li><strong>失败会被吞成「完成」的静默失效</strong>——memory-core 把 LLM 抽取失败标记为 <code>Task completed</code>，<code>/health</code> 的 <code>tasksFailed</code> 恒为 0，只能 grep 日志 <code>l1-extractor</code> 才会发现记忆链路已死。</li>
+<li><strong>依赖对象存活决定链路形态</strong>——proxy header 预选要求 team/agent/task 三者都活着；task 被删就退表单，不改表单则 session bypass、注入全空转，且请求照常 200、不报错。<br>
+这两点都提示：<strong>给关键后台流程设计可观测的「自检信号」，而非把失败静默吞掉。</strong></li>
+</ul>
+</blockquote>
+<hr>
+<h2 id="八、局限与风险">八、局限与风险</h2>
+<h3 id="功能局限">功能局限</h3>
+<ul>
+<li>Knowledge / CodeGraph 异步构建，需要等待 <code>ready</code></li>
+<li>CodeGraph 目前仅支持公开 HTTPS 仓库，私有仓库与 SSH 凭证接入仍在完善</li>
+<li>记忆路由仍以人工绑定为主，全自动记忆路由迭代中</li>
+<li><code>PROXY_UPSTREAM_MODEL</code> 只被 <code>/require_vars</code> 校验非空、<strong>不参与实际转发</strong>（实际模型由请求体 / 客户端 <code>--model</code> 决定）——配置语义易误解</li>
+</ul>
+<h3 id="架构-运维风险（含本会话实测踩点）">架构 / 运维风险（含本会话实测踩点）</h3>
+<ol>
+<li><strong>L1 抽取静默失败</strong>：LLM 抽取失败被 pipeline 标成 <code>Task completed</code>，<code>extracted=0</code>、health 正常，只能看 core 日志。判断命令：<code>docker logs --tail 600 tdai-memory-core 2&gt;&amp;1 | grep -E 'l1-extractor|L1 complete'</code>。</li>
+<li><strong>header 预选依赖 task 存活</strong>：<code>x-team-id</code>+<code>x-agent-id</code>+<code>x-task-id</code> 任一失效（尤其 task 被删）→ <code>preset mismatch → fallback to form</code>；不答表单则 <code>session bypassed → injection skipped</code>，<code>input_tokens</code> 骤降，无报错。</li>
+<li><strong>thinking-shim 依赖</strong>：经 DeepSeek 等 Anthropic 兼容端点，需 shim 强制注入 <code>thinking:&#123;&quot;type&quot;:&quot;disabled&quot;&#125;</code>，否则因 Thinking Mode 来回传限制产生第二轮 400。接新的兼容上游时都需复查此类「协议适配」坑。</li>
+<li><code>**joinUrl</code> 只拼裸路径**：白名单未命中时把裸 <code>/messages</code> 拼到 base 后、<strong>不补 <code>/v1</code></strong>——真实 API 网关类上游必须自带版本段。</li>
+<li><strong>端口默认与实际不一致</strong>：文档 8123 / 8421 vs 部署 8125 / 8424。</li>
+<li><strong>MemoryProxy 硬要求 node v22</strong>：非 v22 直接退出。</li>
+<li><strong>proxy→core auth 不带 Bearer</strong>：本地栈 <code>MEMORY_CORE_GATEWAY_API_KEY</code> 必须留空，否则 proxy 鉴权失败。</li>
+<li><strong>可选依赖多、feature-gate 组合多</strong>（ClickHouse/Redis/COS/Kafka/Opik），排查路径长。</li>
+</ol>
+<h3 id="安全风险">安全风险</h3>
+<ul>
+<li>默认内部凭据 <code>local</code> / admin key <code>admin</code> 只适合个人本地；公网暴露前必须替换成随机长串，否则任何拿到端口者可获 system_admin 权限。</li>
+</ul>
+<hr>
+<h2 id="九、可优化项">九、可优化项</h2>
+<h3 id="功能">功能</h3>
+<ul>
+<li><code>x-task-id</code> / <code>x-conversation-id</code> 放宽为可选（Roadmap 已在做）——降 Hermes/OpenClaw 接入门槛</li>
+<li>全自动记忆路由、私有仓库 / SSH 的 CodeGraph（Roadmap）</li>
+<li><code>mem:</code> 指令族继续扩充（收藏近期高频诉求）</li>
+</ul>
+<h3 id="技术">技术</h3>
+<ul>
+<li>给 L1/L2/L3 静默失败加<strong>显式告警 / 自检信号</strong>（失败产生可观测 error metric，而非吞成 <code>completed</code>），并让 <code>/health</code> 反映记忆链路健康度</li>
+<li>修复 <code>joinUrl</code> 对版本段的规范化，或生成的 config 明确要求 <code>/v1</code>，消除「配置成因」类报错</li>
+<li>统一文档端口与部署端口</li>
+<li>Cost Guard 与 <code>PROXY_UPSTREAM_MODEL</code> 的配置语义一致性</li>
+</ul>
+<h3 id="体验">体验</h3>
+<ul>
+<li>冷启动默认 Agent + 预置 Skill，跑完 <code>start-all.sh</code> 复制一行就能开始（Roadmap v2.0.1）</li>
+<li>Wiki 生成并发化，长文档导入不串行等待（Roadmap）</li>
+<li>用户 / 团队级自定义 Prompt + <strong>provenance 溯源</strong>（Roadmap v2.0.1）——「记忆质量变差」可追溯而非靠猜</li>
+<li>面板记忆时间过滤、骨架屏 / 过渡动效 / 无障碍、各资产详情页头部统一（Roadmap v2.0.1）</li>
+</ul>
+<h2 id="真实体验">真实体验</h2>
+<blockquote>
+<p>这是一款<strong>全面度较高的团队级 Agent Hub</strong>：功能齐全、操作便捷、界面简洁，质量与完成度都不错。虽然许多细节仍有打磨空间，但大的功能板块已齐全完整，几乎集成了当下主流开源社区的做法，非常适合团队使用。项目当前正处于<strong>高速迭代期</strong>，演进很快。</p>
+</blockquote>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png" alt="image 20260817162705076"></p>
+<h3 id="1-配置：有-API-冲突隐患，建议统一管理">1. 配置：有 API 冲突隐患，建议统一管理</h3>
+<p>与 Orca 存在 <strong>API 冲突</strong>的潜在可能，实际运行时应<strong>写死</strong> <code>claude-setting.json</code> 与 <code>model</code>。这背后的本质是两点：其一，团队共用同一个 API Key；其二，运行 Memory Hub 功能本身需要大模型。</p>
+<p>因此建议提供一个<strong>统一的 API 管理界面</strong>（相当于内置一个 API 中转站的效果），把客户端接入与管理入口收拢到同一个地方。目前 API Key 主要承担「客户端接入」这一角色，但对于团队型 Hub，我认为还应考虑三方面的<strong>负载均衡</strong>：</p>
+<ul>
+<li>单份 Key 能承受多大的模型访问量；</li>
+<li>Hub 的写入 / 写出峰值；</li>
+<li>Wiki、Memory 等资产的写入、修改与删除带来的并发压力。</li>
+</ul>
+<p>管理方式可以参考 GitLab 的做法（分权、限额、审计）。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/b192ec94f495e016cd3f6cbed231eb84.png" alt="image 20260828163541797"></p>
+<h3 id="2-Agent-成员：可把-Agent-当作团队成员来维护">2. Agent 成员：可把 Agent 当作团队成员来维护</h3>
+<p>Agent 完全可以被设定为<strong>团队成员</strong>进行长期的统一维护。</p>
+<blockquote>
+<p>设想这样一个场景：一个 Agent 接入了 Claude、Codex、飞书乃至一切提供 CLI / MCP 接口的程序与工具，同时具备写代码、回消息、处理办公信息的能力——它会在网络上逐渐逼近一名真实的员工。而它真正需要的，只是一个具备并发能力且支持记忆的底座、以及合适的连接工具。这几乎就是现在的「飞书豆包助手」的雏形。</p>
+<p>当越来越多的程序与工具开放 CLI 接口，一个<strong>几乎能在网上无所不能的超级 Agent</strong> 就将诞生——这也是当前各大厂商正在做的事：打通 AI 链路，推动生产力范式的转变。TencentDB 所做的事已现此苗头。一旦 Agent 获得海量 API 和各种软件的 Skill，叠加未来更强的模型能力，整个 IT 行业的生产逻辑很可能会发生剧变。</p>
+</blockquote>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/c28bcbe9c1cbe395424a90054c8a258f.png" alt="image 20260814153022364"></p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/c29b400c233dcba63f9164af0bfbab0d.png" alt="image 20260828162417385"></p>
+<h3 id="3-Wiki-知识库：LLM-Wiki-的项目化落地">3. Wiki 知识库：LLM-Wiki 的项目化落地</h3>
+<p>Wiki 本质上是 <a target="_blank" rel="noopener" href="https://github.com/nashsu/llm_wiki">llm-wiki</a> 的<strong>迁移弱化版</strong>，但结合了本项目自己的团队机制与 Agent 成员理念来组织。其基本功能已基本实现，可以直接读取代码库、文档与对话 Session。后续主要剩<strong>性能与体验</strong>的优化，例如批量上传、更精确美观的图谱连线与色彩分配等。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/5198c8d7444603cf8000b940dffab727.png" alt="image 20260828163003727"></p>
+<h3 id="4-Chat-Memory：多一层的「核心记忆」，尤为巧妙">4. Chat Memory：多一层的「核心记忆」，尤为巧妙</h3>
+<p>它的记忆分层设计很巧妙——分为 <strong>L0 / L1 / L2 / L3 四层</strong>，从具体事实逐步过渡到抽象概括。对比 OpenViking 的「摘要—概览—详情」三重记忆，这里<strong>多了一步核心记忆（L3 / Persona）</strong>。</p>
+<p>这一步往往正是 Agent「人格」的建立，让记忆能够反过来影响输出偏好。而且核心记忆本质上<strong>并不怎么进入 RAG 检索</strong>，因此不会显著增加搜索层次的繁琐程度——这是一个收益很高、代价很小的设计选择。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/241b2e6d2bb20c0bb0b181985f6761bf.png" alt="image 20260828164037039"></p>
+<h3 id="5-Skill-技能：双通道沉淀-团队内快速流转">5. Skill 技能：双通道沉淀 + 团队内快速流转</h3>
+<p>Skill 既支持<strong>从目录导入</strong>，也可以通过 <strong>Agent 对话导入</strong>。这既能逐步培养 Agent 成员的能力，也能导入已有的 Skill（虽然普通 Claude 等也能做到类似的事情）。最有价值的一点是：Skill 可以<strong>快速分享给团队</strong>，意味着团队沉淀下的「AI 小工具」能快速分发到各成员手中（尽管手动打包发送也能实现，但接入后的效率与一致性更好）。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/60703b9c8799e444b27ce3f2e136a051.png" alt="image 20260828165003531"></p>
+<h3 id="6-Code-Graph：站在既有开源成果之上">6. Code Graph：站在既有开源成果之上</h3>
+<p>Code Graph 建立在 <a target="_blank" rel="noopener" href="https://github.com/colbymchenry/codegraph">colbymchenry/codegraph</a> 之上。其核心价值在于让 AI 能够<strong>快速分析代码中某个功能是如何实现的</strong>，并快速定位对应函数的位置。在 App 中已有可供体验的功能。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/08/28/ceffaecf41e3dff90f33f2740df96cab.png" alt="image 20260828165129226"></p>
+<h3 id="总评与推荐优化方向">总评与推荐优化方向</h3>
+<p><strong>总评：</strong> TencentDB 专注于<strong>团队型 Agent 管理</strong>，目标客群是<strong>初创 AI 团队</strong>。功能相对齐全，但当前在优化与能力深度上仍有不足；技术栈基于各大主流开源库建立，具备可靠的技术支撑与持续迭代能力，值得长期关注。</p>
+<p><strong>推荐优化方向：</strong></p>
+<ol>
+<li><strong>Skill 功能提升</strong>：及早打通与各个平台的链路，把 Agents 管理融入成员管理，减少重复步骤。</li>
+<li><strong>Wiki 知识库</strong>：参考 LLM-Wiki 做进一步改善，补齐工程能力——例如 <strong>Wiki 生成并发化</strong>、长文档导入不串行等待等。</li>
+<li><strong>记忆编辑能力</strong>：参考 OpenViking 的思路，提供统一的文件管理方式——一是提升 Agent 调用效率，二是支持<strong>人工增删改查</strong>。</li>
+<li><strong>用户体验</strong>：冷启动阶段默认提供一个 Agent，构造类似豆包形象的初始通用助手并直接放在页面内，加快用户上手、解决高频小问题，避免用户拿完整 Agent 去问无关内容、污染记忆与 Wiki。</li>
+<li><strong>API 管理</strong>：升级为 <strong>API 中转站</strong>，提供更多可填的 Key、内置负载均衡，并支持进一步中转。</li>
+<li><strong>文件管理</strong>：参考 OpenViking，补充完整的文件管理系统。</li>
+</ol>
+<h2 id="附录：关键文件索引与注释">附录：关键文件索引与注释</h2>
+<h3 id="部署入口-deploy-global-images">部署入口 <code>deploy/global-images/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>start-all.sh</code></td>
+<td>一键三件套，顺序 memory→hub→proxy，任一步失败中止并打日志；末尾打印可复制的 claude 命令</td>
+</tr>
+<tr>
+<td><code>start-memory-core.sh</code></td>
+<td>内核 gateway 单独拉起（8420），并生成 <code>.memory-core-config/tdai-gateway.yaml</code></td>
+</tr>
+<tr>
+<td><code>start-memory-hub.sh</code></td>
+<td>面板 + 知识（8125 + 8424），需 <code>MEMORY_LLM_*</code></td>
+</tr>
+<tr>
+<td><code>start-proxy.sh</code></td>
+<td>proxy 单独拉起（8096），从 <code>.env</code> 生成 <code>.proxy-config/config.yaml</code> 挂载</td>
+</tr>
+<tr>
+<td><code>_lib.sh</code></td>
+<td>工具函数：<code>load_env</code> / <code>require_vars</code> / <code>wait_healthy</code> / <code>find_docker</code> / <code>print_endpoints</code></td>
+</tr>
+<tr>
+<td><code>verify.sh</code></td>
+<td>干跑 LLM 通路预检（<code>--skip-llm</code> 跳过），提前拦下 key/URL/模型名错误</td>
+</tr>
+<tr>
+<td><code>.env.example</code></td>
+<td>两组 LLM 参数模板（memory 组 + proxy 组）</td>
+</tr>
+<tr>
+<td><code>stop-all.sh</code></td>
+<td>停止；<code>--purge</code> 连 volume / admin key / 网络一起清</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MemoryCore（记忆内核）MemoryCore">MemoryCore（记忆内核）<code>MemoryCore/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/gateway/server.ts</code></td>
+<td>HTTP Gateway（原生 <code>node:http</code>），挂 <code>/v2/*</code>、<code>/v3/*</code>、<code>/health</code></td>
+</tr>
+<tr>
+<td><code>src/gateway/v2-router.ts</code></td>
+<td>v2 兼容路由</td>
+</tr>
+<tr>
+<td><code>src/core/tdai-core.ts</code></td>
+<td>host-neutral 核心门面，仅依赖 HostAdapter + LLMRunner 抽象</td>
+</tr>
+<tr>
+<td><code>src/core/record/l1-extractor.ts</code></td>
+<td>L0→L1 抽取（单次 LLM JSON-mode 结构化输出 + batch 去重）</td>
+</tr>
+<tr>
+<td><code>src/core/scene/scene-extractor.ts</code></td>
+<td>L1→L2 场景化</td>
+</tr>
+<tr>
+<td><code>src/core/persona/&#123;persona-trigger,persona-generator&#125;.ts</code></td>
+<td>L2→L3 画像（checkpoint 5 触发条件）</td>
+</tr>
+<tr>
+<td><code>src/core/store/&#123;sqlite,tcvdb,factory,search-utils,embedding&#125;.ts</code></td>
+<td>存储抽象（SQLite+sqlite-vec+FTS5 / TCVDB）+ BM25+向量+RRF 混合检索 + 双模 embedding</td>
+</tr>
+<tr>
+<td><code>src/core/store/types.ts</code></td>
+<td>整套数据模型：L0 / L1 / L2 / L3 + Team/User/Agent/Task/Asset + Audit</td>
+</tr>
+<tr>
+<td><code>src/services/pipeline-worker.ts</code></td>
+<td>异步提炼 worker（<code>timer-scanner</code> 驱动）</td>
+</tr>
+<tr>
+<td><code>src/metadata/router/auth.ts</code></td>
+<td><code>x-tdai-user-key</code> 用户身份解析层</td>
+</tr>
+<tr>
+<td><code>index.ts</code> / <code>openclaw-plugin/</code> / <code>hermes-plugin/</code></td>
+<td>OpenClaw / Hermes 框架适配</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MemoryKnowledge（知识服务）MemoryKnowledge">MemoryKnowledge（知识服务）<code>MemoryKnowledge/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/server.ts</code></td>
+<td>Hono 入口，挂 <code>/v3/wiki</code>、<code>/v3/code-graph</code>、<code>/v3/tools</code>、<code>/docs</code></td>
+</tr>
+<tr>
+<td><code>src/engines/wiki/&#123;index,ingest-v2/*&#125;.ts</code></td>
+<td>LLM Wiki 生成管线（含 ingest-v2 并发增强）</td>
+</tr>
+<tr>
+<td><code>src/engines/code/index.ts</code></td>
+<td>CodeGraph 索引（复用 <code>@colbymchenry/codegraph</code>）</td>
+</tr>
+<tr>
+<td><code>src/mcp/server.ts</code></td>
+<td>MCP 服务形态</td>
+</tr>
+<tr>
+<td><code>src/db/schema.ts</code></td>
+<td>Drizzle 表结构（better-sqlite3，WAL）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MemoryPanel（团队控制面）MemoryPanel">MemoryPanel（团队控制面）<code>MemoryPanel/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/index.ts</code> → <code>src/panel/index.ts</code></td>
+<td>后端入口（Hono，无状态）</td>
+</tr>
+<tr>
+<td><code>web/</code></td>
+<td>React 18 + Vite + Tailwind 前端（<code>source/main.tsx</code>）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="MemoryProxy（转发-接入）MemoryProxy">MemoryProxy（转发 / 接入）<code>MemoryProxy/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>src/server.ts</code></td>
+<td>Hono 路由：Anthropic / OpenAI 双协议 + bridges + <code>/health</code></td>
+</tr>
+<tr>
+<td><code>src/handler.ts</code> / <code>src/anthropicHandler.ts</code></td>
+<td>主请求处理（模型闸门、alias 解析、上游转发兜底）</td>
+</tr>
+<tr>
+<td><code>src/injection/&#123;pipeline,index,injectors&#125;.ts</code></td>
+<td>注入管线（skill / knowledge / tdai-memory 注入器）</td>
+</tr>
+<tr>
+<td><code>src/session/</code> <code>src/db/</code> <code>src/storage/</code></td>
+<td>会话绑定 / 持久化抽象（Redis / COS / SQLite / FS）</td>
+</tr>
+<tr>
+<td><code>src/agent-adapters/&#123;claude-code,codebuddy&#125;.ts</code></td>
+<td>框架适配</td>
+</tr>
+<tr>
+<td><code>src/guard-adapter.ts</code></td>
+<td><code>joinUrl</code> 拼接逻辑（白名单 + fallback）</td>
+</tr>
+<tr>
+<td><code>scripts/setup-claude-code.sh</code></td>
+<td>一键将接入信息写入 CC settings.json 的助手</td>
+</tr>
+</tbody>
+</table>
+<h3 id="SDK-sdk-memory-core">SDK <code>sdk/memory-core/</code></h3>
+<table>
+<thead>
+<tr>
+<th>文件</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>typescript/src/&#123;client,index,v3/*&#125;.ts</code></td>
+<td>TS 客户端（npm <code>memory-sdk-ts-v2</code>）</td>
+</tr>
+<tr>
+<td><code>python/tencentdb_agent_memory/&#123;v2,v3&#125;/*</code></td>
+<td>Python 客户端（pip <code>tencentdb-agent-memory-sdk-python</code>）</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>v3 严格隔离 API 要求 <code>team_id</code> / <code>agent_id</code> / <code>user_id</code>（+ session）必填。</p>
+</blockquote>
+<h3 id="官方文档">官方文档</h3>
+<p><code>README_CN.md</code>（产品定位）、<code>INSTALL_CN.md</code>（部署 + 多框架接入 + 已知限制）、<code>ROADMAP_CN.md</code>（v2.0.1 计划）、<code>CHANGELOG.md</code>（版本演进）、<code>deploy/global-images/README.md</code>（部署细节 + 常见问题）、<code>MemoryKnowledge/openapi.yaml</code>（Knowledge OpenAPI）。</p>
+<hr>
+<p><em>MIT License © TencentDB Agent Memory Team · 本报告为技术性回顾，用于文档归档与团队交接。</em></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/">http://cjh0220.github.io/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E8%AE%B0%E5%BF%86%E7%9F%A5%E8%AF%86%E5%BA%93/">记忆知识库</a></div><div class="post_share"><div class="social-share" data-image="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/09/08/%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%84%E4%BD%93%E7%B3%BB-%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">模型测评体系_项目总结与实际测试</div></div></a></div><div class="next-post pull-right"><a href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">OpenViking_记忆库理论与工具分析及个人体验（初期探索）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2026/09/08/LLM-Wiki-%E6%8A%80%E6%9C%AF%E5%88%86%E6%9E%90%E5%92%8C%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C/" title="LLM_Wiki_技术分析和个人体验"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/08/018ff78c08a50c5d1439025b6ffd92b3.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="title">LLM_Wiki_技术分析和个人体验</div></div></a></div><div><a href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/" title="OpenViking_记忆库理论与工具分析及个人体验（初期探索）"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="title">OpenViking_记忆库理论与工具分析及个人体验（初期探索）</div></div></a></div><div><a href="/2026/09/08/agentmeory-%E6%8A%80%E6%9C%AF%E5%85%A8%E8%A7%A3/" title="agentmeory-技术全解"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/08/9125d0b55b3dfe439a81fecdbad3f699.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-09-08</div><div class="title">agentmeory-技术全解</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">155</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">117</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">TencentDB-技术解析与体验分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95"><span class="toc-number">1.1.</span> <span class="toc-text">目录</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E3%80%81%E9%A1%B9%E7%9B%AE%E5%AE%9A%E4%BD%8D%E4%B8%8E%E6%A0%B8%E5%BF%83%E5%91%BD%E9%A2%98"><span class="toc-number">1.2.</span> <span class="toc-text">一、项目定位与核心命题</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%9A%E4%BD%8D"><span class="toc-number">1.2.1.</span> <span class="toc-text">定位</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%A6%81%E8%A7%A3%E5%86%B3%E7%9A%84%E5%AE%9E%E9%99%85%E7%97%9B%E7%82%B9"><span class="toc-number">1.2.2.</span> <span class="toc-text">要解决的实际痛点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%A0%B8%E5%BF%83%E5%91%BD%E9%A2%98"><span class="toc-number">1.2.3.</span> <span class="toc-text">核心命题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%80%E4%B8%AA%E8%B4%AF%E7%A9%BF%E5%A7%8B%E7%BB%88%E7%9A%84%E7%AB%8B%E5%9C%BA%E8%BE%B9%E7%95%8C"><span class="toc-number">1.2.4.</span> <span class="toc-text">一个贯穿始终的立场边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8E-RAG-%E8%81%8A%E5%A4%A9%E5%8E%86%E5%8F%B2%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-number">1.2.5.</span> <span class="toc-text">与 RAG &#x2F; 聊天历史的边界</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E3%80%81%E7%AB%9E%E5%93%81%E6%A0%BC%E5%B1%80"><span class="toc-number">1.3.</span> <span class="toc-text">二、竞品格局</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E3%80%81%E6%8A%80%E6%9C%AF%E6%A0%88%E4%B8%8E%E6%8A%80%E6%9C%AF%E5%AE%9E%E7%8E%B0%E8%B7%AF%E7%BA%BF"><span class="toc-number">1.4.</span> <span class="toc-text">三、技术栈与技术实现路线</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E6%8A%80%E6%9C%AF%E6%A0%88%E6%80%BB%E8%A7%88"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 技术栈总览</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%9B%9B%E5%A4%A7%E8%87%AA%E7%94%B1%E5%BA%A6%E7%9A%84%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E7%90%86%E7%94%B1%EF%BC%88%E5%AE%9E%E7%8E%B0%E8%B7%AF%E7%BA%BF%EF%BC%89"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 四大自由度的技术选型理由（实现路线）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E5%9B%9B%E5%B1%82%E8%AE%B0%E5%BF%86%E7%AE%A1%E7%BA%BF%EF%BC%88%E6%9C%80%E6%A0%B8%E5%BF%83%E7%9A%84%E5%AE%9E%E7%8E%B0%E8%B7%AF%E7%BA%BF%EF%BC%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 四层记忆管线（最核心的实现路线）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-%E8%A3%85%E9%85%8D%E4%B8%8E%E6%B2%BB%E7%90%86%E8%B7%AF%E7%BA%BF"><span class="toc-number">1.4.4.</span> <span class="toc-text">3.4 装配与治理路线</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E4%B8%89%E5%B1%82%E9%89%B4%E6%9D%83%EF%BC%88%E5%BE%AE%E6%9C%8D%E5%8A%A1%E5%AE%89%E5%85%A8%E8%B7%AF%E7%BA%BF%EF%BC%89"><span class="toc-number">1.4.5.</span> <span class="toc-text">3.5 三层鉴权（微服务安全路线）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-L1-%E6%8A%BD%E5%8F%96%E6%9C%BA%E5%88%B6%EF%BC%88%E4%B8%80%E4%B8%AA%E5%85%B3%E9%94%AE%E5%AE%9E%E7%8E%B0%E7%BB%86%E8%8A%82%EF%BC%89"><span class="toc-number">1.4.6.</span> <span class="toc-text">3.6 L1 抽取机制（一个关键实现细节）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%9B%9B%E3%80%81%E5%8A%9F%E8%83%BD%E6%B8%85%E5%8D%95"><span class="toc-number">1.5.</span> <span class="toc-text">四、功能清单</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%9B%9B%E5%A4%A7%E8%AE%B0%E5%BF%86%E8%B5%84%E4%BA%A7"><span class="toc-number">1.5.1.</span> <span class="toc-text">四大记忆资产</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory-Hub%EF%BC%88%E7%AE%A1%E7%90%86%E9%9D%A2%E6%9D%BF%EF%BC%89"><span class="toc-number">1.5.2.</span> <span class="toc-text">Memory Hub（管理面板）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Memory-Proxy%EF%BC%88%E6%8E%A5%E5%85%A5%E5%B1%82%EF%BC%89"><span class="toc-number">1.5.3.</span> <span class="toc-text">Memory Proxy（接入层）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A5%E5%85%A5%E5%BD%A2%E6%80%81"><span class="toc-number">1.5.4.</span> <span class="toc-text">接入形态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%BF%90%E7%BB%B4%E8%83%BD%E5%8A%9B"><span class="toc-number">1.5.5.</span> <span class="toc-text">运维能力</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%94%E3%80%81%E4%BD%BF%E7%94%A8%E6%96%B9%E6%B3%95%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E7%A8%8B"><span class="toc-number">1.6.</span> <span class="toc-text">五、使用方法与工作流程</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A0-%E9%83%A8%E7%BD%B2%EF%BC%88%E4%B8%89%E4%BB%B6%E5%A5%97%EF%BC%89"><span class="toc-number">1.6.1.</span> <span class="toc-text">① 部署（三件套）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A1-%E6%8E%A5-Claude-Code"><span class="toc-number">1.6.2.</span> <span class="toc-text">② 接 Claude Code</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A2-%E5%B7%A5%E4%BD%9C%E6%B5%81%E9%97%AD%E7%8E%AF"><span class="toc-number">1.6.3.</span> <span class="toc-text">③ 工作流闭环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E2%91%A3-%E8%BF%9B%E9%98%B6"><span class="toc-number">1.6.4.</span> <span class="toc-text">④ 进阶</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AD%E3%80%81%E5%AE%9E%E7%8E%B0%E6%95%88%E6%9E%9C%E4%B8%8E%E7%94%A8%E6%88%B7%E4%BB%B7%E5%80%BC"><span class="toc-number">1.7.</span> <span class="toc-text">六、实现效果与用户价值</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%87%8F%E5%8C%96-Benchmark"><span class="toc-number">1.7.1.</span> <span class="toc-text">量化 Benchmark</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E8%B4%A8%E6%80%A7%E6%95%88%E6%9E%9C-%E4%BB%B7%E5%80%BC"><span class="toc-number">1.7.2.</span> <span class="toc-text">质性效果 &#x2F; 价值</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%83%E3%80%81%E5%8F%AF%E6%8F%90%E7%82%BC%E7%9A%84%E6%96%B9%E6%B3%95%E8%AE%BA"><span class="toc-number">1.8.</span> <span class="toc-text">七、可提炼的方法论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%85%AB%E3%80%81%E5%B1%80%E9%99%90%E4%B8%8E%E9%A3%8E%E9%99%A9"><span class="toc-number">1.9.</span> <span class="toc-text">八、局限与风险</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD%E5%B1%80%E9%99%90"><span class="toc-number">1.9.1.</span> <span class="toc-text">功能局限</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9E%B6%E6%9E%84-%E8%BF%90%E7%BB%B4%E9%A3%8E%E9%99%A9%EF%BC%88%E5%90%AB%E6%9C%AC%E4%BC%9A%E8%AF%9D%E5%AE%9E%E6%B5%8B%E8%B8%A9%E7%82%B9%EF%BC%89"><span class="toc-number">1.9.2.</span> <span class="toc-text">架构 &#x2F; 运维风险（含本会话实测踩点）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E5%85%A8%E9%A3%8E%E9%99%A9"><span class="toc-number">1.9.3.</span> <span class="toc-text">安全风险</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B9%9D%E3%80%81%E5%8F%AF%E4%BC%98%E5%8C%96%E9%A1%B9"><span class="toc-number">1.10.</span> <span class="toc-text">九、可优化项</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%8A%9F%E8%83%BD"><span class="toc-number">1.10.1.</span> <span class="toc-text">功能</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8A%80%E6%9C%AF"><span class="toc-number">1.10.2.</span> <span class="toc-text">技术</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%BD%93%E9%AA%8C"><span class="toc-number">1.10.3.</span> <span class="toc-text">体验</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%9C%9F%E5%AE%9E%E4%BD%93%E9%AA%8C"><span class="toc-number">1.11.</span> <span class="toc-text">真实体验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-%E9%85%8D%E7%BD%AE%EF%BC%9A%E6%9C%89-API-%E5%86%B2%E7%AA%81%E9%9A%90%E6%82%A3%EF%BC%8C%E5%BB%BA%E8%AE%AE%E7%BB%9F%E4%B8%80%E7%AE%A1%E7%90%86"><span class="toc-number">1.11.1.</span> <span class="toc-text">1. 配置：有 API 冲突隐患，建议统一管理</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Agent-%E6%88%90%E5%91%98%EF%BC%9A%E5%8F%AF%E6%8A%8A-Agent-%E5%BD%93%E4%BD%9C%E5%9B%A2%E9%98%9F%E6%88%90%E5%91%98%E6%9D%A5%E7%BB%B4%E6%8A%A4"><span class="toc-number">1.11.2.</span> <span class="toc-text">2. Agent 成员：可把 Agent 当作团队成员来维护</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Wiki-%E7%9F%A5%E8%AF%86%E5%BA%93%EF%BC%9ALLM-Wiki-%E7%9A%84%E9%A1%B9%E7%9B%AE%E5%8C%96%E8%90%BD%E5%9C%B0"><span class="toc-number">1.11.3.</span> <span class="toc-text">3. Wiki 知识库：LLM-Wiki 的项目化落地</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Chat-Memory%EF%BC%9A%E5%A4%9A%E4%B8%80%E5%B1%82%E7%9A%84%E3%80%8C%E6%A0%B8%E5%BF%83%E8%AE%B0%E5%BF%86%E3%80%8D%EF%BC%8C%E5%B0%A4%E4%B8%BA%E5%B7%A7%E5%A6%99"><span class="toc-number">1.11.4.</span> <span class="toc-text">4. Chat Memory：多一层的「核心记忆」，尤为巧妙</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-Skill-%E6%8A%80%E8%83%BD%EF%BC%9A%E5%8F%8C%E9%80%9A%E9%81%93%E6%B2%89%E6%B7%80-%E5%9B%A2%E9%98%9F%E5%86%85%E5%BF%AB%E9%80%9F%E6%B5%81%E8%BD%AC"><span class="toc-number">1.11.5.</span> <span class="toc-text">5. Skill 技能：双通道沉淀 + 团队内快速流转</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-Code-Graph%EF%BC%9A%E7%AB%99%E5%9C%A8%E6%97%A2%E6%9C%89%E5%BC%80%E6%BA%90%E6%88%90%E6%9E%9C%E4%B9%8B%E4%B8%8A"><span class="toc-number">1.11.6.</span> <span class="toc-text">6. Code Graph：站在既有开源成果之上</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%80%BB%E8%AF%84%E4%B8%8E%E6%8E%A8%E8%8D%90%E4%BC%98%E5%8C%96%E6%96%B9%E5%90%91"><span class="toc-number">1.11.7.</span> <span class="toc-text">总评与推荐优化方向</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%99%84%E5%BD%95%EF%BC%9A%E5%85%B3%E9%94%AE%E6%96%87%E4%BB%B6%E7%B4%A2%E5%BC%95%E4%B8%8E%E6%B3%A8%E9%87%8A"><span class="toc-number">1.12.</span> <span class="toc-text">附录：关键文件索引与注释</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E9%83%A8%E7%BD%B2%E5%85%A5%E5%8F%A3-deploy-global-images"><span class="toc-number">1.12.1.</span> <span class="toc-text">部署入口 deploy&#x2F;global-images&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MemoryCore%EF%BC%88%E8%AE%B0%E5%BF%86%E5%86%85%E6%A0%B8%EF%BC%89MemoryCore"><span class="toc-number">1.12.2.</span> <span class="toc-text">MemoryCore（记忆内核）MemoryCore&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MemoryKnowledge%EF%BC%88%E7%9F%A5%E8%AF%86%E6%9C%8D%E5%8A%A1%EF%BC%89MemoryKnowledge"><span class="toc-number">1.12.3.</span> <span class="toc-text">MemoryKnowledge（知识服务）MemoryKnowledge&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MemoryPanel%EF%BC%88%E5%9B%A2%E9%98%9F%E6%8E%A7%E5%88%B6%E9%9D%A2%EF%BC%89MemoryPanel"><span class="toc-number">1.12.4.</span> <span class="toc-text">MemoryPanel（团队控制面）MemoryPanel&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#MemoryProxy%EF%BC%88%E8%BD%AC%E5%8F%91-%E6%8E%A5%E5%85%A5%EF%BC%89MemoryProxy"><span class="toc-number">1.12.5.</span> <span class="toc-text">MemoryProxy（转发 &#x2F; 接入）MemoryProxy&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#SDK-sdk-memory-core"><span class="toc-number">1.12.6.</span> <span class="toc-text">SDK sdk&#x2F;memory-core&#x2F;</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%98%E6%96%B9%E6%96%87%E6%A1%A3"><span class="toc-number">1.12.7.</span> <span class="toc-text">官方文档</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/" title="基准与聚合榜单调研"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="基准与聚合榜单调研"/></a><div class="content"><a class="title" href="/2026/09/08/%E5%9F%BA%E5%87%86%E4%B8%8E%E8%81%9A%E5%90%88%E6%A6%9C%E5%8D%95%E8%B0%83%E7%A0%94/" title="基准与聚合榜单调研">基准与聚合榜单调研</a><time datetime="2026-09-08T11:49:09.000Z" title="发表于 2026-09-08 19:49:09">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/TSvsPYTHON%E5%9C%A8Agent%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF/" title="TSvsPYTHON在Agent应用开发的优劣势"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TSvsPYTHON在Agent应用开发的优劣势"/></a><div class="content"><a class="title" href="/2026/09/08/TSvsPYTHON%E5%9C%A8Agent%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91%E7%9A%84%E4%BC%98%E5%8A%A3%E5%8A%BF/" title="TSvsPYTHON在Agent应用开发的优劣势">TSvsPYTHON在Agent应用开发的优劣势</a><time datetime="2026-09-08T11:48:53.000Z" title="发表于 2026-09-08 19:48:53">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%84%E4%BD%93%E7%B3%BB-%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95/" title="模型测评体系_项目总结与实际测试"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="模型测评体系_项目总结与实际测试"/></a><div class="content"><a class="title" href="/2026/09/08/%E6%A8%A1%E5%9E%8B%E6%B5%8B%E8%AF%84%E4%BD%93%E7%B3%BB-%E9%A1%B9%E7%9B%AE%E6%80%BB%E7%BB%93%E4%B8%8E%E5%AE%9E%E9%99%85%E6%B5%8B%E8%AF%95/" title="模型测评体系_项目总结与实际测试">模型测评体系_项目总结与实际测试</a><time datetime="2026-09-08T11:47:53.000Z" title="发表于 2026-09-08 19:47:53">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/" title="TencentDB_技术解析与体验分析"><img src="https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TencentDB_技术解析与体验分析"/></a><div class="content"><a class="title" href="/2026/09/08/TencentDB-%E6%8A%80%E6%9C%AF%E8%A7%A3%E6%9E%90%E4%B8%8E%E4%BD%93%E9%AA%8C%E5%88%86%E6%9E%90/" title="TencentDB_技术解析与体验分析">TencentDB_技术解析与体验分析</a><time datetime="2026-09-08T11:47:17.000Z" title="发表于 2026-09-08 19:47:17">2026-09-08</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/" title="OpenViking_记忆库理论与工具分析及个人体验（初期探索）"><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="OpenViking_记忆库理论与工具分析及个人体验（初期探索）"/></a><div class="content"><a class="title" href="/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/" title="OpenViking_记忆库理论与工具分析及个人体验（初期探索）">OpenViking_记忆库理论与工具分析及个人体验（初期探索）</a><time datetime="2026-09-08T11:46:34.000Z" title="发表于 2026-09-08 19:46:34">2026-09-08</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.imagehub.cc/images/2026/08/28/64d8aa92752f1a4383f67f583e9505a5.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
