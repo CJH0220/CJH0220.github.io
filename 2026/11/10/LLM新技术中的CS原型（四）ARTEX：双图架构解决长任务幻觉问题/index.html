@@ -1,0 +1,831 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题 | CJH's blog</title><meta name="keywords" content="LLM中的CS原型"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题 主作者：陈劲铧  本文基于 ARTEX 当前源码、本地深度拆解文档和仓库既有截图编写。实验仅限本地页面与源码测试，不连接线上 Demo，不执行真实目标探测。ARTEX 官方免责声明禁止将其用于线上系统、生产环境或未经授权的目标。  参考资料  官方仓库：GitHub - mhtsec&#x2F;ARTEX Demo：ARTEX — 自主渗">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题">
+<meta property="og:url" content="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题 主作者：陈劲铧  本文基于 ARTEX 当前源码、本地深度拆解文档和仓库既有截图编写。实验仅限本地页面与源码测试，不连接线上 Demo，不执行真实目标探测。ARTEX 官方免责声明禁止将其用于线上系统、生产环境或未经授权的目标。  参考资料  官方仓库：GitHub - mhtsec&#x2F;ARTEX Demo：ARTEX — 自主渗">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
+<meta property="article:published_time" content="2026-11-10T12:51:42.000Z">
+<meta property="article:modified_time" content="2026-11-10T13:01:43.601Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="LLM中的CS原型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-10 21:01:43'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-10T12:51:42.000Z" title="发表于 2026-11-10 20:51:42">2026-11-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">AI应用开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</h1>
+<p>主作者：陈劲铧</p>
+<blockquote>
+<p>本文基于 ARTEX 当前源码、本地深度拆解文档和仓库既有截图编写。实验仅限本地页面与源码测试，不连接线上 Demo，不执行真实目标探测。ARTEX 官方免责声明禁止将其用于线上系统、生产环境或未经授权的目标。</p>
+</blockquote>
+<h2 id="参考资料">参考资料</h2>
+<ul>
+<li>官方仓库：<a target="_blank" rel="noopener" href="https://github.com/mhtsec/ARTEX">GitHub - mhtsec/ARTEX</a></li>
+<li>Demo：<a target="_blank" rel="noopener" href="https://artex-demo.mhtsec.com/function/tasks/">ARTEX — 自主渗透测试控制台</a></li>
+<li>深度拆解：D:/ARTEX/ARTEX/深度拆解/01-系统架构与核心机制.md、<a target="_blank" rel="noopener" href="http://xn--02--e38du74bv0psvbq1g4wnx59es7ms4t.md">02-数据模型与执行链路.md</a></li>
+<li>本地源码快照：D:/ARTEX/ARTEX，当前阅读提交 b55ceb1fdd84a813d77de09a06af83d323a81f85</li>
+</ul>
+<h2 id="1-项目介绍">1 项目介绍</h2>
+<h3 id="1-1-ARTEX-要解决什么问题">1.1 ARTEX 要解决什么问题</h3>
+<p>普通 Agent 往往把目标、工具和历史消息交给一个模型，让它连续调用工具，最后输出一段总结。任务一长，就容易出现：</p>
+<ol>
+<li>模型忘记目标，重复探测或偏离范围；</li>
+<li>前置事实尚未出现，后续步骤已经被提前执行；</li>
+<li>一个 Worker 的中间观察没有写入公共状态，其他 Worker 只能重复劳动；</li>
+<li>资产、事实、漏洞和过程混在一张列表里，无法回答“这个结论从哪里来”；</li>
+<li>暂停、失败或重启后，系统无法区分已完成工作和待领取工作。</li>
+</ol>
+<p>ARTEX 的回答是一个由 Planner、Worker、双图数据库和工具治理层组成的长任务运行时：</p>
+<ul>
+<li>Planner 判断下一步值得探索什么，不亲自执行探测；</li>
+<li>Worker 领取一条意图，在授权范围内执行、写回并停止；</li>
+<li>资产图保存跨任务可复用的资产真值；</li>
+<li>探索图保存当前任务的目标、意图、事实、发现和血缘；</li>
+<li>PostgreSQL 充当共享黑板，图变化通过事件唤醒下一轮 Planner；</li>
+<li>Guard、Intercept、流量记录和证据快照把行动放进可审计边界。</li>
+</ul>
+<p>因此，ARTEX 更像事件驱动的自主探索系统，而不是把 LLM 包在扫描器外面的聊天壳。</p>
+<h3 id="1-2-系统分层">1.2 系统分层</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">flowchart TB</span><br><span class="line">    UI[Next.js UI\n任务 / 资产 / 探索图 / 流量 / 发现] --&gt; API[Go net/http\nREST + JWT + SSE]</span><br><span class="line">    API --&gt; MGR[Manager\n任务和引擎生命周期]</span><br><span class="line">    MGR --&gt; ENG[Engine\nplannerLoop + workerLoop]</span><br><span class="line">    ENG --&gt; PL[Planner\n唯一意图生成者]</span><br><span class="line">    ENG --&gt; WK[Workers × N\n执行意图并写回]</span><br><span class="line">    PL --&gt; DB[(PostgreSQL\n资产图 + 探索图 + activity)]</span><br><span class="line">    WK --&gt; DB</span><br><span class="line">    WK --&gt; PX[Traffic MITM\n请求 / 响应 / 证据]</span><br><span class="line">    WK --&gt; GD[Guard / Intercept\nallow / deny / ask]</span><br><span class="line">    DB --&gt; EXT[MCP / Skills / Reports / Memory]</span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>层</th>
+<th>主要目录或文件</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>前端</td>
+<td>web/</td>
+<td>仪表盘、任务、资产、探索图、会话和审批</td>
+</tr>
+<tr>
+<td>API</td>
+<td>server/server.go、server/*_api.go</td>
+<td>REST、JWT、SSE 和文件接口</td>
+</tr>
+<tr>
+<td>调度</td>
+<td>server/engine.go、server/manager.go</td>
+<td>Planner/Worker 循环、暂停、取消和超时</td>
+</tr>
+<tr>
+<td>Agent</td>
+<td>agent/planner.go、agent/worker.go、agent/mainagent.go</td>
+<td>规划、执行、人工对话和目标判断</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>db/、db/schema.sql</td>
+<td>双图、任务、活动、证据和配置</td>
+</tr>
+<tr>
+<td>治理</td>
+<td>guard/、intercept/</td>
+<td>allow/deny/ask 和人在环路审批</td>
+</tr>
+<tr>
+<td>观测</td>
+<td>traffic/、llmrec/、report/</td>
+<td>流量、LLM 调用、Token、报告和证据</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-3-本地界面素材">1.3 本地界面素材</h3>
+<p>图片来自仓库既有截图，已复制到本文旁边的 assets/artex/，Typora 可以直接读取；远程发布时可替换为图床路径。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/11/06/a6642e23296ae34202de80f821d30172.png" alt="dashboard"></p>
+<p><img src="https://s1.imagehub.cc/images/2026/11/06/86a20ca0bd04cfd1697a9111daef85d6.png" alt="sessions"></p>
+<h2 id="2-核心内容：双图、黑板和-Worker">2 核心内容：双图、黑板和 Worker</h2>
+<h3 id="2-1-资产图：世界里有什么">2.1 资产图：世界里有什么</h3>
+<p>资产图是全局共享的资产真值库，典型节点包括：root_domain、subdomain、ip、service、app 和 endpoint。</p>
+<p>它的关键特点是去重和归属。同一个域名被不同任务发现时，不由 Agent 自己决定是否重复创建，而是由程序根据资产类型和唯一索引归并。任务通过 task_scope、task_asset_links 表达本次允许关注的范围。</p>
+<p>资产图表达事实对象，不是某个 Worker 的猜测。新资产由 insert_assets 写入；探索结论应写入探索图的 fact 节点，而不是塞进资产字段。</p>
+<h4 id="为什么资产图必须和探索图分开">为什么资产图必须和探索图分开</h4>
+<p>如果把“某个域名存在”和“本次任务曾经验证过该域名的某个接口”写在同一张表里，会产生两个相反的问题：第一，同一资产被不同任务反复复制，资产真值无法复用；第二，删除或归档一个任务时，容易误删其他任务仍在使用的资产。ARTEX 的做法是让 assets 保存跨任务共享的对象，让 task_ids、task_scope 和 task_asset_links 表达任务关联，把本次推理过程留给 exploration_nodes。</p>
+<p>源码中的唯一索引体现了这一取舍：根域名按 domain 去重，IP 按 ip 去重，子域名按 domain 与 record_type 去重，HTTP 服务按 url 去重，端点按 url 与 method 去重。也就是说，Agent 只提交原始资产字段，归一化和去重由数据库索引负责，避免模型决定“这是同一个资产还是新资产”。</p>
+<h4 id="资产写入的实际路径">资产写入的实际路径</h4>
+<p>Worker 调用 insert_assets 后，工具层先把资产类型和字段转换成结构化对象，再由 AssetStore 执行 upsert；成功后会把资产锚定到当前 Worker 的 intent 节点，并触发异步 DNS/HTTP enrichment。这样，资产图承担对象发现，探索图承担发现原因，二者通过 exploration_anchors 关联，而不是在一个 JSON 字段里互相嵌套。</p>
+<h3 id="2-2-探索图：本次任务如何得到结论">2.2 探索图：本次任务如何得到结论</h3>
+<p>探索图是每个任务独立的推导链路。db/schema.sql 将节点类型约束为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">begin / goal / intent / fact / finding / hint / digest</span><br></pre></td></tr></table></figure>
+<p>边类型约束为：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">spawns / derived_from / yields / proves / covers</span><br></pre></td></tr></table></figure>
+<p>它们表达目标产生意图、意图产生事实、事实推动下一条意图、发现证明目标的血缘关系：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    G[goal\n目标] --&gt;|spawns| I1[intent\n探索方向 A]</span><br><span class="line">    I1 --&gt;|yields| F1[fact\n事实]</span><br><span class="line">    F1 --&gt;|derived_from| I2[intent\n探索方向 B]</span><br><span class="line">    I2 --&gt;|proves| V[finding\n可复现发现]</span><br><span class="line">    I1 -. anchors .-&gt; A[(资产图中的资产)]</span><br><span class="line">    F1 -. anchors .-&gt; A</span><br><span class="line">    V -. anchors .-&gt; A</span><br></pre></td></tr></table></figure>
+<p>exploration_anchors(node_id, asset_id) 是两图之间的桥：它把探索节点锚定到真实资产，使系统可以从意图看到目标资产，也可以从资产反查本任务的探索记录和覆盖情况。</p>
+<h4 id="边不是装饰字段，而是-Planner-的输入">边不是装饰字段，而是 Planner 的输入</h4>
+<p>graph_overview 读取 exploration_edges，构造 parentsOf、yieldsOf 和 factFrom 三个索引：parentsOf 表示一个意图由哪些事实或上游意图派生，yieldsOf 表示一个意图产出了哪些事实/发现，factFrom 表示事实来自哪个 intent。Planner 看到的不是“事实列表”，而是“哪个方向产出了哪个事实、下一个方向依赖哪些事实”。这正是图结构相比平铺聊天记录的工程价值。</p>
+<p>例如，record_fact 写入事实时，工具层会建立 intent --yields–&gt; fact；add_intent 如果引用了已有事实，会建立 fact --derived_from–&gt; intent。prove_goal 则建立 evidence --proves–&gt; goal。关系由 Go 代码创建，而不是让模型直接填写任意 source、target 和 rel，因此可以在写入点限制关系类型和任务归属。</p>
+<h3 id="2-3-黑板：共享状态面，而不是第三张图">2.3 黑板：共享状态面，而不是第三张图</h3>
+<p>ARTEX 的黑板可以用经典 Blackboard Architecture 理解：多个知识源把观察写入共享空间，控制者根据共享空间选择下一步工作。这里没有一个单独叫 blackboard 的表，而是由以下对象共同构成：</p>
+<table>
+<thead>
+<tr>
+<th>黑板组成</th>
+<th>保存内容</th>
+<th>主要写入者</th>
+<th>主要读取者</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>探索图节点与边</td>
+<td>目标、意图、事实、发现及血缘</td>
+<td>Planner、Worker、主 Agent</td>
+<td>Planner、Worker、UI</td>
+</tr>
+<tr>
+<td>资产图与锚点</td>
+<td>资产真值、任务范围、资产关联</td>
+<td>Worker、资产同步流程</td>
+<td>Planner、Worker、覆盖视图</td>
+</tr>
+<tr>
+<td>activity</td>
+<td>工具调用、文本、结果、错误和过程细节</td>
+<td>Worker、Planner、系统</td>
+<td>UI、证据工具、复盘逻辑</td>
+</tr>
+<tr>
+<td>graph_overview</td>
+<td>面向模型的压缩态势快照</td>
+<td>DB 查询与工具层</td>
+<td>Planner、Worker</td>
+</tr>
+<tr>
+<td>frontier</td>
+<td>尚未领取的 open 意图</td>
+<td>Planner 产生，Worker claim</td>
+<td>Worker 调度器</td>
+</tr>
+</tbody>
+</table>
+<p>黑板的价值是把短暂的模型上下文和长期任务状态分开。模型每次被唤醒可以是新会话，但它先读取同一个黑板快照；Worker 的输出不必完整塞回 Planner 上下文，只需写入结构化节点和活动记录。</p>
+<h4 id="graph-overview-为什么要做“有损摘要”">graph_overview 为什么要做“有损摘要”</h4>
+<p>graph_overview 不是把整张图序列化给模型，而是按用途截断：open_intents 只取高优先级窗口，同时额外给出 frontier_open 总数；recent_done_intents 只保留最近一窗，同时给出 done_intents_total；recent_facts、finding_list、cold_digests 也分别设置上限。这样做是因为 Planner 真正需要的是“是否还有活、最近发生了什么、目标是否已满足”，而不是一次读入所有历史节点。</p>
+<p>摘要并不删除数据。旧事实仍可通过 node_detail、list_facts 或展开 digest 查询。这个设计把热路径的上下文成本控制在固定上限，同时保留按需追溯能力；代价是模型必须知道何时主动展开详情。</p>
+<h3 id="2-4-Worker：一条意图，一个执行单元">2.4 Worker：一条意图，一个执行单元</h3>
+<p>agent/worker.go 明确规定：Worker 领取 ONE intent，完成这条意图，写回事实或发现，然后停止。它不是自由漫游的 Agent，也不负责生成新探索方向。</p>
+<p>Worker 的三种写回有清晰边界：</p>
+<ol>
+<li>资产 → insert_assets，只登记子域、服务、端点等对象；</li>
+<li>事实 → record_fact，写入本次真实观察、证据和置信度；</li>
+<li>确认发现 → report_finding，必须有本次真实触发并可复现的证据，不能仅凭版本号、指纹或外部漏洞库推断。</li>
+</ol>
+<p>Worker 每一步还会写入 activity，因此没有正式写成 fact 的中间观察至少仍有过程记录。当前版本对 Worker 工具面做过收敛，旧博客中的工具列表不一定代表当前提交。</p>
+<h4 id="为什么-Worker-只领取一条意图">为什么 Worker 只领取一条意图</h4>
+<p>如果一个 Worker 同时负责资产枚举、漏洞验证、报告生成和下一步规划，模型会在同一上下文中混合多个目标，最终很难判断哪些结果属于哪条链路。ARTEX 把 intent 作为 Worker 的最小执行单元：启动时将 intent 的 summary、intent_id 和锚定资产注入系统/用户上下文；执行期间每次工具调用都带着当前 node_id；结束时只转换这一条 intent 的状态。</p>
+<p>这是一种“上下文隔离”而不是简单的并发拆分。Worker 可以看到只读的全局态势用于去重，但不能因为看到新线索就自行创建另一条探索方向；跨意图的新线索应写进 fact，由 Planner 决定是否派生新 intent。</p>
+<h3 id="2-5-Planner：唯一的意图生成者">2.5 Planner：唯一的意图生成者</h3>
+<p>Planner 读取态势、判断目标、生成 0…N 条新意图。它不执行探测工具，也不把整条长链一次性摊开。当前提示词和工具接口要求它：</p>
+<ul>
+<li>目标未达成且没有 open/running 意图时，必须提出至少一个推进方向；</li>
+<li>前置事实尚未出现时，不派发依赖它的后续意图；</li>
+<li>用 prove_goal 逐个标记已被证据证明的目标；</li>
+<li>量化目标必须核对 graph_overview 中的实测值；</li>
+<li>一次批量提交有限数量的高价值意图，避免 frontier 无限膨胀。</li>
+</ul>
+<p>Planner 还维护一份按探索任务索引的 TodoStore，让串行计划跨唤醒继续存在。但当前实现主要在 Planner 进程内保存，不能误解成完全持久化到数据库的事务计划；重启后仍需从探索图和事实重建方向。</p>
+<h4 id="Planner-为什么不直接执行工具">Planner 为什么不直接执行工具</h4>
+<p>Planner 的输出被限制为 add_intent、prove_goal、goal_met 等规划类动作。这样做有两个原因：一是把高成本、可能有副作用的工具调用集中到 Worker 和 Guard 这一条链路，二是让 Planner 每次唤醒都可以重新计算全局状态，而不会被某个长时间运行的命令占住。Planner 产生意图后立即返回，Engine 的 workerLoop 再从 frontier 领取；这使规划吞吐和执行吞吐可以独立调节。</p>
+<h2 id="3-双图-黑板的执行链路">3 双图 + 黑板的执行链路</h2>
+<h3 id="3-1-事件驱动闭环">3.1 事件驱动闭环</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    participant E as Engine</span><br><span class="line">    participant P as Planner</span><br><span class="line">    participant B as PostgreSQL 黑板</span><br><span class="line">    participant F as Frontier</span><br><span class="line">    participant W as Worker</span><br><span class="line">    participant T as Tool / Proxy / Guard</span><br><span class="line">    E-&gt;&gt;P: 图变化、Worker 完成或心跳唤醒</span><br><span class="line">    P-&gt;&gt;B: 读取 graph_overview、目标、范围、覆盖度</span><br><span class="line">    P-&gt;&gt;F: add_intent（0..N 条）</span><br><span class="line">    W-&gt;&gt;F: ClaimIntent 原子领取一条 open 意图</span><br><span class="line">    W-&gt;&gt;T: 执行受控工具并记录过程</span><br><span class="line">    T--&gt;&gt;W: 结果、流量、错误或审批状态</span><br><span class="line">    W-&gt;&gt;B: 写入 asset / fact / finding / activity</span><br><span class="line">    B--&gt;&gt;E: notify，触发下一轮 Planner</span><br></pre></td></tr></table></figure>
+<p>Planner 不必一直占用一个超长上下文。每轮规划结束后，Worker 在后台执行；Worker 写回后再唤醒 Planner。模型的短上下文被反复刷新，任务长期状态保存在数据库黑板。</p>
+<p>把一次闭环展开到函数级，大致是：Engine 启动任务时注册 plannerLoop 和多个 workerLoop；plannerLoop 收到 notify 或 heartbeat 后调用 Planner.Plan；Planner 通过 ToolSet.add_intent 写入 exploration_nodes，并建立与目标/事实的边；workerLoop 调用 claimNext，内部先取 Frontier，再调用 ExplorationStore.ClaimIntent；成功后进入 Worker.Execute；Execute 构造带 intent_id 的 ToolSet，调用 insert_assets、record_fact 或 report_finding；写回函数在事务中插入节点、边、锚点和 activity，最后调用 t.NotifyDone 或 notifyFinding；Engine 收到通知后重新进入 plannerLoop。</p>
+<p>这条链把“模型输出”和“系统状态变化”分成两个阶段：模型只产生工具调用参数，Go 运行时负责校验、落库、建立关系和发事件。也正因为中间存在这个状态层，模型即使在下一轮换了上下文，仍能从数据库恢复任务，而不必依赖上一轮的自然语言记忆。</p>
+<h3 id="3-2-原子领取和-Worker-生命周期">3.2 原子领取和 Worker 生命周期</h3>
+<p>db/exploration.go 的 ClaimIntent 将意图从 open 原子转为 running。多个 goroutine 同时看到同一条 frontier 时，只有一个 Worker 能成功领取。</p>
+<p>具体流程是：workerLoop 先读取 Frontier(20) 得到按 priority DESC、id ASC 排序的候选窗口；随后逐个调用 ClaimIntent。ClaimIntent 使用“只有当前 state=open 才更新为 running”的条件更新，成功的 Worker 获得 owner，失败者继续尝试下一候选。这里故意没有把“读 frontier”和“改状态”做成普通两步逻辑，否则两个 goroutine 都可能读到同一条 open 意图并重复执行。</p>
+<p>任务启动时也不会盲目唤醒 Planner。Engine 会先检查 HasActiveIntent；只要存在 open 或 running 意图，就让 Worker 直接工作，避免“Worker 已经抢到意图、Planner 又额外跑一轮”的竞态。Worker 完成后调用 NotifyDone，Engine 再唤醒 Planner。</p>
+<p>暂停、取消和超时也通过 CompareAndSetIntentState 进入状态机：暂停中的 running 意图回到 open，恢复后可以重新领取；任务级超时通常进入 exhausted，保留已经写回的事实；Planner 主动 kill 的工作进入 stopped，不再自动重领。这样，状态并不是模型输出的一句话，而是由引擎在上下文取消后根据原因落库。</p>
+<table>
+<thead>
+<tr>
+<th>状态</th>
+<th>语义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>done</td>
+<td>正常执行结束并写回结果</td>
+</tr>
+<tr>
+<td>blocked</td>
+<td>执行出现错误，暂时无法完成</td>
+</tr>
+<tr>
+<td>exhausted</td>
+<td>达到步数或时间预算，已执行部分保留</td>
+</tr>
+<tr>
+<td>paused / open</td>
+<td>用户暂停或可恢复的中断</td>
+</tr>
+<tr>
+<td>stopped</td>
+<td>任务完成、被取消或被 Planner 终止</td>
+</tr>
+</tbody>
+</table>
+<h3 id="3-3-黑板如何降低长任务幻觉">3.3 黑板如何降低长任务幻觉</h3>
+<p>ARTEX 不会消除模型幻觉，而是用结构约束降低错误影响：目标和验收条件每轮重新读取；事实和已结束方向写回图用于去重；fact→intent 边保存前后依赖；report_finding 要求真实证据；graph_overview 压缩上下文；Worker 只做一条意图，Planner 与工具审批分别承担规划和治理。</p>
+<p>它把“模型必须一直记得所有事情”改写成“系统必须让关键状态可重新读取、可追溯、可校验”。</p>
+<h2 id="4-源码证据与数据模型">4 源码证据与数据模型</h2>
+<h3 id="4-1-Schema：节点和边不是自由文本">4.1 Schema：节点和边不是自由文本</h3>
+<p>db/schema.sql 对探索图做了最小形式化：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kind <span class="keyword">CHECK</span> (kind <span class="keyword">IN</span> (<span class="string">&#x27;begin&#x27;</span>,<span class="string">&#x27;goal&#x27;</span>,<span class="string">&#x27;intent&#x27;</span>,<span class="string">&#x27;fact&#x27;</span>,<span class="string">&#x27;finding&#x27;</span>,<span class="string">&#x27;hint&#x27;</span>,<span class="string">&#x27;digest&#x27;</span>))</span><br><span class="line">rel  <span class="keyword">CHECK</span> (rel <span class="keyword">IN</span> (<span class="string">&#x27;spawns&#x27;</span>,<span class="string">&#x27;derived_from&#x27;</span>,<span class="string">&#x27;yields&#x27;</span>,<span class="string">&#x27;proves&#x27;</span>,<span class="string">&#x27;covers&#x27;</span>))</span><br></pre></td></tr></table></figure>
+<p>这不是完整知识图谱推理器，但它让 UI、查询和 Planner 拥有稳定类型集合。资产图则通过不同资产类型的唯一索引去重。</p>
+<h3 id="4-2-Tool：模型只能通过接口改变黑板">4.2 Tool：模型只能通过接口改变黑板</h3>
+<p>agent/tools.go 对模型暴露 graph_overview、add_intent、record_fact、report_finding、prove_goal 等工具。模型可以提出结构化写入，但最终写入仍由 Go 代码校验、建立边、绑定资产和触发通知，模型不能直接执行任意 SQL 修改探索图。</p>
+<p>record_fact 的合理最小形态类似：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span></span><br><span class="line">  <span class="attr">&quot;intent_id&quot;</span><span class="punctuation">:</span> <span class="number">42</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;summary&quot;</span><span class="punctuation">:</span> <span class="string">&quot;观察到某项行为&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;detail&quot;</span><span class="punctuation">:</span> <span class="string">&quot;对观察过程的补充说明&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;evidence&quot;</span><span class="punctuation">:</span> <span class="string">&quot;命令或请求响应中的关键证据&quot;</span><span class="punctuation">,</span></span><br><span class="line">  <span class="attr">&quot;confidence&quot;</span><span class="punctuation">:</span> <span class="string">&quot;observed&quot;</span></span><br><span class="line"><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>confidence 不是经过校准的数学概率，而是区分直接观察和推断的工程标签。inferred 不能直接当成已证明漏洞。</p>
+<p>写回接口还承担了“结论粒度控制”。Worker 提示词要求一次意图的多个观察尽量合并成一条 fact，用 summary 保存可检索的一句话，用 detail 放细节，用 evidence 保存最小可核验片段；只有彼此独立、无法合并的结论才使用 facts 数组。这样做是为了防止每个状态码、标题和指纹都成为一个节点，导致探索图膨胀、Planner 每轮读到大量重复信息。</p>
+<p>report_finding 比 record_fact 更严格：它要求漏洞类别、严重性、受影响资产、summary 和证据/PoC，并把 finding 记录同时落到 findings 业务表和探索图 finding 节点。版本匹配、CVE 查询或“看起来可注入”只能写成 inferred fact，不能直接生成 confirmed finding。这是把“模型判断”和“系统承认漏洞”分开的证据门。</p>
+<h3 id="4-3-activity：状态之外的过程日志">4.3 activity：状态之外的过程日志</h3>
+<p>探索图适合表达压缩后的知识，activity 适合表达工具调用、模型文本、错误、结果、Token 和流量关联：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">activity = 过程证据（可复盘）</span><br><span class="line">fact/finding = 结构结论（供下一轮规划）</span><br></pre></td></tr></table></figure>
+<p>只保存 fact 会丢掉为什么得到这个事实；只保存 activity 又会让 Planner 每轮重新理解全部长日志。ARTEX 用双层表示在上下文成本和可追溯性之间折中。</p>
+<h3 id="4-4-Guard、Intercept-与流量证据：为什么工具调用还要再过一层">4.4 Guard、Intercept 与流量证据：为什么工具调用还要再过一层</h3>
+<p>Worker 看到的工具并不是直接连接目标的裸函数。执行链在工具调用前进入任务上下文和 Guard：允许的调用继续执行，被规则拒绝的调用只记录拒绝原因，需要人工决定的调用进入 intercept_pending，等待人在环路做 allow 或 deny。这样做的原因是，模型的“我应该执行这条命令”不能等价于系统的“这条命令有权执行”。</p>
+<p>源码中任务约束以 task_constraints 表保存 allow/deny 文本，并在 Planner 和 Worker 的系统提示中注入；资产拦截规则还会在 add_intent 和 insert_assets 前检查目标资产。两层检查分别处理“操作类型是否允许”和“目标资产是否允许”，避免只在工具执行后才发现越界。</p>
+<p>对 HTTP/HTTPS 工具，traffic 代理负责记录请求、响应和时间线，必要时生成 traffic evidence snapshot。report_finding 可以绑定这些 traffic_refs，使漏洞结论不仅有模型写出的 PoC 文本，还有可回放的请求/响应证据。代理、Guard 和探索图因此形成三条不同的记录：Guard 说明“是否允许”，traffic 说明“实际发生了什么”，finding 说明“系统最终承认了什么”。</p>
+<h3 id="4-5-为什么使用-PostgreSQL，而不是只用向量库或-JSON-文件">4.5 为什么使用 PostgreSQL，而不是只用向量库或 JSON 文件</h3>
+<p>ARTEX 的关键操作都需要事务和条件更新：创建节点与边要保持同一任务归属，ClaimIntent 要避免双领，finding 写入要同时更新业务表和探索节点，删除意图还要处理血缘和资产锚点。PostgreSQL 提供外键、CHECK、唯一索引、JSONB、数组字段和事务，能够把这些不变量交给数据库执行。</p>
+<p>向量库适合“找相似内容”，却不能天然表达“只有 state=open 才能转换为 running”或“这条 finding 必须属于同一个 exploration”。JSON 文件也难以在多个 Worker 并发写入时提供可靠的行级条件更新。因此 ARTEX 选择关系数据库承载图的物理存储，再由 Go 查询层把关系表投影成 Planner 可读的图概览。</p>
+<h2 id="5-自测与源码实验">5 自测与源码实验</h2>
+<h3 id="5-1-实验边界">5.1 实验边界</h3>
+<p>本节只报告本机能够复核的内容：源码阅读、<a target="_blank" rel="noopener" href="http://localhost:8787">http://localhost:8787</a> 页面可达性、Go 包测试和既有界面截图。不连接线上 Demo，不执行真实目标探测，不把新闻报道中的数据当成本机结果。</p>
+<h3 id="5-2-本地页面可达">5.2 本地页面可达</h3>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Invoke-WebRequest</span> <span class="literal">-Uri</span> http://localhost:<span class="number">8787</span> <span class="literal">-UseBasicParsing</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>本机结果：HTTP 200，返回页面内容约 14 KB。这只证明存在可访问的 Web 服务，不能据此推断 PostgreSQL、LLM、流量代理或探索任务已经可用。</p>
+<h3 id="5-3-db-agent-包测试">5.3 db/agent 包测试</h3>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">Set-Location</span> D:\ARTEX\ARTEX</span><br><span class="line">go test ./db ./agent</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>本机结果：db 和 agent 均返回 ok。这支持有限结论：探索节点、边、事实、发现、意图控制和 Agent 工具装配代码具备可编译并通过已有测试的路径；ClaimIntent 的原子领取和状态控制有对应测试。</p>
+<p>它不能证明真实模型会正确选择工具，也不能证明所有工具在 Windows 上可运行。</p>
+<p>从测试对象看，这不是一个只有提示词的项目：db 包测试节点/边写入、事实与发现血缘、意图状态转移和并发领取；agent 包测试 ToolSet、Planner/Worker 的提示装配以及空转、重试、写回等运行分支。测试通过说明“状态机和写回协议能按预期运行”，不等于“模型一定会选出正确意图”。</p>
+<h3 id="5-4-server-包测试暴露的边界">5.4 server 包测试暴露的边界</h3>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">go test ./server</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>本机没有全绿，失败原因包括：多个端到端测试需要 ARTEX_PG_DSN 或 server/config.json 中的 PostgreSQL 配置；TestExecPython 在 Windows 环境下找不到预期 Python 命令；部分路径测试按 Unix 风格路径断言，与 Windows 分隔符不同。</p>
+<p>因此应准确表述为：核心 db/agent 测试通过，依赖 PostgreSQL、外部工具链或 Unix 语义的 server 测试未完成；不是完整测试通过。</p>
+<h3 id="5-5-界面图片复盘">5.5 界面图片复盘</h3>
+<p>仓库已有 graph.png、sessions.png、findings.png 和 dashboard.png，可以验证产品界面围绕任务执行过程、探索链路、发现证据和活动总览组织。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/11/06/3785362c252d78711100f69c05acad5b.png" alt="graph"></p>
+<p><img src="G:/%E5%AE%9E%E4%B9%A0%E7%BB%93%E6%9E%9C/%E9%A1%B9%E7%9B%AE%E7%AE%80%E5%8E%86/LLM%E5%88%86%E4%BA%AB/assets/artex/findings.png" alt="发现列表与证据入口"></p>
+<p>这些图片是产品界面证据，不是一次新任务的测量数据；不能据此推导扫描覆盖率、漏洞数量或模型成功率。</p>
+<h2 id="6-主要优点与主要缺点">6 主要优点与主要缺点</h2>
+<h3 id="6-1-主要优点">6.1 主要优点</h3>
+<ol>
+<li><strong>双图分离资产真值和探索血缘。</strong> 同一资产可被多个任务复用，而每个任务的推导链互不污染。</li>
+<li><strong>黑板支持长任务断点续跑。</strong> Planner 不必持有永不结束的上下文，Worker 的关键结果写入数据库后即可被下一轮读取。</li>
+<li><strong>Planner/Worker 职责清晰。</strong> Planner 负责方向，Worker 负责一条意图，并发执行和串行依赖由不同层处理。</li>
+<li><strong>图边让“为什么这样做”可解释。</strong> spawns、yields、derived_from、proves 可以重建任务证据链。</li>
+<li><strong>工具写回结构化。</strong> 资产、事实、发现、目标证明分属不同接口，便于去重、报告和复测。</li>
+<li><strong>治理和观测在执行链中。</strong> Guard/Intercept 可让危险操作进入 deny 或人工 ask；activity、LLM records 和 evidence snapshots 支持复盘。</li>
+<li><strong>经典 CS 原型清晰。</strong> 黑板架构、工作队列、状态机、事件日志和知识图谱都能找到具体代码落点。</li>
+</ol>
+<h3 id="6-2-主要缺点与风险">6.2 主要缺点与风险</h3>
+<ol>
+<li><strong>双图不自动保证事实正确。</strong> Worker 写入错误事实后，Planner 仍可能在错误黑板上继续规划。</li>
+<li><strong>TodoStore 不是完整持久化事务计划。</strong> 它主要驻留 Planner 进程内，重启后需要从图和事实重建。</li>
+<li><strong>摘要会丢细节。</strong> graph_overview 面向模型压缩，若模型不主动查询详情，可能忽略旧事实中的限制。</li>
+<li><strong>并发提高协调复杂度。</strong> 相近意图可能重复，Planner 需要去重和合并。</li>
+<li><strong>成本和延迟仍会累积。</strong> Planner 唤醒、Worker 工具、重试、压缩和复测都可能消耗 Token 与外部资源。</li>
+<li><strong>数据库是关键依赖。</strong> PostgreSQL 不可用时，页面可能仍能打开，但黑板、证据和任务状态无法可靠推进。</li>
+<li><strong>安全不能只靠提示词。</strong> 工具审批、资产范围、命令隔离、网络限制和凭据保护必须由代码、容器和权限系统共同执行。</li>
+<li><strong>平台差异明显。</strong> 部分工具和测试以 Linux/Kali 习惯为前提，Windows 本地验证可能失败。</li>
+<li><strong>源码变化较快。</strong> 旧博客描述的 Worker 工具集、跨 work 检索或图压缩可能已经变化，应以当前提交和 <a target="_blank" rel="noopener" href="http://CHANGELOG.md">CHANGELOG.md</a> 为准。</li>
+</ol>
+<h2 id="7-迁移解剖：从经典-CS-到-ARTEX">7 迁移解剖：从经典 CS 到 ARTEX</h2>
+<p>这一节不把“黑板”“图”“队列”当作装饰性比喻，而是沿着“原型解决什么问题 → ARTEX 保留了什么机制 → 源码如何落地 → 迁移后牺牲了什么”的顺序逐项解剖。这样才能区分三种不同层次的借鉴：</p>
+<ol>
+<li><strong>概念迁移</strong>：借用一个成熟原型的解释框架，例如把 Planner/Worker 的共享状态称为黑板。</li>
+<li><strong>结构迁移</strong>：把原型中的数据结构直接落到表、索引、边和状态字段，例如 <code>exploration_nodes</code>、<code>exploration_edges</code>、<code>activity</code>。</li>
+<li><strong>控制迁移</strong>：把原型中的并发、事件、恢复和不变量带进运行时，例如 <code>ClaimIntent</code> 的单赢家领取、<code>CompareAndSetIntentState</code> 的条件更新和 Planner 的心跳唤醒。</li>
+</ol>
+<p>判断一次迁移是否“真的成立”，至少要回答五个问题：经典系统原来消除了哪一种失控；ARTEX 取用了哪些数据结构和控制流；哪些不变量由数据库/Go 代码保证；哪些部分仍交给 LLM；迁移之后引入了什么新的代价。ARTEX 的价值，恰恰在于它没有把所有责任都继续压给 Prompt，而是把可判定的部分移到持久化系统。</p>
+<h3 id="7-1-黑板架构：从专家共享工作区到-Agent-共享状态面">7.1 黑板架构：从专家共享工作区到 Agent 共享状态面</h3>
+<h4 id="7-1-1-经典黑板解决的原问题">7.1.1 经典黑板解决的原问题</h4>
+<p>经典黑板系统（blackboard architecture）面对的是：问题不能由一条固定流程解决，多个“知识源”掌握不同技能，需要根据当前中间结果动态选择下一步知识源。它通常包含三个部件：</p>
+<ul>
+<li><strong>黑板（blackboard）</strong>：保存当前问题状态、中间假设和已确认结果；</li>
+<li><strong>知识源（knowledge sources）</strong>：只在自己关心的状态出现时被激活，并向黑板贡献结果；</li>
+<li><strong>控制器（control component）</strong>：观察黑板变化，选择下一次激活哪些知识源。</li>
+</ul>
+<p>关键不在“大家都能读写一张表”，而在于：知识源之间不需要共享完整会话，只需要围绕一个公共状态面协作。一个知识源失败时，控制器仍可以选择另一个知识源继续推进。</p>
+<h4 id="7-1-2-ARTEX-的对应关系">7.1.2 ARTEX 的对应关系</h4>
+<table>
+<thead>
+<tr>
+<th>经典黑板部件</th>
+<th>ARTEX 的具体实现</th>
+<th>迁移含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黑板</td>
+<td>PostgreSQL 中的探索图、资产图、<code>activity</code>、frontier、<code>graph_overview</code></td>
+<td>状态从 Prompt 迁移到可查询、可审计的持久化面</td>
+</tr>
+<tr>
+<td>知识源</td>
+<td>Planner、多个 Worker、目标拆解器、主 Agent、证据/复测工具</td>
+<td>不同 Agent 通过写入不同节点类型协作，而不是互相复制长上下文</td>
+</tr>
+<tr>
+<td>控制器</td>
+<td><code>server.Engine</code> 的 <code>plannerLoop</code>、<code>workerLoop</code> 和通知通道</td>
+<td>用事件和心跳选择何时重新规划、何时领取意图</td>
+</tr>
+<tr>
+<td>激活条件</td>
+<td>新增目标、<code>add_intent</code>、Worker 完成、<code>report_finding</code>、<code>NotifyDone</code></td>
+<td>黑板变化转化为下一轮规划触发器</td>
+</tr>
+<tr>
+<td>终止条件</td>
+<td><code>prove_goal</code> 使目标满足，或 frontier 与 running 意图均为空</td>
+<td>由结构化状态判断收敛，而不是由模型一句“完成了”判断</td>
+</tr>
+</tbody>
+</table>
+<p>这属于架构级迁移：ARTEX 同时迁移了共享状态、知识源分工、事件唤醒和收敛判定。不过它没有照搬传统系统的“规则触发器集合”。传统黑板往往由人工编写的启发式规则选知识源，ARTEX 则让 Planner 在 <code>graph_overview</code> 和工具约束下生成下一批 <code>intent</code>，所以控制策略仍具有概率性。</p>
+<h4 id="7-1-3-黑板在源码中的一次完整写回">7.1.3 黑板在源码中的一次完整写回</h4>
+<p>一次 Worker 执行并不是把整段对话发给下一个 Worker，而是沿着下面的链路更新黑板：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">Worker 领取 intent</span><br><span class="line">  → 使用 intent_id 作为本轮执行边界</span><br><span class="line">  → 调用 insert_assets / record_fact / report_finding</span><br><span class="line">  → exploration_nodes / edges 与 assets 写入 PostgreSQL</span><br><span class="line">  → activity 记录工具、摘要、错误和 Token</span><br><span class="line">  → NotifyDone(intent_id) 投递唤醒事件</span><br><span class="line">  → plannerLoop 去抖后重新读取 graph_overview</span><br><span class="line">  → Planner 决定 prove_goal、add_intent 或继续等待</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这里有一个重要的工程取舍：<code>NotifyDone</code> 只负责“有状态变化，请重新看一眼”，并不把完整结果塞进通知消息。Planner 被唤醒后重新从数据库读取状态，避免通知通道变成第二份容易过期的事实来源。通知是边沿信号，数据库才是权威状态。</p>
+<h4 id="7-1-4-为什么-LLM-系统需要黑板化">7.1.4 为什么 LLM 系统需要黑板化</h4>
+<p>单个长对话把历史、计划、工具回显和结论全部压在上下文窗口中，至少有四种风险：</p>
+<ol>
+<li><strong>容量风险</strong>：工具输出不断增长，模型被迫压缩或遗忘早期事实；</li>
+<li><strong>角色污染</strong>：规划、执行、审计和自然语言解释混在同一段对话中，模型容易把“计划”误当成“已完成”；</li>
+<li><strong>并发风险</strong>：两个 Worker 无法可靠地从同一份 Prompt 判断谁已经领取了任务；</li>
+<li><strong>恢复风险</strong>：进程重启后，内存里的中间状态和未完成动作难以准确恢复。</li>
+</ol>
+<p>黑板化之后，Planner 只看当前任务视图，Worker 只处理一条 intent，审计信息落在 <code>activity</code> 和证据记录中。模型可以更换、Worker 可以重启，长期状态仍然存在。</p>
+<h4 id="7-1-5-迁移后保留与牺牲">7.1.5 迁移后保留与牺牲</h4>
+<p>保留的是“围绕共享中间状态进行机会式协作”；牺牲的是传统黑板的确定性知识源。ARTEX 的黑板内容可能包含模型生成的错误事实，因此必须附带 <code>confidence</code>、证据引用、来源节点和工具回显。黑板不再等于真相，而是“带来源和不确定度的工作状态”。此外，Planner 读取的是 <code>graph_overview</code> 的有损视图，而不是完整黑板；这换来了可控 Token 成本，也引入了摘要过期和截断风险。</p>
+<h3 id="7-2-双图结构：从知识图谱与工作流图到任务血缘图">7.2 双图结构：从知识图谱与工作流图到任务血缘图</h3>
+<h4 id="7-2-1-为什么不能把两张图合成一张">7.2.1 为什么不能把两张图合成一张</h4>
+<p>ARTEX 的两张图分别回答不同问题：</p>
+<ul>
+<li>**资产图（asset graph）**回答“系统中有哪些可复用对象，以及它们的实体属性是什么”。节点是域名、IP、子域、HTTP 服务、endpoint 等资产，强调归一化、唯一性和跨任务复用。</li>
+<li>**探索图（exploration graph）**回答“本次任务提出了什么目标、派生了哪些意图、观察到什么事实、哪些发现由哪些证据支持”。节点是 <code>begin/goal/intent/fact/finding/hint/digest</code>，强调过程血缘和结论可追溯。</li>
+</ul>
+<p>如果合并，资产的长期身份会被某一次任务的临时推理污染；反过来，任务中的两个相似观察又会被错误合并成同一个全局实体。分图让“对象身份”和“本次推理”拥有不同生命周期。</p>
+<h4 id="7-2-2-资产图：实体归一化而不是简单列表">7.2.2 资产图：实体归一化而不是简单列表</h4>
+<p><code>assets</code> 表不是 Worker 的临时输出缓存，而是一个带唯一键和派生关系的实体层。源码中的 upsert 按资产类型使用不同归一化键：根域名按 <code>domain</code>，IP 按 <code>ip</code>，子域按 <code>domain + record_type</code>，HTTP 服务按 <code>url</code>，endpoint 按 <code>url + method</code>。因此两个 Worker 同时发现同一服务时，数据库可以合并属性，而不是产生两个语义相同的节点。</p>
+<p>资产写入还会触发 enrichment：HTTP 服务可以反向补充 IP 的端口信息，域名和 IP 之间保留绑定关系，任务范围通过 <code>task_scope</code> 与 <code>task_asset_links</code> 限制可见资产。这里迁移的是“事实实体库 + 归一化索引”的思想，而不是完整知识图谱本体。ARTEX 没有试图自动证明“两个字符串在语义上必然相同”，而是把可判定的唯一键交给 PostgreSQL。</p>
+<h4 id="7-2-3-探索图：把推理过程变成可追溯血缘">7.2.3 探索图：把推理过程变成可追溯血缘</h4>
+<p>探索图的节点类型和边类型是受约束的：</p>
+<table>
+<thead>
+<tr>
+<th>节点/边</th>
+<th>含义</th>
+<th>典型写入路径</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>goal</code></td>
+<td>任务要证明或完成的结果</td>
+<td>目标拆解、<code>set_goals</code></td>
+</tr>
+<tr>
+<td><code>intent</code></td>
+<td>可由一个 Worker 独立执行的原子方向</td>
+<td>Planner 的 <code>add_intent</code></td>
+</tr>
+<tr>
+<td><code>fact</code></td>
+<td>工具观察或结构化事实</td>
+<td>Worker 的 <code>record_fact</code></td>
+</tr>
+<tr>
+<td><code>finding</code></td>
+<td>面向目标的候选发现/结论</td>
+<td><code>report_finding</code></td>
+</tr>
+<tr>
+<td><code>spawns</code></td>
+<td>上游目标/意图派生下游意图</td>
+<td>Planner 拆解</td>
+</tr>
+<tr>
+<td><code>derived_from</code></td>
+<td>事实/发现来自哪个意图或事实</td>
+<td>Worker 写回</td>
+</tr>
+<tr>
+<td><code>yields</code></td>
+<td>意图产生某个事实或发现</td>
+<td>执行结果写回</td>
+</tr>
+<tr>
+<td><code>proves</code></td>
+<td>证据或发现支持目标</td>
+<td><code>prove_goal</code></td>
+</tr>
+<tr>
+<td><code>covers</code></td>
+<td>digest 覆盖冷节点</td>
+<td>压缩/归档流程</td>
+</tr>
+</tbody>
+</table>
+<p><code>exploration_anchors(node_id, asset_id)</code> 是两图之间的桥：同一条 intent 可以锚定多个资产，同一资产也可以被多个意图、事实和发现引用。Planner 由此知道“下一步探索什么”，资产视图则知道“这个对象在本任务中被哪些动作覆盖过”。</p>
+<h4 id="7-2-4-graph-overview-是图到模型视图的投影">7.2.4 <code>graph_overview</code> 是图到模型视图的投影</h4>
+<p>LLM 不适合每轮读取整张图，因此 <code>graph_overview</code> 在 Go 层构造一个有限窗口：保留 <code>open_intents</code>、<code>frontier_open</code>、最近完成意图、总完成数、最近事实、finding 列表和 cold digest。实现上会先建立 <code>parentsOf</code>、<code>yieldsOf</code>、<code>factFrom</code> 等邻接索引，再把节点投影成 Planner 可理解的摘要。</p>
+<p>这类似数据库物化视图和操作系统工作集：热节点保留细节，冷节点只保留摘要；需要时再通过 <code>node_detail</code>、<code>get_worker_output</code> 等工具按需展开。压缩不是删除，原始节点、边和 activity 仍在数据库中；因此错误摘要可以被追溯，Planner 也可以在发现冲突时回读详情。</p>
+<h4 id="7-2-5-没有迁移的部分">7.2.5 没有迁移的部分</h4>
+<p>ARTEX 没有完整迁移知识图谱的本体推理、规则闭包和全局一致性证明。<code>rel='proves'</code> 的语义由工具参数、Go 校验和 Planner 提示词共同解释，模型仍可能把“相关”写成“证明”。数据库保证节点存在、边类型合法、外键和唯一键成立，但不能仅凭 Schema 判断自然语言结论是否正确。因此“图结构降低幻觉”并不等于“图自动产生真理”，它只是让每个结论必须挂在可追溯的节点和证据上。</p>
+<h3 id="7-3-工作队列、状态机与并发控制：把“下一步”变成可恢复操作">7.3 工作队列、状态机与并发控制：把“下一步”变成可恢复操作</h3>
+<h4 id="7-3-1-frontier-不是待办文本，而是可竞争消费的队列">7.3.1 frontier 不是待办文本，而是可竞争消费的队列</h4>
+<p>Planner 通过 <code>add_intent</code> 把下一步写成 <code>exploration_nodes(kind='intent', state='open')</code>。这一组 <code>open</code> 意图就是 frontier。Worker 不从 Planner 的自然语言回复中解析任务，而是调用 <code>claimNext</code>，最终进入 <code>ExplorationStore.ClaimIntent</code>：在数据库条件更新中把一个 <code>open</code> 节点原子地改成 <code>running</code>，同时写入 <code>owner</code>。</p>
+<p>并发时只有一个 Worker 能成功完成这次条件更新，其他 Worker 要么领取下一条，要么看到没有可领取意图。这个不变量比“在 Prompt 中告诉模型不要重复做”可靠得多。</p>
+<h4 id="7-3-2-状态不是标签，而是恢复协议">7.3.2 状态不是标签，而是恢复协议</h4>
+<p>ARTEX 对 intent 的状态约束在 <code>schema.sql</code> 中明确列出：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">open</span><br><span class="line">  └─ ClaimIntent → running</span><br><span class="line">       ├─ 正常完成              → done</span><br><span class="line">       ├─ 执行错误/策略阻断      → blocked</span><br><span class="line">       ├─ 达到 max_turns/超时     → exhausted</span><br><span class="line">       ├─ 用户暂停               → paused → 恢复后重新进入 frontier</span><br><span class="line">       ├─ Planner kill/目标已完成 → stopped</span><br><span class="line">       └─ 用户删除               → deleted（软删除）</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>done</code> 表示该方向已经收尾，不表示整个目标已证明；<code>blocked</code> 表示执行遇到错误或策略阻断，需要 Planner 换策略；<code>exhausted</code> 表示预算耗尽，不能被误当作成功；<code>paused</code> 保留可恢复性；<code>stopped</code> 表示外部控制主动终止，通常不自动重放；<code>deleted</code> 通过软删除保留用户意图和删除原因。状态差异让 Planner 能区分“换角度”“继续”“恢复”和“不要再跑”。</p>
+<h4 id="7-3-3-CompareAndSetIntentState-防止竞态覆盖">7.3.3 <code>CompareAndSetIntentState</code> 防止竞态覆盖</h4>
+<p>所有关键收尾都使用“期望旧状态”的条件更新：只有当节点仍是 <code>running</code> 时，暂停、终止或正常完成才能写入对应终态。如果 Worker 收尾和用户暂停同时发生，其中一方先改变状态，另一方的 CAS 会失败，不会把新的状态静默覆盖掉。启动时 <code>HasActiveIntent</code> 同时检查 <code>open + running</code>，避免 Worker 刚把种子意图从 <code>open</code> 改成 <code>running</code> 时，Engine 又错误地启动一轮重复 Planner。</p>
+<p>这对应分布式系统中的乐观并发控制，而不是简单的内存锁。内存中的 <code>started</code>、<code>paused</code> 和 work map 负责进程内协调，数据库状态负责重启后的最终判定，两者共同覆盖“claim → Execute → settle”窗口。</p>
+<p>源码中的两个关键更新都很短，但它们承担了整个并发语义。领取操作的核心条件是：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> exploration_nodes</span><br><span class="line">   <span class="keyword">SET</span> state <span class="operator">=</span> <span class="string">&#x27;running&#x27;</span>, owner <span class="operator">=</span> $<span class="number">1</span></span><br><span class="line"> <span class="keyword">WHERE</span> id <span class="operator">=</span> $<span class="number">2</span></span><br><span class="line">   <span class="keyword">AND</span> exploration_id <span class="operator">=</span> $<span class="number">3</span></span><br><span class="line">   <span class="keyword">AND</span> kind <span class="operator">=</span> <span class="string">&#x27;intent&#x27;</span></span><br><span class="line">   <span class="keyword">AND</span> state <span class="operator">=</span> <span class="string">&#x27;open&#x27;</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p><code>RowsAffected = 1</code> 才算领取成功；<code>RowsAffected = 0</code> 不是异常，而是说明另一个 Worker 已经赢得竞争，或者该意图已被暂停/删除。收尾操作同样要求旧状态匹配：</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">UPDATE</span> exploration_nodes</span><br><span class="line">   <span class="keyword">SET</span> state <span class="operator">=</span> $<span class="number">1</span>,</span><br><span class="line">       content_version <span class="operator">=</span> content_version <span class="operator">+</span> <span class="number">1</span>,</span><br><span class="line">       completed_at <span class="operator">=</span> <span class="keyword">CASE</span> <span class="keyword">WHEN</span> $<span class="number">5</span> <span class="keyword">THEN</span> now() <span class="keyword">ELSE</span> <span class="keyword">NULL</span> <span class="keyword">END</span></span><br><span class="line"> <span class="keyword">WHERE</span> id <span class="operator">=</span> $<span class="number">2</span></span><br><span class="line">   <span class="keyword">AND</span> exploration_id <span class="operator">=</span> $<span class="number">3</span></span><br><span class="line">   <span class="keyword">AND</span> kind <span class="operator">=</span> <span class="string">&#x27;intent&#x27;</span></span><br><span class="line">   <span class="keyword">AND</span> state <span class="operator">=</span> $<span class="number">4</span>;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这两个条件更新把“谁拥有动作”和“谁有权结束动作”从模型行为变成数据库不变量。即使两个 goroutine 同时回调，也不会同时完成同一条 intent。</p>
+<h4 id="7-3-4-Worker-池与单意图边界">7.3.4 Worker 池与单意图边界</h4>
+<p><code>Engine</code> 启动一个 Planner loop 和若干 Worker loop。每个 Worker 一次只执行一条 intent，<code>intent_id</code> 会贯穿系统提示、工具调用、activity、写回和最终状态。这样做牺牲了单个 Agent 连续跨多个方向自由游走的灵活性，却换来三个收益：</p>
+<ol>
+<li>失败可以定位到一条意图，而不是一整段长对话；</li>
+<li>同一 frontier 可以被多个 Worker 并行消费；</li>
+<li>暂停、重试和 Token 统计都有清晰边界。</li>
+</ol>
+<p>Worker 的自然语言输出不能直接决定状态。<code>runIntent</code> 根据 <code>err</code>、<code>ReasonMaxTurns</code>、<code>ReasonTimeout</code>、任务取消原因和终端状态进行分流，最后才调用状态迁移。模型说“我完成了”只是候选信号，程序收尾才是权威。</p>
+<p>需要特别区分三个容易混淆的边界：</p>
+<ul>
+<li><strong>任务级暂停</strong>会取消执行上下文，但把正在运行的 intent 回退为 <code>open</code>，恢复后可以再次领取；</li>
+<li>**Planner 的 <code>kill_work</code>**只停止指定 intent，并落为 <code>stopped</code>，不会把它伪装成自然完成；</li>
+<li><strong>任务级超时</strong>进入 settling 流程，正在收尾的 intent 落为 <code>exhausted</code>，防止超时被误报为 <code>blocked</code>。</li>
+</ul>
+<p>这种细分正是经典状态机迁移的工程实质：状态名不是 UI 标签，而是决定下一次调度和恢复动作的协议。</p>
+<h3 id="7-4-事件驱动与无状态-Planner：把长期记忆移出-Prompt">7.4 事件驱动与无状态 Planner：把长期记忆移出 Prompt</h3>
+<h4 id="7-4-1-触发器、去抖和心跳">7.4.1 触发器、去抖和心跳</h4>
+<p>Engine 不让 Planner 以固定长会话持续思考，而是通过三类机制唤醒它：</p>
+<ul>
+<li><strong>边沿事件</strong>：Worker 完成、finding 写回、用户新增目标、恢复或终止动作后调用 <code>Notify</code>/<code>NotifyDone</code>；</li>
+<li><strong>去抖窗口</strong>：<code>plannerLoop</code> 收到一批快速事件后等待短暂 debounce，把多个写回合并成一轮规划，避免每个事实都触发一次 LLM；</li>
+<li><strong>心跳</strong>：即使没有新事件，也按任务配置周期唤醒，兜底处理丢失通知、飞行中的 Worker 和死锁检查。</li>
+</ul>
+<p>Planner 每轮重新读取数据库快照，因此它可以是逻辑无状态的：本轮模型换了、进程重启了、上下文压缩了，都不影响长期状态的来源。Prompt 只承载当前 <code>graph_overview</code>、约束和本轮触发器，而不是充当数据库。</p>
+<h4 id="7-4-2-为什么比一个永不结束的对话可靠">7.4.2 为什么比一个永不结束的对话可靠</h4>
+<p>一个永久对话需要模型自己记住：哪些意图已领取、哪些事实已写回、哪些方向失败过、哪个结论缺证据。ARTEX 把这些问题拆开：数据库保存事实，队列保存可执行意图，activity 保存过程，Engine 保存调度；模型只在被唤醒时做一次局部决策。这样降低了上下文漂移，但代价是事件与状态可能短暂不一致：通知可能重复、服务可能在写回后尚未唤醒 Planner、旧事件可能在恢复时再次到达。因此每轮都必须重新读状态，写入和工具要尽量幂等，不能把通知消息当作真相。</p>
+<h3 id="7-5-activity-与事件溯源：把过程和结论分开保存">7.5 <code>activity</code> 与事件溯源：把过程和结论分开保存</h3>
+<p><code>activity</code> 不是普通的“打印日志”。它记录 <code>exploration_id</code>、<code>node_id</code>、worker、kind、tool、tool_use_id、错误标记、摘要、详情、metadata 以及输入/输出/缓存 Token。其设计把两类信息分开：</p>
+<ul>
+<li><strong>过程证据</strong>：调用了哪个工具、参数是什么、返回是否报错、消耗了多少 Token；</li>
+<li><strong>结构结论</strong>：最终产生的 fact、finding、goal 状态和图边。</li>
+</ul>
+<p>分离之后，UI 可以按时间线展示过程，Planner 可以按图查询结论，审计者可以把 finding 追溯到具体工具调用。删除或取消意图时，源码还会按日期汇总 Token，避免删除活动明细后计量完全丢失。这接近事件日志/Trace 的思想，但不是严格事件溯源：外部目标会变化，LLM 具有随机性，工具输出也可能失效，所以 ARTEX 保存了重查所需的证据，却不承诺可以逐字重放原任务。</p>
+<h3 id="7-6-Guard、Intercept-与证据门：把安全原型迁移到工具边界">7.6 Guard、Intercept 与证据门：把安全原型迁移到工具边界</h3>
+<p>经典权限系统和 Capability/Sandbox 的共同原则是：安全检查必须发生在动作真正执行之前，不能只写在说明文档里。ARTEX 将这一原则拆成三层：</p>
+<ol>
+<li><strong>任务约束层</strong>：<code>task_constraints</code> 保存操作员编辑的 allow/deny 规则，并在每轮 Planner/Worker 提示和工具调用前注入；</li>
+<li><strong>执行拦截层</strong>：Guard 检查命令、资产和敏感操作；需要人工决定时写入 <code>intercept_pending</code>，记录工具名、输入、原因、决策来源和审计 JSON；</li>
+<li><strong>证据记录层</strong>：traffic proxy 保存请求/响应引用，<code>activity</code> 保存调用轨迹，finding 只能引用已经存在的观察和证据。</li>
+</ol>
+<p>这种迁移保留了“策略与执行分离”的架构，却没有假设模型会自觉遵守规则。即使 Prompt 被模型误读，Guard 仍可拒绝工具调用；即使工具返回了一个看似合理的结论，<code>report_finding</code> 也应区分 confirmed 与 inferred，不能让无证据推断直接变成已确认发现。当前实现仍不是形式化沙箱：策略覆盖范围取决于工具适配器，外部副作用和敏感数据还需要部署者配置最小权限与人工复核。</p>
+<h3 id="7-7-上下文压缩：从“删历史”迁移为可逆工作集">7.7 上下文压缩：从“删历史”迁移为可逆工作集</h3>
+<p>长任务无法把所有节点原样塞给每一轮 Planner。ARTEX 的 <code>graph_overview</code> 和 cold digest 采取“有损摘要 + 按需详情”的路线：frontier 和 running 意图优先保留，最近完成意图、事实和 finding 设窗口上限，长期不再影响活跃分支的节点进入 digest，并通过 <code>covers</code> 边保留覆盖关系。</p>
+<p>这同时借鉴了数据库物化视图、操作系统工作集和缓存层：模型看到的是当前热集，原始数据仍可按 node_id 回读。代价是摘要可能遗漏细节或暂时过期，因此 Planner 在形成高风险结论前应调用详情工具，而不是把摘要当成最终证据。压缩解决的是上下文成本，不是事实正确性；摘要错误仍需通过原始 activity、工具输出和人工复核纠正。</p>
+<h3 id="7-8-迁移深度总表">7.8 迁移深度总表</h3>
+<table>
+<thead>
+<tr>
+<th>经典 CS 原型</th>
+<th>ARTEX 具体机制</th>
+<th>源码/数据位置</th>
+<th>迁移深度</th>
+<th>主要收益</th>
+<th>主要代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黑板架构</td>
+<td>DB 黑板、通知、Planner/Worker 分工</td>
+<td><code>server/engine.go</code>、<code>agent/tools.go</code></td>
+<td>架构迁移</td>
+<td>长任务共享状态、模型可替换</td>
+<td>黑板内容可能不正确，需证据和置信度</td>
+</tr>
+<tr>
+<td>知识图谱/实体库</td>
+<td>assets、唯一键、enrichment、anchors</td>
+<td><code>db/schema.sql</code>、<code>db/assets.go</code></td>
+<td>结构迁移</td>
+<td>资产归一化、跨任务复用</td>
+<td>没有完整本体推理，语义仍依赖工具/模型</td>
+</tr>
+<tr>
+<td>工作流 DAG/血缘图</td>
+<td>exploration nodes/edges、<code>proves</code>、<code>derived_from</code></td>
+<td><code>db/schema.sql</code>、<code>db/exploration.go</code></td>
+<td>结构 + 问题迁移</td>
+<td>结论可追溯、分支可视化</td>
+<td>错误写回仍需校验，边语义非自动真理</td>
+</tr>
+<tr>
+<td>消息队列</td>
+<td>frontier、<code>ClaimIntent</code>、owner</td>
+<td><code>db/exploration.go</code>、<code>server/engine.go</code></td>
+<td>控制迁移</td>
+<td>并发消费、防重复领取</td>
+<td>需要处理租约、卡死和恢复</td>
+</tr>
+<tr>
+<td>状态机/CAS</td>
+<td>open/running/done/blocked/exhausted/paused/stopped</td>
+<td><code>schema.sql</code>、<code>runIntent</code></td>
+<td>控制迁移</td>
+<td>暂停、终止、超时语义清晰</td>
+<td>状态组合多，收尾路径复杂</td>
+</tr>
+<tr>
+<td>事件日志/Trace</td>
+<td><code>activity</code>、Token rollup、tool_use_id</td>
+<td><code>schema.sql</code>、<code>db/exploration.go</code></td>
+<td>结构迁移</td>
+<td>审计、复盘、成本统计</td>
+<td>外部环境和模型随机性使其不能完全重放</td>
+</tr>
+<tr>
+<td>权限系统/Capability</td>
+<td>constraints、Guard、Intercept、traffic</td>
+<td><code>guard/</code>、<code>intercept/</code>、<code>traffic/</code></td>
+<td>架构迁移</td>
+<td>将风险控制放到工具边界</td>
+<td>规则配置复杂，覆盖范围仍依赖适配器</td>
+</tr>
+<tr>
+<td>缓存/工作集</td>
+<td><code>graph_overview</code>、cold digest、按需详情</td>
+<td><code>agent/tools.go</code>、<code>agent/compaction.go</code></td>
+<td>特化迁移</td>
+<td>控制上下文和 Token 成本</td>
+<td>摘要损失细节，需防过期视图</td>
+</tr>
+</tbody>
+</table>
+<h3 id="7-9-论文式结论：ARTEX-真正迁移的不是名词，而是责任边界">7.9 论文式结论：ARTEX 真正迁移的不是名词，而是责任边界</h3>
+<p>ARTEX 并没有完整实现某一个经典系统，而是把多个原型拼接成一套面向长任务 Agent 的控制面：黑板提供共享状态，资产图提供可复用实体，探索图提供本次推理血缘，队列和状态机提供并发与恢复，activity 提供审计，Guard/Intercept 提供动作边界，digest 提供上下文工作集。</p>
+<p>最深的迁移并不是“把任务画成图”，而是把 LLM 从长期状态的唯一所有者降级为局部决策者：</p>
+<ul>
+<li>目标和意图由数据库保存，模型不能凭记忆声称已经完成；</li>
+<li>领取和状态转移由原子更新控制，模型不能凭 Prompt 声称自己独占任务；</li>
+<li>事实和发现必须挂接资产、节点、工具和证据，模型的自然语言只能提出候选解释；</li>
+<li>上下文可以压缩和重建，模型会话可以中断和替换，系统仍能从持久化状态恢复。</li>
+</ul>
+<p>因此，ARTEX 的核心收益可概括为：<strong>把 LLM 的不确定性包在一个可查询、可校验、可暂停、可恢复的系统控制面内</strong>。它牺牲了一部分单 Agent 的自由漫游和实现简洁性，换来了长任务中更重要的可追溯性、并发安全和失败可恢复性。这也是“双图 + 黑板 + Worker”组合比单纯增加 Prompt 长度更有工程价值的原因。</p>
+<h2 id="8-联想：还可以继续迁移什么">8 联想：还可以继续迁移什么</h2>
+<h3 id="8-1-纵向迁移">8.1 纵向迁移</h3>
+<ol>
+<li><strong>黑板版本号和乐观并发控制</strong>：Planner 读取版本 v 后提交时若已变成 v+1，要求重新确认，减少基于过期态势派发的方向。</li>
+<li><strong>公平调度与 aging</strong>：避免某一类高热意图长期占满 Worker。</li>
+<li><strong>事件溯源重放</strong>：保存每次 graph mutation，模型升级后重建 graph_overview，比较新旧 Planner 决策。</li>
+<li><strong>事务性计划日志</strong>：把 TodoStore 升级为数据库中的 plan/version/step 表，服务重启后精确恢复依赖。</li>
+<li><strong>失败学习和回退</strong>：将 blocked/exhausted 的失败模式结构化，供下一轮选择替代策略。</li>
+</ol>
+<h3 id="8-2-横向迁移">8.2 横向迁移</h3>
+<ul>
+<li><strong>数据分析 Agent</strong>：资产图是表、字段、指标和数据源；探索图是问题、查询、观察、假设和结论。</li>
+<li><strong>代码维护 Agent</strong>：资产图是仓库、模块、依赖和测试；探索图是 issue、假设、补丁、测试结果和回归结论。</li>
+<li><strong>科研 Agent</strong>：资产图是论文、数据集、实验环境；探索图是研究问题、实验意图、结果、反例和证据。</li>
+<li><strong>企业流程 Agent</strong>：资产图是客户、订单和权限对象；探索图是申请、审批、动作和审计事件。</li>
+</ul>
+<p>关键不是把漏洞改名为任务，而是保留两种语义：一张图保存可复用对象，另一张图保存本次任务的推导链。</p>
+<h2 id="9-使用体验与适用边界">9 使用体验与适用边界</h2>
+<h3 id="9-1-使用体验">9.1 使用体验</h3>
+<p>ARTEX 的体验重点不是聊天回复，而是任务状态可见性：任务页显示 Planner/Worker 执行过程，<strong>探索图显示目标—意图—事实—发现链路</strong>，发现页保留证据入口，活动和 Token 记录解释长任务成本，暂停/取消/超时/复测拥有独立状态。</p>
+<p>代价是学习成本：使用者需要理解资产范围、任务目标、意图状态、Worker 预算、LLM 配置和审批规则。它更像面向工程团队的控制台，不是开箱即用的聊天机器人。</p>
+<h3 id="9-2-适合场景">9.2 适合场景</h3>
+<ul>
+<li>隔离实验室中的 Planner/Worker、多 Agent 和工具治理研究；</li>
+<li>自有靶场的合规任务编排和证据留存；</li>
+<li>双图、黑板、事件日志和长任务 Agent 的系统研究；</li>
+<li>将这套架构迁移到代码审查、数据分析和科研实验等低风险领域。</li>
+</ul>
+<h3 id="9-3-不适合场景">9.3 不适合场景</h3>
+<ul>
+<li>一次简单问答或短脚本调用；</li>
+<li>没有数据库、审计和权限边界，却希望 Agent 自动操作生产系统；</li>
+<li>需要硬实时、完全确定性或零幻觉保证的控制系统；</li>
+<li>把公开 Demo、新闻报道或版本指纹当作真实目标授权依据。</li>
+</ul>
+<h2 id="10-总结：ARTEX-的真正贡献">10 总结：ARTEX 的真正贡献</h2>
+<p>ARTEX 不是让一个模型承担整个系统的记忆、调度、证明和安全责任，而是把问题拆成可以分别治理的部分：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">目标是什么？        → goal</span><br><span class="line">下一步做什么？      → Planner / intent</span><br><span class="line">对哪些对象做？      → 资产图 / anchors</span><br><span class="line">实际看到了什么？    → Worker / activity / fact</span><br><span class="line">如何证明结论？      → finding / evidence / prove_goal</span><br><span class="line">谁可以执行动作？    → Guard / Intercept / scope</span><br><span class="line">失败后如何恢复？    → 状态机 / frontier / transcript</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>它借用的 CS 原型非常清楚：黑板架构提供共享状态，知识图谱提供血缘，工作队列提供并发领取，状态机提供生命周期，事件日志提供复盘，权限与沙箱提供安全边界。LLM 只负责最不确定的部分——从自然语言和当前态势中提出候选方向、选择工具并解释观察。</p>
+<p><strong>长任务可靠性不是靠更长的 Prompt 获得的，而是靠让关键状态离开 Prompt，进入可以读取、校验、追踪和恢复的系统结构。</strong></p>
+<blockquote>
+<p>这个工作骨架设计理念非常优秀，包括马上就有二开把呢不能用于做别的工作如AI代码审计：<a target="_blank" rel="noopener" href="https://mp.weixin.qq.com/s/soTqG-WbyfhbOegv98BHig">Artex二开-代码审计平台</a></p>
+<p><strong>项目地址</strong>：<a target="_blank" rel="noopener" href="https://github.com/Ernket/CodeScan-Artex">https://github.com/Ernket/CodeScan-Artex</a></p>
+<p>SCA Audit 不是从零写的，它<strong>基于 ARTEX 二开</strong>（沿用 AGPL-3.0 许可证）。ARTEX 原本是 AI 自主渗透测试方向的平台，而这版二开的方向很明确——<strong>保留它的 Agent 编排内核，把能力面整体转向静态审计</strong>。</p>
+<p>保留的是内核：</p>
+<ul>
+<li>• <strong>双图架构</strong>：资产图（系统对外暴露了什么）+ 探索图（结论是怎么一步步推导出来的）</li>
+<li>• <strong>多角色分工</strong>：目标拆解 / 规划 / 执行 Agent / 主 Agent / 漏洞复核</li>
+<li>• <strong>事件驱动编排</strong>：每次唤醒是全新会话，靠图与待办清单保证跨会话稳定推进</li>
+</ul>
+<p>砍掉的部分更关键——<strong>平台层面彻底移除攻击性能力</strong>：</p>
+<ul>
+<li>• <strong>不出网</strong>：不发起任何网络请求，不查外部 CVE 库</li>
+<li>• <strong>不执行命令</strong>：没有 Bash，没有脚本执行</li>
+<li>• <strong>不抓包、不回放</strong>：没有流量工具</li>
+<li>• <strong>不注入外部 MCP 工具</strong></li>
+</ul>
+<p>而且这不是靠提示词「约束」，是在工具装配层<strong>物理删除</strong>：Agent 的通用工具集只从 7 个本地文件工具（Read / Write / Edit / MultiEdit / LS / Glob / Grep）构造，其余工具在装配最后一步被硬剥离。</p>
+<p>一句话：<strong>结论必须由源码证据支撑。</strong></p>
+</blockquote>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/">http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/LLM%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B/">LLM中的CS原型</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Cairn-深度拆解-状态空间搜索与Decide-Execute</div></div></a></div><div class="next-post pull-right"><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E9%9B%B6%EF%BC%89/" title="LLM新技术中的CS原型（零）"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/20/4f4cbd8414cd0a091509b30567f22686.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（零）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="toc-number">1.1.</span> <span class="toc-text">参考资料</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.2.</span> <span class="toc-text">1 项目介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-ARTEX-%E8%A6%81%E8%A7%A3%E5%86%B3%E4%BB%80%E4%B9%88%E9%97%AE%E9%A2%98"><span class="toc-number">1.2.1.</span> <span class="toc-text">1.1 ARTEX 要解决什么问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E7%B3%BB%E7%BB%9F%E5%88%86%E5%B1%82"><span class="toc-number">1.2.2.</span> <span class="toc-text">1.2 系统分层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-%E6%9C%AC%E5%9C%B0%E7%95%8C%E9%9D%A2%E7%B4%A0%E6%9D%90"><span class="toc-number">1.2.3.</span> <span class="toc-text">1.3 本地界面素材</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E5%86%85%E5%AE%B9%EF%BC%9A%E5%8F%8C%E5%9B%BE%E3%80%81%E9%BB%91%E6%9D%BF%E5%92%8C-Worker"><span class="toc-number">1.3.</span> <span class="toc-text">2 核心内容：双图、黑板和 Worker</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E8%B5%84%E4%BA%A7%E5%9B%BE%EF%BC%9A%E4%B8%96%E7%95%8C%E9%87%8C%E6%9C%89%E4%BB%80%E4%B9%88"><span class="toc-number">1.3.1.</span> <span class="toc-text">2.1 资产图：世界里有什么</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E8%B5%84%E4%BA%A7%E5%9B%BE%E5%BF%85%E9%A1%BB%E5%92%8C%E6%8E%A2%E7%B4%A2%E5%9B%BE%E5%88%86%E5%BC%80"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">为什么资产图必须和探索图分开</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%B5%84%E4%BA%A7%E5%86%99%E5%85%A5%E7%9A%84%E5%AE%9E%E9%99%85%E8%B7%AF%E5%BE%84"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">资产写入的实际路径</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E6%8E%A2%E7%B4%A2%E5%9B%BE%EF%BC%9A%E6%9C%AC%E6%AC%A1%E4%BB%BB%E5%8A%A1%E5%A6%82%E4%BD%95%E5%BE%97%E5%88%B0%E7%BB%93%E8%AE%BA"><span class="toc-number">1.3.2.</span> <span class="toc-text">2.2 探索图：本次任务如何得到结论</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E8%BE%B9%E4%B8%8D%E6%98%AF%E8%A3%85%E9%A5%B0%E5%AD%97%E6%AE%B5%EF%BC%8C%E8%80%8C%E6%98%AF-Planner-%E7%9A%84%E8%BE%93%E5%85%A5"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">边不是装饰字段，而是 Planner 的输入</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E9%BB%91%E6%9D%BF%EF%BC%9A%E5%85%B1%E4%BA%AB%E7%8A%B6%E6%80%81%E9%9D%A2%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E7%AC%AC%E4%B8%89%E5%BC%A0%E5%9B%BE"><span class="toc-number">1.3.3.</span> <span class="toc-text">2.3 黑板：共享状态面，而不是第三张图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#graph-overview-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E5%81%9A%E2%80%9C%E6%9C%89%E6%8D%9F%E6%91%98%E8%A6%81%E2%80%9D"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">graph_overview 为什么要做“有损摘要”</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-Worker%EF%BC%9A%E4%B8%80%E6%9D%A1%E6%84%8F%E5%9B%BE%EF%BC%8C%E4%B8%80%E4%B8%AA%E6%89%A7%E8%A1%8C%E5%8D%95%E5%85%83"><span class="toc-number">1.3.4.</span> <span class="toc-text">2.4 Worker：一条意图，一个执行单元</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88-Worker-%E5%8F%AA%E9%A2%86%E5%8F%96%E4%B8%80%E6%9D%A1%E6%84%8F%E5%9B%BE"><span class="toc-number">1.3.4.1.</span> <span class="toc-text">为什么 Worker 只领取一条意图</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-5-Planner%EF%BC%9A%E5%94%AF%E4%B8%80%E7%9A%84%E6%84%8F%E5%9B%BE%E7%94%9F%E6%88%90%E8%80%85"><span class="toc-number">1.3.5.</span> <span class="toc-text">2.5 Planner：唯一的意图生成者</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#Planner-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E7%9B%B4%E6%8E%A5%E6%89%A7%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="toc-number">1.3.5.1.</span> <span class="toc-text">Planner 为什么不直接执行工具</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%8F%8C%E5%9B%BE-%E9%BB%91%E6%9D%BF%E7%9A%84%E6%89%A7%E8%A1%8C%E9%93%BE%E8%B7%AF"><span class="toc-number">1.4.</span> <span class="toc-text">3 双图 + 黑板的执行链路</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8%E9%97%AD%E7%8E%AF"><span class="toc-number">1.4.1.</span> <span class="toc-text">3.1 事件驱动闭环</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E5%8E%9F%E5%AD%90%E9%A2%86%E5%8F%96%E5%92%8C-Worker-%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F"><span class="toc-number">1.4.2.</span> <span class="toc-text">3.2 原子领取和 Worker 生命周期</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E9%BB%91%E6%9D%BF%E5%A6%82%E4%BD%95%E9%99%8D%E4%BD%8E%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89"><span class="toc-number">1.4.3.</span> <span class="toc-text">3.3 黑板如何降低长任务幻觉</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E6%BA%90%E7%A0%81%E8%AF%81%E6%8D%AE%E4%B8%8E%E6%95%B0%E6%8D%AE%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.5.</span> <span class="toc-text">4 源码证据与数据模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-Schema%EF%BC%9A%E8%8A%82%E7%82%B9%E5%92%8C%E8%BE%B9%E4%B8%8D%E6%98%AF%E8%87%AA%E7%94%B1%E6%96%87%E6%9C%AC"><span class="toc-number">1.5.1.</span> <span class="toc-text">4.1 Schema：节点和边不是自由文本</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-Tool%EF%BC%9A%E6%A8%A1%E5%9E%8B%E5%8F%AA%E8%83%BD%E9%80%9A%E8%BF%87%E6%8E%A5%E5%8F%A3%E6%94%B9%E5%8F%98%E9%BB%91%E6%9D%BF"><span class="toc-number">1.5.2.</span> <span class="toc-text">4.2 Tool：模型只能通过接口改变黑板</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-activity%EF%BC%9A%E7%8A%B6%E6%80%81%E4%B9%8B%E5%A4%96%E7%9A%84%E8%BF%87%E7%A8%8B%E6%97%A5%E5%BF%97"><span class="toc-number">1.5.3.</span> <span class="toc-text">4.3 activity：状态之外的过程日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-Guard%E3%80%81Intercept-%E4%B8%8E%E6%B5%81%E9%87%8F%E8%AF%81%E6%8D%AE%EF%BC%9A%E4%B8%BA%E4%BB%80%E4%B9%88%E5%B7%A5%E5%85%B7%E8%B0%83%E7%94%A8%E8%BF%98%E8%A6%81%E5%86%8D%E8%BF%87%E4%B8%80%E5%B1%82"><span class="toc-number">1.5.4.</span> <span class="toc-text">4.4 Guard、Intercept 与流量证据：为什么工具调用还要再过一层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%BD%BF%E7%94%A8-PostgreSQL%EF%BC%8C%E8%80%8C%E4%B8%8D%E6%98%AF%E5%8F%AA%E7%94%A8%E5%90%91%E9%87%8F%E5%BA%93%E6%88%96-JSON-%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.5.</span> <span class="toc-text">4.5 为什么使用 PostgreSQL，而不是只用向量库或 JSON 文件</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E8%87%AA%E6%B5%8B%E4%B8%8E%E6%BA%90%E7%A0%81%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.6.</span> <span class="toc-text">5 自测与源码实验</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E5%AE%9E%E9%AA%8C%E8%BE%B9%E7%95%8C"><span class="toc-number">1.6.1.</span> <span class="toc-text">5.1 实验边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E6%9C%AC%E5%9C%B0%E9%A1%B5%E9%9D%A2%E5%8F%AF%E8%BE%BE"><span class="toc-number">1.6.2.</span> <span class="toc-text">5.2 本地页面可达</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-db-agent-%E5%8C%85%E6%B5%8B%E8%AF%95"><span class="toc-number">1.6.3.</span> <span class="toc-text">5.3 db&#x2F;agent 包测试</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-server-%E5%8C%85%E6%B5%8B%E8%AF%95%E6%9A%B4%E9%9C%B2%E7%9A%84%E8%BE%B9%E7%95%8C"><span class="toc-number">1.6.4.</span> <span class="toc-text">5.4 server 包测试暴露的边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E7%95%8C%E9%9D%A2%E5%9B%BE%E7%89%87%E5%A4%8D%E7%9B%98"><span class="toc-number">1.6.5.</span> <span class="toc-text">5.5 界面图片复盘</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E4%B8%BB%E8%A6%81%E4%BC%98%E7%82%B9%E4%B8%8E%E4%B8%BB%E8%A6%81%E7%BC%BA%E7%82%B9"><span class="toc-number">1.7.</span> <span class="toc-text">6 主要优点与主要缺点</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E4%B8%BB%E8%A6%81%E4%BC%98%E7%82%B9"><span class="toc-number">1.7.1.</span> <span class="toc-text">6.1 主要优点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E4%B8%BB%E8%A6%81%E7%BC%BA%E7%82%B9%E4%B8%8E%E9%A3%8E%E9%99%A9"><span class="toc-number">1.7.2.</span> <span class="toc-text">6.2 主要缺点与风险</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E8%BF%81%E7%A7%BB%E8%A7%A3%E5%89%96%EF%BC%9A%E4%BB%8E%E7%BB%8F%E5%85%B8-CS-%E5%88%B0-ARTEX"><span class="toc-number">1.8.</span> <span class="toc-text">7 迁移解剖：从经典 CS 到 ARTEX</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#7-1-%E9%BB%91%E6%9D%BF%E6%9E%B6%E6%9E%84%EF%BC%9A%E4%BB%8E%E4%B8%93%E5%AE%B6%E5%85%B1%E4%BA%AB%E5%B7%A5%E4%BD%9C%E5%8C%BA%E5%88%B0-Agent-%E5%85%B1%E4%BA%AB%E7%8A%B6%E6%80%81%E9%9D%A2"><span class="toc-number">1.8.1.</span> <span class="toc-text">7.1 黑板架构：从专家共享工作区到 Agent 共享状态面</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-1-%E7%BB%8F%E5%85%B8%E9%BB%91%E6%9D%BF%E8%A7%A3%E5%86%B3%E7%9A%84%E5%8E%9F%E9%97%AE%E9%A2%98"><span class="toc-number">1.8.1.1.</span> <span class="toc-text">7.1.1 经典黑板解决的原问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-2-ARTEX-%E7%9A%84%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB"><span class="toc-number">1.8.1.2.</span> <span class="toc-text">7.1.2 ARTEX 的对应关系</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-3-%E9%BB%91%E6%9D%BF%E5%9C%A8%E6%BA%90%E7%A0%81%E4%B8%AD%E7%9A%84%E4%B8%80%E6%AC%A1%E5%AE%8C%E6%95%B4%E5%86%99%E5%9B%9E"><span class="toc-number">1.8.1.3.</span> <span class="toc-text">7.1.3 黑板在源码中的一次完整写回</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-4-%E4%B8%BA%E4%BB%80%E4%B9%88-LLM-%E7%B3%BB%E7%BB%9F%E9%9C%80%E8%A6%81%E9%BB%91%E6%9D%BF%E5%8C%96"><span class="toc-number">1.8.1.4.</span> <span class="toc-text">7.1.4 为什么 LLM 系统需要黑板化</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-1-5-%E8%BF%81%E7%A7%BB%E5%90%8E%E4%BF%9D%E7%95%99%E4%B8%8E%E7%89%BA%E7%89%B2"><span class="toc-number">1.8.1.5.</span> <span class="toc-text">7.1.5 迁移后保留与牺牲</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-2-%E5%8F%8C%E5%9B%BE%E7%BB%93%E6%9E%84%EF%BC%9A%E4%BB%8E%E7%9F%A5%E8%AF%86%E5%9B%BE%E8%B0%B1%E4%B8%8E%E5%B7%A5%E4%BD%9C%E6%B5%81%E5%9B%BE%E5%88%B0%E4%BB%BB%E5%8A%A1%E8%A1%80%E7%BC%98%E5%9B%BE"><span class="toc-number">1.8.2.</span> <span class="toc-text">7.2 双图结构：从知识图谱与工作流图到任务血缘图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-1-%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E8%83%BD%E6%8A%8A%E4%B8%A4%E5%BC%A0%E5%9B%BE%E5%90%88%E6%88%90%E4%B8%80%E5%BC%A0"><span class="toc-number">1.8.2.1.</span> <span class="toc-text">7.2.1 为什么不能把两张图合成一张</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-2-%E8%B5%84%E4%BA%A7%E5%9B%BE%EF%BC%9A%E5%AE%9E%E4%BD%93%E5%BD%92%E4%B8%80%E5%8C%96%E8%80%8C%E4%B8%8D%E6%98%AF%E7%AE%80%E5%8D%95%E5%88%97%E8%A1%A8"><span class="toc-number">1.8.2.2.</span> <span class="toc-text">7.2.2 资产图：实体归一化而不是简单列表</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-3-%E6%8E%A2%E7%B4%A2%E5%9B%BE%EF%BC%9A%E6%8A%8A%E6%8E%A8%E7%90%86%E8%BF%87%E7%A8%8B%E5%8F%98%E6%88%90%E5%8F%AF%E8%BF%BD%E6%BA%AF%E8%A1%80%E7%BC%98"><span class="toc-number">1.8.2.3.</span> <span class="toc-text">7.2.3 探索图：把推理过程变成可追溯血缘</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-4-graph-overview-%E6%98%AF%E5%9B%BE%E5%88%B0%E6%A8%A1%E5%9E%8B%E8%A7%86%E5%9B%BE%E7%9A%84%E6%8A%95%E5%BD%B1"><span class="toc-number">1.8.2.4.</span> <span class="toc-text">7.2.4 graph_overview 是图到模型视图的投影</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-2-5-%E6%B2%A1%E6%9C%89%E8%BF%81%E7%A7%BB%E7%9A%84%E9%83%A8%E5%88%86"><span class="toc-number">1.8.2.5.</span> <span class="toc-text">7.2.5 没有迁移的部分</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-3-%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97%E3%80%81%E7%8A%B6%E6%80%81%E6%9C%BA%E4%B8%8E%E5%B9%B6%E5%8F%91%E6%8E%A7%E5%88%B6%EF%BC%9A%E6%8A%8A%E2%80%9C%E4%B8%8B%E4%B8%80%E6%AD%A5%E2%80%9D%E5%8F%98%E6%88%90%E5%8F%AF%E6%81%A2%E5%A4%8D%E6%93%8D%E4%BD%9C"><span class="toc-number">1.8.3.</span> <span class="toc-text">7.3 工作队列、状态机与并发控制：把“下一步”变成可恢复操作</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-1-frontier-%E4%B8%8D%E6%98%AF%E5%BE%85%E5%8A%9E%E6%96%87%E6%9C%AC%EF%BC%8C%E8%80%8C%E6%98%AF%E5%8F%AF%E7%AB%9E%E4%BA%89%E6%B6%88%E8%B4%B9%E7%9A%84%E9%98%9F%E5%88%97"><span class="toc-number">1.8.3.1.</span> <span class="toc-text">7.3.1 frontier 不是待办文本，而是可竞争消费的队列</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-2-%E7%8A%B6%E6%80%81%E4%B8%8D%E6%98%AF%E6%A0%87%E7%AD%BE%EF%BC%8C%E8%80%8C%E6%98%AF%E6%81%A2%E5%A4%8D%E5%8D%8F%E8%AE%AE"><span class="toc-number">1.8.3.2.</span> <span class="toc-text">7.3.2 状态不是标签，而是恢复协议</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-3-CompareAndSetIntentState-%E9%98%B2%E6%AD%A2%E7%AB%9E%E6%80%81%E8%A6%86%E7%9B%96"><span class="toc-number">1.8.3.3.</span> <span class="toc-text">7.3.3 CompareAndSetIntentState 防止竞态覆盖</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-3-4-Worker-%E6%B1%A0%E4%B8%8E%E5%8D%95%E6%84%8F%E5%9B%BE%E8%BE%B9%E7%95%8C"><span class="toc-number">1.8.3.4.</span> <span class="toc-text">7.3.4 Worker 池与单意图边界</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-4-%E4%BA%8B%E4%BB%B6%E9%A9%B1%E5%8A%A8%E4%B8%8E%E6%97%A0%E7%8A%B6%E6%80%81-Planner%EF%BC%9A%E6%8A%8A%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E7%A7%BB%E5%87%BA-Prompt"><span class="toc-number">1.8.4.</span> <span class="toc-text">7.4 事件驱动与无状态 Planner：把长期记忆移出 Prompt</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-1-%E8%A7%A6%E5%8F%91%E5%99%A8%E3%80%81%E5%8E%BB%E6%8A%96%E5%92%8C%E5%BF%83%E8%B7%B3"><span class="toc-number">1.8.4.1.</span> <span class="toc-text">7.4.1 触发器、去抖和心跳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7-4-2-%E4%B8%BA%E4%BB%80%E4%B9%88%E6%AF%94%E4%B8%80%E4%B8%AA%E6%B0%B8%E4%B8%8D%E7%BB%93%E6%9D%9F%E7%9A%84%E5%AF%B9%E8%AF%9D%E5%8F%AF%E9%9D%A0"><span class="toc-number">1.8.4.2.</span> <span class="toc-text">7.4.2 为什么比一个永不结束的对话可靠</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-5-activity-%E4%B8%8E%E4%BA%8B%E4%BB%B6%E6%BA%AF%E6%BA%90%EF%BC%9A%E6%8A%8A%E8%BF%87%E7%A8%8B%E5%92%8C%E7%BB%93%E8%AE%BA%E5%88%86%E5%BC%80%E4%BF%9D%E5%AD%98"><span class="toc-number">1.8.5.</span> <span class="toc-text">7.5 activity 与事件溯源：把过程和结论分开保存</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-6-Guard%E3%80%81Intercept-%E4%B8%8E%E8%AF%81%E6%8D%AE%E9%97%A8%EF%BC%9A%E6%8A%8A%E5%AE%89%E5%85%A8%E5%8E%9F%E5%9E%8B%E8%BF%81%E7%A7%BB%E5%88%B0%E5%B7%A5%E5%85%B7%E8%BE%B9%E7%95%8C"><span class="toc-number">1.8.6.</span> <span class="toc-text">7.6 Guard、Intercept 与证据门：把安全原型迁移到工具边界</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-7-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%8E%8B%E7%BC%A9%EF%BC%9A%E4%BB%8E%E2%80%9C%E5%88%A0%E5%8E%86%E5%8F%B2%E2%80%9D%E8%BF%81%E7%A7%BB%E4%B8%BA%E5%8F%AF%E9%80%86%E5%B7%A5%E4%BD%9C%E9%9B%86"><span class="toc-number">1.8.7.</span> <span class="toc-text">7.7 上下文压缩：从“删历史”迁移为可逆工作集</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-8-%E8%BF%81%E7%A7%BB%E6%B7%B1%E5%BA%A6%E6%80%BB%E8%A1%A8"><span class="toc-number">1.8.8.</span> <span class="toc-text">7.8 迁移深度总表</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#7-9-%E8%AE%BA%E6%96%87%E5%BC%8F%E7%BB%93%E8%AE%BA%EF%BC%9AARTEX-%E7%9C%9F%E6%AD%A3%E8%BF%81%E7%A7%BB%E7%9A%84%E4%B8%8D%E6%98%AF%E5%90%8D%E8%AF%8D%EF%BC%8C%E8%80%8C%E6%98%AF%E8%B4%A3%E4%BB%BB%E8%BE%B9%E7%95%8C"><span class="toc-number">1.8.9.</span> <span class="toc-text">7.9 论文式结论：ARTEX 真正迁移的不是名词，而是责任边界</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E8%81%94%E6%83%B3%EF%BC%9A%E8%BF%98%E5%8F%AF%E4%BB%A5%E7%BB%A7%E7%BB%AD%E8%BF%81%E7%A7%BB%E4%BB%80%E4%B9%88"><span class="toc-number">1.9.</span> <span class="toc-text">8 联想：还可以继续迁移什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#8-1-%E7%BA%B5%E5%90%91%E8%BF%81%E7%A7%BB"><span class="toc-number">1.9.1.</span> <span class="toc-text">8.1 纵向迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#8-2-%E6%A8%AA%E5%90%91%E8%BF%81%E7%A7%BB"><span class="toc-number">1.9.2.</span> <span class="toc-text">8.2 横向迁移</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C%E4%B8%8E%E9%80%82%E7%94%A8%E8%BE%B9%E7%95%8C"><span class="toc-number">1.10.</span> <span class="toc-text">9 使用体验与适用边界</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C"><span class="toc-number">1.10.1.</span> <span class="toc-text">9.1 使用体验</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E9%80%82%E5%90%88%E5%9C%BA%E6%99%AF"><span class="toc-number">1.10.2.</span> <span class="toc-text">9.2 适合场景</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E4%B8%8D%E9%80%82%E5%90%88%E5%9C%BA%E6%99%AF"><span class="toc-number">1.10.3.</span> <span class="toc-text">9.3 不适合场景</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E6%80%BB%E7%BB%93%EF%BC%9AARTEX-%E7%9A%84%E7%9C%9F%E6%AD%A3%E8%B4%A1%E7%8C%AE"><span class="toc-number">1.11.</span> <span class="toc-text">10 总结：ARTEX 的真正贡献</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Cairn-深度拆解-状态空间搜索与Decide-Execute"/></a><div class="content"><a class="title" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute">Cairn-深度拆解-状态空间搜索与Decide-Execute</a><time datetime="2026-11-10T12:51:53.000Z" title="发表于 2026-11-10 20:51:53">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</a><time datetime="2026-11-10T12:51:42.000Z" title="发表于 2026-11-10 20:51:42">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"><img src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</a><time datetime="2026-11-10T12:51:26.000Z" title="发表于 2026-11-10 20:51:26">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</a><time datetime="2026-11-10T12:48:50.000Z" title="发表于 2026-11-10 20:48:50">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织">LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织</a><time datetime="2026-11-10T12:48:35.000Z" title="发表于 2026-11-10 20:48:35">2026-11-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

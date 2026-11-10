@@ -1,0 +1,1538 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织 | CJH's blog</title><meta name="keywords" content="LLM中的CS原型"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="LLM新技术中的CS原型（一）OpenViking：上下文像文件系统一样组织 主作者：陈劲铧 参考图片：  官方链接：OpenViking - The Context Database for AI Agents github链接：volcengine&#x2F;OpenViking: Self-evolving Context Database for AI Agents. Unify Agent Mem">
+<meta property="og:type" content="article">
+<meta property="og:title" content="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织">
+<meta property="og:url" content="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="LLM新技术中的CS原型（一）OpenViking：上下文像文件系统一样组织 主作者：陈劲铧 参考图片：  官方链接：OpenViking - The Context Database for AI Agents github链接：volcengine&#x2F;OpenViking: Self-evolving Context Database for AI Agents. Unify Agent Mem">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png">
+<meta property="article:published_time" content="2026-11-10T12:48:35.000Z">
+<meta property="article:modified_time" content="2026-11-10T12:58:24.807Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="LLM中的CS原型">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-10 20:58:24'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-10T12:48:35.000Z" title="发表于 2026-11-10 20:48:35">2026-11-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">AI应用开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>LLM新技术中的CS原型（一）OpenViking：上下文像文件系统一样组织</h1>
+<p>主作者：陈劲铧</p>
+<p>参考图片：</p>
+<p><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" alt="image"></p>
+<p>官方链接：<a target="_blank" rel="noopener" href="https://www.openviking.ai/">OpenViking - The Context Database for AI Agents</a></p>
+<p>github链接：<a target="_blank" rel="noopener" href="https://github.com/volcengine/OpenViking">volcengine/OpenViking: Self-evolving Context Database for AI Agents. Unify Agent Memory, Knowledge RAG and Skills.</a></p>
+<p>参考链接：</p>
+<ul>
+<li>个人博客：<a href="https://cjh0220.github.io/2026/09/08/OpenViking-%E8%AE%B0%E5%BF%86%E5%BA%93%E7%90%86%E8%AE%BA%E4%B8%8E%E5%B7%A5%E5%85%B7%E5%88%86%E6%9E%90%E5%8F%8A%E4%B8%AA%E4%BA%BA%E4%BD%93%E9%AA%8C%EF%BC%88%E5%88%9D%E6%9C%9F%E6%8E%A2%E7%B4%A2%EF%BC%89/">OpenViking_记忆库理论与工具分析及个人体验（初期探索） | CJH’s blog</a></li>
+<li>强相关论文：
+<ul>
+<li>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2605.29640">2605.29640] VikingMem: A Memory Base Management System for Stateful LLM-based Applications</a></li>
+<li>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2609.11390">2609.11390] VikingRAG: Accurate and Token-efficient Retrieval-augmented Generation over Structured Documents</a></li>
+<li>[<a target="_blank" rel="noopener" href="https://arxiv.org/abs/2606.16903">2606.16903] Directory-Aware Query and Maintenance in Vector Databases</a></li>
+</ul>
+</li>
+<li>CSDN博客：<a target="_blank" rel="noopener" href="https://blog.csdn.net/m0_59163425/article/details/159385177">字节开源OpenViking全解（非常详细），Agent上下文存储从入门到精通，收藏这一篇就够了！-CSDN博客</a></li>
+</ul>
+<h2 id="1-项目介绍">1 项目介绍</h2>
+<p>OpenViking 是面向 AI Agent 的开源上下文数据库。它用虚拟文件系统组织资源、记忆和技能，让应用按路径浏览、检索相关上下文，并按需读取详细内容。</p>
+<p>当 Agent 需要跨会话复用文档和经验时，可以用它集中组织和检索这些上下文。</p>
+<blockquote>
+<p>由于官方文档十分详细，我就只展示一些核心内容和对应的参考链接。重点放在实验，体验与思考中。其中大多数官方已给出及其详细的内容，我仅复制重要内容，方便读者理解OpenViking大致面貌。</p>
+</blockquote>
+<h3 id="1-1-系统概述">1.1 系统概述</h3>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><span class="line">┌────────────────────────────────────────────────────────────────────────────┐</span><br><span class="line">│                           OpenViking 系统架构                               │</span><br><span class="line">├────────────────────────────────────────────────────────────────────────────┤</span><br><span class="line">│                                                                            │</span><br><span class="line">│                              ┌─────────────┐                               │</span><br><span class="line">│                              │   Client    │                               │</span><br><span class="line">│                              │ (OpenViking)│                               │</span><br><span class="line">│                              └──────┬──────┘                               │</span><br><span class="line">│                                     │ 委托                                  │</span><br><span class="line">│                              ┌──────▼──────┐                               │</span><br><span class="line">│                              │   Service   │                               │</span><br><span class="line">│                              │    Layer    │                               │</span><br><span class="line">│                              └──────┬──────┘                               │</span><br><span class="line">│                                     │                                      │</span><br><span class="line">│           ┌─────────────────────────┼─────────────────────────┐            │</span><br><span class="line">│           │                         │                         │            │</span><br><span class="line">│           ▼                         ▼                         ▼            │</span><br><span class="line">│    ┌─────────────┐          ┌─────────────┐          ┌─────────────┐      │</span><br><span class="line">│    │  Retrieve   │          │   Session   │          │    Parse    │      │</span><br><span class="line">│    │ (上下文检索) │          │  (会话管理)  │          │ (上下文提取) │      │</span><br><span class="line">│    │             │          │             │          │             │      │</span><br><span class="line">│    │ search/find │          │ add/used    │          │ 文档解析    │      │</span><br><span class="line">│    │ 意图分析    │          │ commit      │          │ L0/L1/L2    │      │</span><br><span class="line">│    │ Rerank     │          │ commit      │          │ 树构建      │      │</span><br><span class="line">│    └──────┬──────┘          └──────┬──────┘          └──────┬──────┘      │</span><br><span class="line">│           │                        │                        │             │</span><br><span class="line">│           │                        │ 记忆提取               │             │</span><br><span class="line">│           │                        ▼                        │             │</span><br><span class="line">│           │                 ┌─────────────┐                 │             │</span><br><span class="line">│           │                 │ Compressor  │                 │             │</span><br><span class="line">│           │                 │ 压缩/去重    │                 │             │</span><br><span class="line">│           │                 └──────┬──────┘                 │             │</span><br><span class="line">│           │                        │                        │             │</span><br><span class="line">│           └────────────────────────┼────────────────────────┘             │</span><br><span class="line">│                                    ▼                                      │</span><br><span class="line">│    ┌─────────────────────────────────────────────────────────────────┐    │</span><br><span class="line">│    │                         Storage 层                               │    │</span><br><span class="line">│    │              AGFS (文件内容)  +  向量库 (索引)                    │    │</span><br><span class="line">│    └─────────────────────────────────────────────────────────────────┘    │</span><br><span class="line">│                                                                            │</span><br><span class="line">└────────────────────────────────────────────────────────────────────────────┘</span><br></pre></td></tr></table></figure>
+<h3 id="1-2-核心模块">1.2 核心模块</h3>
+<table>
+<thead>
+<tr>
+<th>模块</th>
+<th>职责</th>
+<th>关键能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Client</strong></td>
+<td>统一入口</td>
+<td>提供所有操作接口，委托给 Service 层</td>
+</tr>
+<tr>
+<td><strong>Service</strong></td>
+<td>业务逻辑</td>
+<td>FSService、SearchService、SessionService、ResourceService、PackService、DebugService</td>
+</tr>
+<tr>
+<td><strong>Retrieve</strong></td>
+<td>上下文检索</td>
+<td>意图分析（IntentAnalyzer）、层级检索（HierarchicalRetriever）、Rerank 精排</td>
+</tr>
+<tr>
+<td><strong>Session</strong></td>
+<td>会话管理</td>
+<td>消息记录、使用追踪、会话压缩、记忆提交</td>
+</tr>
+<tr>
+<td><strong>Parse</strong></td>
+<td>上下文提取</td>
+<td>文档解析（PDF/MD/HTML）、树构建（TreeBuilder）、异步语义生成</td>
+</tr>
+<tr>
+<td><strong>Compressor</strong></td>
+<td>记忆压缩</td>
+<td>Schema 驱动的记忆提取、LLM 去重决策</td>
+</tr>
+<tr>
+<td><strong>Storage</strong></td>
+<td>存储层</td>
+<td>VikingFS 虚拟文件系统、向量索引、AGFS 集成</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-3-Service-层">1.3 Service 层</h3>
+<p>Service 层将业务逻辑与传输层解耦，便于 HTTP Server 和 CLI 复用：</p>
+<table>
+<thead>
+<tr>
+<th>Service</th>
+<th>职责</th>
+<th>主要方法</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>FSService</strong></td>
+<td>文件系统操作</td>
+<td>ls, mkdir, rm, mv, tree, stat, read, abstract, overview, grep, glob</td>
+</tr>
+<tr>
+<td><strong>SearchService</strong></td>
+<td>语义搜索</td>
+<td>search, find</td>
+</tr>
+<tr>
+<td><strong>SessionService</strong></td>
+<td>会话管理</td>
+<td>session, sessions, commit, delete</td>
+</tr>
+<tr>
+<td><strong>ResourceService</strong></td>
+<td>资源导入</td>
+<td>add_resource, add_skill, wait_processed</td>
+</tr>
+<tr>
+<td><strong>PackService</strong></td>
+<td>导入导出、备份恢复</td>
+<td>export_ovpack, import_ovpack, backup_ovpack, restore_ovpack</td>
+</tr>
+<tr>
+<td><strong>DebugService</strong></td>
+<td>调试服务</td>
+<td>observer (ObserverService)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-4双层存储">1.4双层存储</h3>
+<p>OpenViking 采用双层存储架构，实现内容与索引分离：</p>
+<table>
+<thead>
+<tr>
+<th>存储层</th>
+<th>职责</th>
+<th>内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>AGFS</strong></td>
+<td>内容存储</td>
+<td>L0/L1/L2 完整内容、多媒体文件、关联关系</td>
+</tr>
+<tr>
+<td><strong>向量库</strong></td>
+<td>索引存储</td>
+<td>URI、向量、元数据（不存储文件内容）</td>
+</tr>
+</tbody>
+</table>
+<h3 id="1-5-数据流概览">1.5 数据流概览</h3>
+<h4 id="添加上下文">添加上下文</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">输入 → Parser → TreeBuilder → AGFS → SemanticQueue → 向量库</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>Parser</strong>：解析文档，创建文件和目录结构（无 LLM 调用）</li>
+<li><strong>TreeBuilder</strong>：移动临时目录到 AGFS，入队语义处理</li>
+<li><strong>SemanticQueue</strong>：异步自底向上生成 L0/L1</li>
+<li><strong>向量库</strong>：建立索引用于语义搜索</li>
+</ol>
+<h4 id="检索上下文">检索上下文</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">查询 → 意图分析 → 层级检索 → Rerank → 结果</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>意图分析</strong>：分析查询意图，生成 0-5 个类型化查询</li>
+<li><strong>层级检索</strong>：目录级递归搜索，使用优先队列</li>
+<li><strong>Rerank</strong>：标量过滤 + 模型重排</li>
+<li><strong>结果</strong>：返回按相关性排序的上下文</li>
+</ol>
+<h4 id="会话提交">会话提交</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">消息 → 压缩 → 归档 → 记忆提取 → 存储</span><br></pre></td></tr></table></figure>
+<ol>
+<li><strong>消息</strong>：累积对话消息和使用记录</li>
+<li><strong>压缩</strong>：保留最近 N 轮，旧消息归档</li>
+<li><strong>归档</strong>：生成历史片段的 L0/L1</li>
+<li><strong>记忆提取</strong>：根据记忆策略和 MemoryType Schema 从消息中提取记忆</li>
+<li><strong>存储</strong>：写入 AGFS + 向量库</li>
+</ol>
+<h3 id="1-6-设计原则">1.6 设计原则</h3>
+<table>
+<thead>
+<tr>
+<th>原则</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>存储层纯粹</strong></td>
+<td>存储层只做 AGFS 操作和基础向量搜索，Rerank 在检索层完成</td>
+</tr>
+<tr>
+<td><strong>三层信息</strong></td>
+<td>L0/L1/L2 实现渐进式详情加载，节省 Token 消耗</td>
+</tr>
+<tr>
+<td><strong>两阶段检索</strong></td>
+<td>向量搜索召回候选 + Rerank 精排提高准确性</td>
+</tr>
+<tr>
+<td><strong>单一数据源</strong></td>
+<td>所有内容从 AGFS 读取，向量库仅存储引用和索引</td>
+</tr>
+</tbody>
+</table>
+<h2 id="2-核心模型">2 核心模型</h2>
+<h3 id="2-1-上下文类型">2.1 上下文类型</h3>
+<p>基于对人类认知模式的简化映射与工程化思考，OpenViking 将上下文抽象为 <strong>资源、记忆、能力三种</strong>基本类型，每种类型在 Agent 中有不同的用途。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">类型</th>
+<th style="text-align:left">用途</th>
+<th style="text-align:left">生命周期</th>
+<th style="text-align:left">主动性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>Resource</strong></td>
+<td style="text-align:left">知识和规则</td>
+<td style="text-align:left">长期，相对静态</td>
+<td style="text-align:left">用户添加</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Memory</strong></td>
+<td style="text-align:left">Agent 的认知</td>
+<td style="text-align:left">长期，动态更新</td>
+<td style="text-align:left">Agent 记录</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>Skill</strong></td>
+<td style="text-align:left">可声明的 agent 能动性配置（AgentDefinedContextType）</td>
+<td style="text-align:left">长期，静态</td>
+<td style="text-align:left">用户或系统添加</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>抽象为三种不同基本类型可以通过不同的API和方式进行管理，在我看来资源更像是文件系统中的 办公盘 存储数据为多，记忆更像是 C盘系统盘 存储临时缓存和用户配置，能力更像是配置好的exe程序 只有需要时才会调用。</p>
+<p>Resource：资源相对静态和用户主动添加的特性使其非常适合做 团队项目资源。重点倾斜在单个项目多个用户更新或读取等情况。某种情况下有点像Linux多用户读取同一文件的形式，不过换成了 LLM的记忆与规则。</p>
+<p>Memory：记忆动态更新的特性使其更加灵活，更贴切原本Agent的记忆系统。好比是操作系统里每个人的个人账号，互相隔离，保留不同agent之间的认知。在下两张对比中，我们可以看到一个常见的windows用户管理系统，其中的.xxx文件就是各类工具的配置/记忆等，在对应的AppData中也存放着相关存档记忆。OpenViking正是借鉴该思路做了虚拟文件系统以进行区分。</p>
+<p>Skill：可自己添加的程序型技能。类比可索引到的可启动的脚本程序。</p>
+</blockquote>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/14636dc4d3d2a21f2ab6d96ab386b72f.png" alt="image 20260920161418321">](<a target="_blank" rel="noopener" href="https://www.imagehub.cc/image/image-">https://www.imagehub.cc/image/image-</a></p>
+<p><img src="https://s1.imagehub.cc/images/2026/09/07/4d5329e326e905bd0c8b118e7d0aca16.png" alt=""></p>
+<blockquote>
+<p>通过OpenViking helper可以直观看到虚拟文件系统中的记忆存储情况。其中对不同文件夹和数据有清楚的分类和排布，加速了文件检索的效率。</p>
+</blockquote>
+<h3 id="2-2-上下文层级（L0-L1-L2）">2.2 上下文层级（L0/L1/L2）</h3>
+<p>OpenViking 使用三层信息模型，在检索效率、导航能力和原始内容完整性之间取得平衡。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">层级</th>
+<th style="text-align:left">名称</th>
+<th style="text-align:left">存储形式</th>
+<th style="text-align:left">默认正文上限</th>
+<th style="text-align:left">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>L0</strong></td>
+<td style="text-align:left">摘要</td>
+<td style="text-align:left">目录内的 <code>.abstract.md</code></td>
+<td style="text-align:left">256 字符</td>
+<td style="text-align:left">向量检索、快速过滤</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>L1</strong></td>
+<td style="text-align:left">概览</td>
+<td style="text-align:left">目录内的 <code>.overview.md</code></td>
+<td style="text-align:left">4000 字符</td>
+<td style="text-align:left">Rerank、内容导航</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>L2</strong></td>
+<td style="text-align:left">详情</td>
+<td style="text-align:left">原始文件和子目录</td>
+<td style="text-align:left">无统一上限</td>
+<td style="text-align:left">完整内容、按需加载</td>
+</tr>
+</tbody>
+</table>
+<p>L0/L1 是<strong>目录级语义 sidecar</strong>。它们描述一个目录，不是为每个普通文件创建的同名伴生文件。文件摘要会作为输入，聚合到所在目录的 L1 中。</p>
+<p>L0 和 L1 通常成对生成，但系统允许只存在其中一个。例如，<code>mkdir()</code> 会先创建 L0：未传入 <code>description</code> 时使用目录名作为默认正文，传入后使用该说明。因此只有 <code>.abstract.md</code> 的目录也是合法状态。读取和向量重建只处理实际存在的层级。</p>
+<p>正文上限由 <code>semantic.abstract_max_chars</code> 和 <code>semantic.overview_max_chars</code> 配置；上表是默认值。限制只作用于 Markdown 正文，不会截断 sidecar 元数据。</p>
+<h4 id="L0：摘要">L0：摘要</h4>
+<p>L0 是目录内容的最精简表示，用于向量召回和快速相关性判断。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">API 认证指南，涵盖 OAuth 2.0、JWT 令牌和 API 密钥的安全访问方式。</span><br></pre></td></tr></table></figure>
+<p>通过语义 accessor 读取时，只返回可见正文：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">abstract = client.abstract(uri=&quot;viking://resources/docs/auth&quot;)</span><br></pre></td></tr></table></figure>
+<h4 id="L1：概览">L1：概览</h4>
+<p>L1 提供更完整的目录摘要和导航信息，用于 Rerank 和决定是否继续加载 L2。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"># 认证指南</span><br><span class="line"></span><br><span class="line">本目录介绍 API 的主要认证方式。</span><br><span class="line"></span><br><span class="line">## 快速导航</span><br><span class="line"></span><br><span class="line">- `oauth.md`：OAuth 2.0 流程和代码示例</span><br><span class="line">- `jwt.md`：令牌生成和验证</span><br><span class="line">- `api-keys.md`：API Key 认证</span><br></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">overview = client.overview(uri=&quot;viking://resources/docs/auth&quot;)</span><br></pre></td></tr></table></figure>
+<p>L0 从 L1 正文中提取：取 H1 标题之后、第一个 <code>##</code> 标题之前的 Brief Description 段落。YAML frontmatter 不参与提取。</p>
+<h4 id="L2：详情">L2：详情</h4>
+<p>L2 是原始文件或解析后的完整内容，只在需要时加载，并保留源格式和结构。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">content = client.read(uri=&quot;viking://resources/docs/auth/oauth.md&quot;)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<h4 id="目录结构">目录结构</h4>
+<p>一个已完成语义处理的目录通常如下：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">viking://resources/docs/auth/</span><br><span class="line">├── .abstract.md          # L0，隐藏的目录级 sidecar</span><br><span class="line">├── .overview.md          # L1，隐藏的目录级 sidecar</span><br><span class="line">├── oauth.md              # L2，完整内容</span><br><span class="line">├── jwt.md                # L2，完整内容</span><br><span class="line">└── api-keys.md           # L2，完整内容</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>普通 <code>ls</code> 默认隐藏 <code>.abstract.md</code> 和 <code>.overview.md</code>。它们不一定同时存在；不要依赖“每个目录始终具有两个 sidecar”的假设。</p>
+<blockquote>
+<p>通过L0,L1,L2的方式提高在多文件大文件后期时的检索效率，但我发现其中L0时概括性描述，若换为事实性描述，其检索精度和效率更高。类似相关性树结构。个人人为这种上下文层级的设置还有很多可以优化的空间。</p>
+</blockquote>
+<h3 id="2-3-Viking-URI">2.3 Viking URI</h3>
+<p>Viking URI 是 OpenViking 中所有内容的统一资源标识符。</p>
+<h4 id="格式">格式</h4>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">viking://&#123;scope&#125;/&#123;path&#125;</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<ul>
+<li><strong>scheme</strong>: 始终为 <code>viking</code></li>
+<li><strong>scope</strong>: 顶级命名空间（<code>resources</code>、<code>user</code>、<code>agent</code>；<code>temp</code>、<code>queue</code> 和 <code>upload</code> 为内部作用域）</li>
+<li><strong>path</strong>: 作用域内的资源路径</li>
+</ul>
+<h4 id="作用域">作用域</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">作用域</th>
+<th style="text-align:left">说明</th>
+<th style="text-align:left">生命周期</th>
+<th style="text-align:left">可见性</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>resources</strong></td>
+<td style="text-align:left">独立资源/客观知识</td>
+<td style="text-align:left">长期</td>
+<td style="text-align:left">account 全局</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>user</strong></td>
+<td style="text-align:left">用户级数据，包括 session</td>
+<td style="text-align:left">长期 / 会话生命周期</td>
+<td style="text-align:left">当前用户</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>agent</strong></td>
+<td style="text-align:left">agent 能力与配置（技能、端点、工具、支付等）</td>
+<td style="text-align:left">长期</td>
+<td style="text-align:left">account 全局</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>queue</strong></td>
+<td style="text-align:left">处理队列</td>
+<td style="text-align:left">临时</td>
+<td style="text-align:left">内部</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>temp</strong></td>
+<td style="text-align:left">临时文件</td>
+<td style="text-align:left">解析期间</td>
+<td style="text-align:left">内部</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>upload</strong></td>
+<td style="text-align:left">临时上传文件</td>
+<td style="text-align:left">临时</td>
+<td style="text-align:left">内部</td>
+</tr>
+</tbody>
+</table>
+<p>公开 API 和 CLI 的文件系统/内容操作接受公开作用域 <code>resources</code>、<code>user</code> 和 <code>agent</code>， 以及根 URI <code>viking://</code>。<code>session</code> 保留为 user session 路径的向后兼容别名； 新 session 数据位于 <code>viking://user/&#123;user_id&#125;/sessions</code>。 <code>temp</code>、<code>queue</code> 和 <code>upload</code> 是内部实现作用域，不能通过公开 API 的 URI 参数直接访问。</p>
+<blockquote>
+<p>这个是最明显的借鉴文件系统方式，使得原本的记忆库可视化可索引可目录化。且极大的便利了文件的分门别类。在此基础上我们搭建了公司的OpenViking+对应gateway中转网关，通过一个OpenViking，不同文件目录管理公司组里的项目记忆，有效节约了同项目跨团队的Agent记忆学习消耗。</p>
+</blockquote>
+<h2 id="3-实际表现">3 实际表现</h2>
+<h3 id="3-1-官方实验截图">3.1 官方实验截图</h3>
+<h4 id="长期记忆准确率对比">长期记忆准确率对比</h4>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/46a5f431d627b22e2479d189539f5e82.png" alt="image 20260920164210027"></p>
+<h4 id="总输入-Token-消耗对比">总输入 Token 消耗对比</h4>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/264d7cffa557a0b2f2f7aefb0369ba8c.png" alt="image 20260920164301182"></p>
+<p>关键结论：OpenViking 在 Claude Code、Hermes、OpenClaw 三组基座上都把长期记忆准确率推到 80%+；在高消耗基线下，输入 Token 最高下降 63%。</p>
+<h3 id="3-2-自测实验">3.2 自测实验</h3>
+<p>自测分为两条相互独立的实验线。两条实验采用不同的观测单位和评价指标，结论不能混用。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">实验线</th>
+<th style="text-align:left">观测单位</th>
+<th style="text-align:left">主要指标</th>
+<th style="text-align:left">回答的问题</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>端到端长任务对照</strong></td>
+<td style="text-align:left">一次完整的多段任务</td>
+<td style="text-align:left">交付完整度、墙钟时间、费用、缓存、产物质量</td>
+<td style="text-align:left">跨会话记忆是否有助于持续完成复杂任务</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>资源检索对照</strong></td>
+<td style="text-align:left">一次 <code>/search/find</code> 请求</td>
+<td style="text-align:left">Recall、Hit、MRR、目录节点占位、延迟</td>
+<td style="text-align:left">检索配置能否更准确地返回目标文档</td>
+</tr>
+</tbody>
+</table>
+<p>端到端实验会同时受到模型随机性、任务难度、工具调用和 Prompt Cache 的影响，不能直接换算为召回准确率；资源检索实验只评价 Resource 检索，也不能代替真实任务中的交付质量评估。</p>
+<h4 id="3-2-1-长任务实验设计">3.2.1 长任务实验设计</h4>
+<p>实验任务是从市场调研开始，完整制作一款可离线运行的单文件肉鸽卡牌游戏《灰烬牌局》。任务包含市场报告、市场分析、游戏策划、游戏制作、游戏优化和游戏评价 6 个阶段，拆成 5 段连续执行。工作目录中预置 38 篇、约 37 万字符的资料，覆盖市场、竞品、设计、数值、技术和评价六类内容。</p>
+<p>完整跑批包含 A0、A1、A2 三个实验臂，共 15 个运行单元，连续执行约 10 小时。A1 用于观察商业版表现，核心结论主要比较 A0 与 A2。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">实验臂</th>
+<th style="text-align:left">OpenViking 环境</th>
+<th style="text-align:left">命名空间状态</th>
+<th style="text-align:left">用途</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>A0 原生</strong></td>
+<td style="text-align:left">不接入 OpenViking</td>
+<td style="text-align:left">不适用</td>
+<td style="text-align:left">纯 Claude Code 对照组</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>A1 商业版</strong></td>
+<td style="text-align:left">商业版 <code>v0.4.17.3</code></td>
+<td style="text-align:left">空命名空间</td>
+<td style="text-align:left">观察官方托管版本；不作为 A2 的直接归因对照</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>A2 公司网关</strong></td>
+<td style="text-align:left">公司网关 + 上游 <code>v0.4.12</code></td>
+<td style="text-align:left">已有用户级记忆</td>
+<td style="text-align:left">验证实际生产接入形态</td>
+</tr>
+</tbody>
+</table>
+<p>三个实验臂使用相同的 <code>claude-opus-5</code>、Claude 中转站、题面、资料库和运行限制。不同版本与命名空间状态被单独标注，避免将 A1 与 A2 的差异全部归因于网关。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">控制项</th>
+<th style="text-align:left">设置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">模型</td>
+<td style="text-align:left"><code>claude-opus-5</code></td>
+</tr>
+<tr>
+<td style="text-align:left">资料</td>
+<td style="text-align:left">38 篇、约 37 万字符，覆盖市场、竞品、设计、数值、技术和评价</td>
+</tr>
+<tr>
+<td style="text-align:left">会话边界</td>
+<td style="text-align:left">每段使用全新会话，段间清空模型上下文</td>
+</tr>
+<tr>
+<td style="text-align:left">单元上限</td>
+<td style="text-align:left">45 分钟或 50 美元，任一上限先到即停止</td>
+</tr>
+<tr>
+<td style="text-align:left">执行方式</td>
+<td style="text-align:left">三个实验臂串行运行，避免共享中转密钥的其他流量干扰逐单元计费</td>
+</tr>
+<tr>
+<td style="text-align:left">隔离方式</td>
+<td style="text-align:left">独立 <code>USERPROFILE</code>、<code>CLAUDE_CONFIG_DIR</code>、工作目录与 Peer ID</td>
+</tr>
+</tbody>
+</table>
+<p>每段结束后立即关闭会话。A0 依赖工作区文件和 Claude Code 原生机制恢复状态；A2 在此基础上额外使用 OpenViking 的自动召回与捕获能力。第 2～5 段开头设置记忆探针，要求模型回答上一阶段采用的方案、被否决的方案及原因；无法确定时必须明确回答“不记得”。其中部分取舍信息不会写入交付文档，因此能够区分文件反推与跨会话记忆。</p>
+<p>实验执行流程如下：</p>
+<ol>
+<li><strong>预检隔离。</strong> A0 必须满足 MCP 工具、Hook 日志和上下文注入均为 0；A1、A2 必须能够连接各自的 OpenViking 服务。</li>
+<li><strong>分段执行。</strong> 三个实验臂在同一段中接收完全相同的任务范围，运行完成后保存回答、Transcript、事件流和产物。</li>
+<li><strong>提交屏障。</strong> 每段结束后等待 OpenViking 服务端完成会话提交与记忆抽取，再启动下一段，避免下一会话早于记忆入库。</li>
+<li><strong>产物验证。</strong> 检查 <code>index.html</code> 是否单文件、是否存在外链、能否离线加载，并记录文档、脚本和自检结果。</li>
+<li><strong>费用核对。</strong> 正常结束的运行读取 <code>modelUsage</code> 计算费用；超时运行使用中转站逐单元账本差值。两种口径在可同时取得数据的运行中差异不超过 <code>4e-6</code> 美元。</li>
+</ol>
+<p>隔离记录显示，A0 在五段中始终为 0 个 OpenViking MCP 工具、0 条 Hook 增量和 0 次上下文注入；A2 始终暴露 13 个 MCP 工具，并在各段产生上下文注入。由此可以排除 A0 意外加载 OpenViking 插件这一类实验污染。</p>
+<h4 id="3-2-2-长任务实验结果">3.2.2 长任务实验结果</h4>
+<p>端到端结果如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">指标</th>
+<th style="text-align:right">A0 原生</th>
+<th style="text-align:right">A2 OV 记忆库</th>
+<th style="text-align:left">对比结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">完成交付阶段</td>
+<td style="text-align:right">4 / 6</td>
+<td style="text-align:right"><strong>6 / 6</strong></td>
+<td style="text-align:left">A2 补齐游戏优化与评价阶段</td>
+</tr>
+<tr>
+<td style="text-align:left">总耗时</td>
+<td style="text-align:right">209.7 分钟</td>
+<td style="text-align:right"><strong>185.0 分钟</strong></td>
+<td style="text-align:left"><strong>减少 11.8%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">总费用</td>
+<td style="text-align:right">52.91 美元</td>
+<td style="text-align:right"><strong>47.22 美元</strong></td>
+<td style="text-align:left"><strong>减少 10.8%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">自然结束的运行单元</td>
+<td style="text-align:right">1 / 5</td>
+<td style="text-align:right"><strong>2 / 5</strong></td>
+<td style="text-align:left">A0 有 4 个运行单元触及 45 分钟上限</td>
+</tr>
+<tr>
+<td style="text-align:left">第 5 段单位费用产出</td>
+<td style="text-align:right">开局的 47%</td>
+<td style="text-align:right"><strong>开局的 95%</strong></td>
+<td style="text-align:left">A2 的成本曲线更稳定</td>
+</tr>
+<tr>
+<td style="text-align:left">缓存写占比</td>
+<td style="text-align:right">4.72%</td>
+<td style="text-align:right"><strong>4.64%</strong></td>
+<td style="text-align:left">未观察到额外的 KV Cache 失效</td>
+</tr>
+</tbody>
+</table>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/ab6317ea6f85a66be5d3d3ddf5a333c5.png" alt="image"></p>
+<blockquote>
+<p>图：三臂各段的中转站账本费用。第 2～4 段大多运行至 45 分钟上限；A2 在第 5 段提前完成，因此该段费用明显下降。</p>
+</blockquote>
+<p>两臂最终都生成了无外链、可断网运行的单文件 <code>index.html</code>。以下截图来自无头浏览器对最终产物的实际渲染，而非设计稿。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">A0 原生</th>
+<th style="text-align:center">A2 OV 记忆库</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center"><img src="https://s1.imagehub.cc/images/2026/09/21/71ee24afa2d827f3f0ee527553f185f1.png" alt="image 20260920 OpenViking ab a0"></td>
+<td style="text-align:center"><img src="https://s1.imagehub.cc/images/2026/09/21/1c8817b52e1ceabe75ddee2cd0903d7a.png" alt="image 20260920 OpenViking ab a2"></td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>图：A0 与 A2 最终交付的《灰烬牌局》启动界面。两者均为单文件离线游戏，但功能组织和后续验证完整度存在差异。</p>
+</blockquote>
+<p>A2 在最后一段用 30.9 分钟完成收尾，并交付评价文档和模拟脚本；A0 运行满 45 分钟后仍缺少游戏优化和游戏评价两个阶段的文档。A2 还在游戏中内置了 27 项数据完整性与可复现性断言，覆盖卡牌引用、敌人数量、事件数量、费用范围、随机数生成和状态迁移等项目，全部执行通过。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/9b8b01470e28afd27f417124a2790a64.png" alt="image 20260920 OpenViking ab selfcheck"></p>
+<blockquote>
+<p>图：A2 产物内置的自检页面，27 项断言全部通过。</p>
+</blockquote>
+<p>从结果中可以得到四项观察：</p>
+<ol>
+<li><strong>主要差异出现在任务后段。</strong> 第 1 段不依赖历史决策，记忆优势尚不明显；进入优化与评价阶段后，早期方案和数值框架能否被恢复，直接影响交付完整度。</li>
+<li><strong>时间和费用同时下降。</strong> A2 相比 A0 减少 24.7 分钟和 5.69 美元，交付完整度的提升并非以更高的总费用为代价。</li>
+<li><strong>单位成本更稳定。</strong> 到第 5 段，A0 每美元输出 Token 降至第 1 段的 47%，A2 仍保持 95%，表明重复理解既有项目逐渐成为 A0 的主要成本来源。</li>
+<li><strong>未观察到额外缓存破坏。</strong> A2 的缓存写入占比为 4.64%，A0 为 4.72%。接入增加的是工具定义与启动注入形成的固定前缀，而不是持续改写系统前缀。</li>
+</ol>
+<p>OpenViking 的 13 个 MCP 工具定义及启动注入会增加约 5,350 Token 的固定前缀，本轮折算约 1.07 美元，占 A2 总费用的 2.3%。因此，接入后并非从第一轮开始就必然降低成本；只有当任务跨越多个会话、并反复依赖既有决策时，固定开销才会被后续收益抵消。</p>
+<blockquote>
+<p>**实验边界：**每个运行单元只执行 1 次，即 <code>n=1</code>；同时，A2 使用的是公司网关和已有用户空间，并非完全空白的 OpenViking 命名空间。因此该结果适合作为端到端案例和机制验证，不能当作稳定的性能分布，也不能把全部差异都归因于 OpenViking 本身。若要获得统计结论，还需要使用干净命名空间完成至少 3 次重复运行，并对最终产物做独立盲评。</p>
+</blockquote>
+<h4 id="3-2-3-资源检索终验">3.2.3 资源检索终验</h4>
+<p>第二条实验直接调用生产环境的 <code>/search/find</code>。测试集冻结为 288 条查询，其中正例 255 条、负例 33 条，覆盖 40 篇资源文档。问题按照实际任务需求构造，例如询问起始生命、稀有度权重或存档迁移，而不是直接复述文档标题；负例用于观察系统是否对语料中不存在的主题仍然返回结果。</p>
+<p>主要指标含义如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">指标</th>
+<th style="text-align:left">含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Recall@k</td>
+<td style="text-align:left">预期目标文档是否进入前 k 条结果</td>
+</tr>
+<tr>
+<td style="text-align:left">Hit@k</td>
+<td style="text-align:left">查询是否在前 k 条中命中至少一个相关结果</td>
+</tr>
+<tr>
+<td style="text-align:left">MRR</td>
+<td style="text-align:left">首个相关结果排名倒数的均值，越高表示目标文档排序越靠前</td>
+</tr>
+<tr>
+<td style="text-align:left">目录节点占位</td>
+<td style="text-align:left">返回结果被目录摘要占用的数量，过高会挤占正文文档位置</td>
+</tr>
+</tbody>
+</table>
+<p>测试环境以生产上游 OpenViking <code>v0.4.12</code> 为基线。最终配置并非单一参数变更，而是以下组合方案：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">变更</th>
+<th style="text-align:left">作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">事实型摘要模板</td>
+<td style="text-align:left">将摘要从编目式描述调整为可直接检索的事实陈述；主要收益体现在注入长度</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>qwen3.7-text-embedding</code></td>
+<td style="text-align:left">提升查询与目标文档之间的语义区分度；更换后对 3,607 条向量完成全量重嵌入</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>level=[2]</code></td>
+<td style="text-align:left">只检索文件节点，减少目录摘要占用排序位置</td>
+</tr>
+<tr>
+<td style="text-align:left"><code>limit=6</code></td>
+<td style="text-align:left">在召回覆盖率与返回长度之间取平衡</td>
+</tr>
+<tr>
+<td style="text-align:left">国内 Embedding 端点</td>
+<td style="text-align:left">保持同一模型和向量空间，同时降低跨地域调用延迟</td>
+</tr>
+</tbody>
+</table>
+<p>最终配置在相同测试集、相同过滤口径下复测，结果如下：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">指标</th>
+<th style="text-align:right">基线</th>
+<th style="text-align:right">最终配置</th>
+<th style="text-align:right">变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Recall@1 / @3 / @5</td>
+<td style="text-align:right">0.3559 / 0.5242 / 0.6255</td>
+<td style="text-align:right"><strong>0.4065 / 0.6092 / 0.6895</strong></td>
+<td style="text-align:right"><strong>+14.2% / +16.2% / +10.2%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">Hit@1 / @3 / @5</td>
+<td style="text-align:right">0.4000 / 0.5804 / 0.6745</td>
+<td style="text-align:right"><strong>0.4667 / 0.6706 / 0.7412</strong></td>
+<td style="text-align:right"><strong>+16.7% / +15.5% / +9.9%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">MRR</td>
+<td style="text-align:right">0.4976</td>
+<td style="text-align:right"><strong>0.5763</strong></td>
+<td style="text-align:right"><strong>+15.8%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">前五条结果中的目录节点数</td>
+<td style="text-align:right">435</td>
+<td style="text-align:right"><strong>36</strong></td>
+<td style="text-align:right"><strong>减少 91.7%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">P50 延迟</td>
+<td style="text-align:right">188 ms</td>
+<td style="text-align:right"><strong>151 ms</strong></td>
+<td style="text-align:right"><strong>减少 20%</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">P95 延迟</td>
+<td style="text-align:right">394 ms</td>
+<td style="text-align:right">437 ms</td>
+<td style="text-align:right">增加 11%</td>
+</tr>
+</tbody>
+</table>
+<p>七项精度指标均提升 9.9%～16.7%，目录节点占位由 435 个下降至 36 个。残留的 36 个节点来自被索引为 L2 文件的 <code>.abstract.md</code> 或 <code>.overview.md</code>，因此无法仅通过 <code>level=[2]</code> 完全排除。</p>
+<p>参数扫描也修正了早期结论：在较小测试集上，<code>limit=4</code> 曾表现为可降低 Token 且不损失精度；在冻结的 288 条测试集上，<code>limit=4</code> 会使 Recall 下降 0.061、命中率下降 0.051，因此最终改为 <code>limit=6</code>。该结果表明，检索参数必须绑定具体基线与数据集，不能脱离实验条件复用。</p>
+<p>延迟方面，P50 从 188 ms 降至 151 ms，但 P95 从 394 ms 增至 437 ms。中位延迟已经改善，长尾仍有 11% 的增幅，后续仍需关注连接复用、TLS 握手和模型端点抖动。</p>
+<p>需要强调的是，该实验测量的是 <strong>Resource 的 <code>/search/find</code> 检索</strong>，不是每轮自动执行的 Memory Recall。两条链路共享 Embedding 与部分排序机制，但查询范围、配额和注入策略不同，趋势可以参考，数值不能直接互换。最终数据也是多项配置组合后的整体结果，不能全部归因于某一个模型或某一个网关参数。</p>
+<h3 id="3-3-使用体验">3.3 使用体验</h3>
+<h4 id="3-3-1-接入与日常使用">3.3.1 接入与日常使用</h4>
+<p>实际使用环境覆盖 OpenViking 商业版、自建服务、OpenViking Helper，以及 Claude Code、Codex 等 Agent。商业版接入步骤较少，并支持自动更新；自建服务的配置与数据控制能力更强，但需要自行维护模型端点、向量索引、权限、异步队列和版本升级。</p>
+<p><img src="https://s1.imagehub.cc/images/2026/09/21/c269f089c0f59016f4f22618384767bc.png" alt="image 20260920 OpenViking deployment"></p>
+<blockquote>
+<p>图：OpenViking Helper 的 Agent 接入页，可直接检查本机 CLI、MCP 与 Hook 状态。图中显示的是本机客户端版本，不等同于服务端版本。</p>
+</blockquote>
+<p>OpenViking Helper 适合用于日常检查：可以配置本地 Agent、查看会话中的召回与捕获事件，并同步本地记忆和 Skill。它将原本隐藏在插件后台的动作可视化；当发生错误召回、身份不匹配或记忆未写入时，可以沿会话、URI 和事件记录定位问题。</p>
+<p>CLI 安装本身较为直接，主流 Agent 均提供对应接入方式。实际部署中，安装完成并不等于接入有效，至少应核对以下项目：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">检查项</th>
+<th style="text-align:left">核对内容</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">服务配置</td>
+<td style="text-align:left"><code>ovcli.conf</code> 中的 Base URL、API Key、account 与 user 是否匹配</td>
+</tr>
+<tr>
+<td style="text-align:left">Agent 接入</td>
+<td style="text-align:left">MCP 与 Hook 是否均处于已接入状态</td>
+</tr>
+<tr>
+<td style="text-align:left">身份作用域</td>
+<td style="text-align:left">当前用户、项目 Peer 与 Resource 命名空间是否符合预期</td>
+</tr>
+<tr>
+<td style="text-align:left">服务健康</td>
+<td style="text-align:left">模型、系统状态和任务队列端点是否正常</td>
+</tr>
+<tr>
+<td style="text-align:left">首次会话</td>
+<td style="text-align:left">SessionStart 是否出现注入记录，Stop/PreCompact 后是否生成提交任务</td>
+</tr>
+</tbody>
+</table>
+<p>接入后的工作流由生命周期 Hook 与显式工具共同组成：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">阶段</th>
+<th style="text-align:left">自动行为</th>
+<th style="text-align:left">可观测结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">SessionStart</td>
+<td style="text-align:left">注入用户画像、记忆索引和会话摘要</td>
+<td style="text-align:left">Prompt 中出现 OpenViking 上下文块</td>
+</tr>
+<tr>
+<td style="text-align:left">UserPromptSubmit</td>
+<td style="text-align:left">根据当前问题检索相关记忆</td>
+<td style="text-align:left">生成召回事件和命中 URI</td>
+</tr>
+<tr>
+<td style="text-align:left">Stop</td>
+<td style="text-align:left">捕获本轮新增消息</td>
+<td style="text-align:left">会话记录增加，等待后续提交</td>
+</tr>
+<tr>
+<td style="text-align:left">PreCompact / 正常结束</td>
+<td style="text-align:left">提交完整会话并触发记忆抽取</td>
+<td style="text-align:left">生成提交任务和 <code>memory_diff.json</code></td>
+</tr>
+<tr>
+<td style="text-align:left">显式调用</td>
+<td style="text-align:left">通过 Skill 或 MCP 执行搜索、读取、写入和目录浏览</td>
+<td style="text-align:left">返回确定的 URI、正文或写入结果</td>
+</tr>
+</tbody>
+</table>
+<p>“自动召回 + 显式工具”的混合方式兼顾了低操作负担与人工控制能力。常规对话依靠自动 Hook 完成；重要事实需要立即写入、自动检索不准确或需要读取指定文档时，再切换到显式工具。在一次 Claude 会话导入中，先读取 OpenViking 记忆、再读取本地项目记忆，全过程只占用了约 9% 的上下文上限。</p>
+<p>需要注意，记忆抽取与向量写入是异步过程。若在上一会话结束后立即启动下一会话，可能出现提交已发出但记忆尚未进入可检索状态的短暂窗口。对强依赖上一阶段决策的自动化流程，应设置任务完成屏障，或在下一阶段开始前检查提交状态。</p>
+<h4 id="3-3-2-体验较好的部分">3.3.2 体验较好的部分</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">方面</th>
+<th style="text-align:left">实际感受</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left"><strong>确定性寻址</strong></td>
+<td style="text-align:left">Resource、Memory 与 Skill 统一使用 <code>viking://</code> URI，可通过 <code>ls</code>、<code>find</code>、<code>grep</code> 和 <code>read</code> 定位；召回结果能够回溯到具体路径。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>分层披露</strong></td>
+<td style="text-align:left">L0 用于相关性判断，L1 用于目录导航，L2 承载正文；只有确认相关后才读取详细内容。实测一次会话导入仅占上下文上限的约 9%。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>跨会话接续</strong></td>
+<td style="text-align:left">新会话可以恢复用户偏好、项目背景和上一阶段决策；五段长任务中，A2 完成 6/6 阶段，A0 完成 4/6。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>不破坏前缀缓存</strong></td>
+<td style="text-align:left">上下文注入采用追加方式，缓存写入占比为 4.64%，未高于未接入时的 4.72%。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>团队隔离</strong></td>
+<td style="text-align:left">同一服务内可共享项目 Resource，同时按用户隔离 Memory；account、user 与 peer 构成不同层次的访问边界。</td>
+</tr>
+<tr>
+<td style="text-align:left"><strong>可治理与可审计</strong></td>
+<td style="text-align:left">会话、记忆和检索轨迹均可观察；提交时生成变更记录，便于定位错误抽取和权限问题。</td>
+</tr>
+</tbody>
+</table>
+<p>实际使用中，记忆召回与普通回复的等待时间通常处于可接受范围。收益最明显的场景不是一次性短对话，而是数据库整理、多文件研究和持续开发等大上下文工作：任务持续时间越长，可复用的决策、偏好和经验越多，跨会话收益越容易覆盖固定接入成本。</p>
+<h4 id="3-3-3-当前边界">3.3.3 当前边界</h4>
+<ul>
+<li><strong>知识条目之间缺少横向关系。</strong> 当前优势主要来自目录与纵向分层，独立条目之间缺少可直接遍历的交叉引用。随着条目增加，仍需依赖全文扫描或向量检索发现关联。</li>
+<li><strong>早期路由错误难以后续纠正。</strong> 层级检索先确定目录、再检索文档；若目录阶段选择错误，正确文档不会进入候选集，后续 Rerank 无法恢复。本项目路由实验的 Top-1 为 49.2%、Top-3 为 74.2%，目录设计仍会直接影响召回上限。</li>
+<li><strong>接入存在固定成本。</strong> 工具定义、用户画像和自动召回增加约 5,350 Token 的首轮前缀；短任务可能只有开销，没有足够的后续轮次摊薄成本。</li>
+<li><strong>记忆质量不会自动得到保证。</strong> 错误、重复、冲突和过期内容仍需通过 Schema、抽取策略、容量限制、权限和清理机制治理。</li>
+<li><strong>不同宿主的生命周期能力不一致。</strong> 例如 Codex 被 <code>SIGTERM</code>、<code>Ctrl+C</code> 或 <code>/exit</code> 终止时可能不触发结束 Hook，需要在下次启动时回收孤儿会话。重要任务应正常结束或主动提交。</li>
+<li><strong>商业版成本需要提前评估。</strong> Session 会保存消息和工具输出；若按文件数量、文件大小、模型调用和流量计费，长期高频使用会形成持续费用。</li>
+<li><strong>自建服务具有明确的运维负担。</strong> 模型端点、向量一致性、队列恢复、版本差异、权限隔离和可观测性都需要专门配置。实测自建上游 <code>v0.4.12</code> 与商业版 <code>v0.4.17.3</code> 已存在能力差异，因此不能将不同版本的结果直接归因于部署形态。</li>
+</ul>
+<h4 id="3-3-4-适用场景判断">3.3.4 适用场景判断</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">更适合采用</th>
+<th style="text-align:left">不宜优先采用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">需要跨多次会话持续推进的研发或研究任务</td>
+<td style="text-align:left">一次会话即可完成、历史信息很少的短任务</td>
+</tr>
+<tr>
+<td style="text-align:left">多人或多 Agent 共享项目资料、但需要隔离个人记忆</td>
+<td style="text-align:left">只有少量静态文档、普通目录检索已经足够的场景</td>
+</tr>
+<tr>
+<td style="text-align:left">需要查看记忆来源、检索轨迹和变更记录的审计场景</td>
+<td style="text-align:left">无法承担模型、向量库、权限和队列维护成本的项目</td>
+</tr>
+<tr>
+<td style="text-align:left">上下文持续增长，重复阅读成本已经可观测的项目</td>
+<td style="text-align:left">要求写入后立即强一致可见、且不能设置等待屏障的流程</td>
+</tr>
+</tbody>
+</table>
+<p>综合来看，OpenViking 的核心价值是将上下文从一次性 Prompt 输入转化为可寻址、可分层、可复用和可治理的长期资产。它适合长周期协作与大上下文任务，但不替代 Agent 编排，也不会自动将低质量对话转化为高质量记忆；最终效果仍取决于数据组织、抽取策略、权限边界和持续评测。</p>
+<h2 id="4-迁移解剖与联想：上下文文件系统还缺什么">4 迁移解剖与联想：上下文文件系统还缺什么</h2>
+<p>前三节已经说明 OpenViking 的结构、检索链路和实测效果。本节不再重复功能清单，而是按照“迁移解剖—阻抗核对—联想推广”的方法回答三个问题：它从文件系统中迁移了什么，经典文件系统的哪些前提在 LLM 场景中不再成立，以及这些差异还能推出哪些可验证的设计。在本章节，加粗字体为比较有吸引力的可靠的内容。</p>
+<h3 id="4-1-原型界定：迁移的不是目录外观，而是上下文管理结构">4.1 原型界定：迁移的不是目录外观，而是上下文管理结构</h3>
+<p>OpenViking 的直接原型是文件系统，但它并非只借用了“文件夹”这一表面隐喻。真正发生迁移的是一组互相配合的机制：用统一命名空间组织异构数据，用路径提供确定性寻址，用目录缩小检索范围，用分层内容控制读取成本，再用会话提交把运行过程沉淀为长期记忆。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">经典系统中的角色</th>
+<th style="text-align:left">OpenViking 中的对应物</th>
+<th style="text-align:left">被保留的性质</th>
+<th style="text-align:left">面向 LLM 的改造</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">路径名</td>
+<td style="text-align:left"><code>viking://</code> URI</td>
+<td style="text-align:left">路径已知后可确定性定位</td>
+<td style="text-align:left">路径发现可由语义检索完成，结果具有概率性</td>
+</tr>
+<tr>
+<td style="text-align:left">目录</td>
+<td style="text-align:left">Resource、Memory、Skill 的层级树</td>
+<td style="text-align:left">分组、遍历和局部搜索</td>
+<td style="text-align:left">目录同时包含模型生成的摘要，可参与路由</td>
+</tr>
+<tr>
+<td style="text-align:left">文件正文</td>
+<td style="text-align:left">L2 详细内容</td>
+<td style="text-align:left">承载可完整读取的内容</td>
+<td style="text-align:left">正文既可能来自原始资源，也可能来自会话抽取</td>
+</tr>
+<tr>
+<td style="text-align:left">目录项与元数据</td>
+<td style="text-align:left">L0、L1、向量索引</td>
+<td style="text-align:left">先检查低成本信息，再决定是否读取正文</td>
+<td style="text-align:left">摘要与向量由模型生成，可能过期或失真</td>
+</tr>
+<tr>
+<td style="text-align:left">文件操作</td>
+<td style="text-align:left"><code>ls</code>、<code>tree</code>、<code>read</code>、<code>grep</code>、<code>glob</code>、<code>mv</code>、<code>rm</code> 等操作</td>
+<td style="text-align:left">操作对象和结果可追踪</td>
+<td style="text-align:left">通过 API、MCP 和自然语言工具调用暴露给 Agent</td>
+</tr>
+<tr>
+<td style="text-align:left">用户与进程边界</td>
+<td style="text-align:left">account、user、agent、peer 等作用域</td>
+<td style="text-align:left">形成不同层次的可见范围</td>
+<td style="text-align:left">权限边界无法等价为指令与数据的硬隔离</td>
+</tr>
+<tr>
+<td style="text-align:left">写入与整理</td>
+<td style="text-align:left">Session Commit、记忆抽取与索引任务</td>
+<td style="text-align:left">将临时状态转为可复用状态</td>
+<td style="text-align:left">提交包含压缩、抽取和异步索引，并非简单字节落盘</td>
+</tr>
+</tbody>
+</table>
+<p>由此可以区分三层迁移深度：</p>
+<ol>
+<li><strong>概念迁移已经明确发生。</strong> URI、目录树、文件操作和作用域直接借用了文件系统语言。</li>
+<li><strong>架构迁移已经形成主体。</strong> 命名空间、分层读取、确定性操作与检索索引共同参与运行，而非只用于界面展示。OpenViking 实际上更接近“虚拟文件系统 + 数据库索引 + 会话压缩管线”的组合。</li>
+<li><strong>问题迁移只完成了一部分。</strong> 上下文管理被重述为寻址、索引、装载和治理问题，但稳定身份、原子提交、锁、故障恢复和强权限等文件系统契约尚未完整迁入。</li>
+</ol>
+<p>其中，L0/L1/L2 不应简单理解为传统文件系统的缓存层。更准确的对应是“目录项/摘要/正文”三级披露：它们解决的是 Agent 应该看多少内容，而不是内核应该把哪些数据页保留在内存。Session Commit 也更接近日志压缩和物化视图生成，而不是 POSIX <code>fsync</code> 或完整事务。</p>
+<h3 id="4-2-阻抗失配：文件系统假设进入-LLM-场景后发生了什么">4.2 阻抗失配：文件系统假设进入 LLM 场景后发生了什么</h3>
+<p>原型迁移是否有效，取决于原系统的前提能否在新环境中成立。OpenViking 已经处理了部分失配，但尚未消除它们。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">文件系统中的隐含前提</th>
+<th style="text-align:left">LLM 场景中的失配</th>
+<th style="text-align:left">OpenViking 的处理</th>
+<th style="text-align:left">尚存代价或风险</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">给定路径即可确定定位</td>
+<td style="text-align:left">用户通常只表达意图，不知道 URI</td>
+<td style="text-align:left">用 <code>find/search</code> 发现候选，再用 <code>read(uri)</code> 确定读取</td>
+<td style="text-align:left">目录路由一旦选错，后续排序无法看到正确文档；路由实验 Top-1 仅 49.2%、Top-3 为 74.2%</td>
+</tr>
+<tr>
+<td style="text-align:left">一个对象通常位于一个父目录</td>
+<td style="text-align:left">同一知识可能同时属于多个主题、项目和任务</td>
+<td style="text-align:left">可依赖向量检索跨越目录发现内容</td>
+<td style="text-align:left"><strong>当前横向关系未形成主要检索通道，多归属仍依赖复制或概率检索</strong>横向记忆能力查，即一个类似内容在不同resource或记忆的相关。</td>
+</tr>
+<tr>
+<td style="text-align:left">写入完成后状态立即可见</td>
+<td style="text-align:left">摘要生成、向量化和记忆抽取是异步任务</td>
+<td style="text-align:left">通过任务队列完成派生数据写入</td>
+<td style="text-align:left">内容、摘要与索引可能短暂不一致，强依赖前序结果的流程需要完成屏障</td>
+</tr>
+<tr>
+<td style="text-align:left">系统调用具有严格参数和错误契约</td>
+<td style="text-align:left">Agent 通过自然语言选择并调用工具</td>
+<td style="text-align:left">MCP/API 将操作约束为结构化接口</td>
+<td style="text-align:left">工具选择仍可能出错，运行时校验不能省略</td>
+</tr>
+<tr>
+<td style="text-align:left">访问控制等于内容安全</td>
+<td style="text-align:left">文档内容还可能包含针对模型的恶意指令</td>
+<td style="text-align:left">account、user、peer 控制可见范围</td>
+<td style="text-align:left">命名空间不能提供硬件式“指令位”，Prompt Injection 仍需独立防护</td>
+</tr>
+<tr>
+<td style="text-align:left">保存进程状态可以近似恢复执行</td>
+<td style="text-align:left">模型内部状态不可序列化，长对话还必须压缩</td>
+<td style="text-align:left">保存消息并抽取事件、实体、偏好和摘要</td>
+<td style="text-align:left">恢复的是有损代理状态，不是模型思考过程的完整快照</td>
+</tr>
+<tr>
+<td style="text-align:left">元数据读取成本很低</td>
+<td style="text-align:left">L0/L1、Embedding 和 Rerank 都可能产生模型成本</td>
+<td style="text-align:left">以渐进披露减少不必要的 L2 读取</td>
+<td style="text-align:left"><strong>短任务可能无法摊薄约 5,350 Token 的固定接入开销</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">相同输入产生稳定测量</td>
+<td style="text-align:left">模型、网络端点和检索链路均存在波动</td>
+<td style="text-align:left">使用冻结数据集和相同过滤口径比较</td>
+<td style="text-align:left">长任务对照仍为 <code>n=1</code>，只能作为案例证据，不能视为稳定分布</td>
+</tr>
+</tbody>
+</table>
+<p>这组失配解释了第三节结果中的“收益与边界并存”：分层索引使 Recall@5 从 0.6255 提升到 0.6895，并将前五条结果中的目录节点数从 435 降至 36；与此同时，P95 从 394 ms 增至 437 ms。迁移解决了平均意义上的内容筛选，却没有自动消除长尾延迟、异步一致性和概率路由问题。</p>
+<h3 id="4-3-纵向联想：文件系统还有哪些机制可以继续迁移">4.3 纵向联想：文件系统还有哪些机制可以继续迁移</h3>
+<p>纵向联想不是把文件系统术语逐项照搬，而是从已经成立的角色映射中寻找缺口。结合当前实现与本地实验，可将候选机制分为“已有但未充分生效”和“尚需补足”两类。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">经典机制</th>
+<th style="text-align:left">当前状态或实验依据</th>
+<th style="text-align:left">可继续迁移的方向</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">inode 式稳定身份</td>
+<td style="text-align:left">URI 同时承担路径与对象定位；移动或重命名会改变外部地址</td>
+<td style="text-align:left">为上下文节点分配与路径无关的稳定 <code>context_id</code>，路径只作为目录项</td>
+</tr>
+<tr>
+<td style="text-align:left">硬链接、符号链接与反向链接</td>
+<td style="text-align:left">关系基础设施存在，但当前配置中 <code>memory.link_enabled = false</code>，检索也未使用反向链接加权</td>
+<td style="text-align:left">允许一个节点出现在多个主题下，并把引用关系纳入召回和解释</td>
+</tr>
+<tr>
+<td style="text-align:left">工作集与冷热分层</td>
+<td style="text-align:left"><code>retrieval.hotness_alpha = 0.0</code>，热度未参与排序；当前也没有自动容量上限和 LRU 式淘汰</td>
+<td style="text-align:left"><strong>建立工作集、冷存储和保留策略，限制长期记忆无限增长</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">目录分数向下传播</td>
+<td style="text-align:left"><code>retrieval.score_propagation_alpha = 1.0</code>，父目录得分未实际影响子节点排序</td>
+<td style="text-align:left">将可靠的目录路由信号传递给叶子节点，同时保留跨目录补救通道</td>
+</tr>
+<tr>
+<td style="text-align:left">WAL、事务与 <code>fsck</code></td>
+<td style="text-align:left">内容、摘要、向量和关系由多阶段任务生成，维护与孤儿清理仍需要显式执行</td>
+<td style="text-align:left">记录提交日志，并提供跨存储对账、重放与修复工具</td>
+</tr>
+<tr>
+<td style="text-align:left">快照、导入与备份</td>
+<td style="text-align:left">CLI 已有 snapshot 的 <code>commit/restore/log/diff</code>，也有 <code>export/import/backup/restore</code></td>
+<td style="text-align:left">重点不应是重复增加命令，而是验证快照是否覆盖全部派生索引及恢复一致性</td>
+</tr>
+<tr>
+<td style="text-align:left">mount 与 overlay</td>
+<td style="text-align:left">项目 Resource、个人 Memory 和 Skill 已有不同作用域</td>
+<td style="text-align:left"><strong>将组织政策、项目资料和个人上下文以只读层、可写层叠加，明确覆盖优先级</strong></td>
+</tr>
+<tr>
+<td style="text-align:left">capability 与只读挂载</td>
+<td style="text-align:left">已有身份和命名空间隔离</td>
+<td style="text-align:left">将“能看到”细化为可检索、可读取、可修改、可分享等最小能力</td>
+</tr>
+</tbody>
+</table>
+<p>这些候选项的优先级并不相同。稳定身份、原子提交和一致性检查直接影响数据正确性，应先于复杂图检索；关系遍历和热度淘汰只有在条目规模增长后才会显著体现收益；overlay 与细粒度 capability 则主要面向团队和多 Agent 场景。</p>
+<h3 id="4-4-横向联想：同一结构还能迁移到哪些-LLM-问题">4.4 横向联想：同一结构还能迁移到哪些 LLM 问题</h3>
+<p>OpenViking 可被抽象为一个更一般的结构：<strong>确定性地址 + 概率性发现 + 渐进式装载</strong>。只要目标问题也同时存在“对象很多、完整加载昂贵、最终操作必须可追踪”三个条件，这一结构就可能横向迁移。以下联想均给出角色映射、测量指标和失败条件，避免停留在表面类比。</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">候选场景</th>
+<th style="text-align:left">角色映射</th>
+<th style="text-align:left">可测指标</th>
+<th style="text-align:left">失败条件</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">MCP 工具定义按需加载</td>
+<td style="text-align:left">文件对应完整工具 Schema，URI 对应工具名，L0 是一句话用途，L1 是参数概览，L2 是完整 Schema 与说明</td>
+<td style="text-align:left">系统前缀 Token、工具选择准确率、首次调用延迟</td>
+<td style="text-align:left">模型在未读取 L2 前无法可靠选中工具，或节省的 Token 小于额外路由成本</td>
+</tr>
+<tr>
+<td style="text-align:left">多 Agent 共享工作区</td>
+<td style="text-align:left">文件对应任务上下文片段，目录对应项目/任务树，Commit 对应 Agent 结果提交，版本号用于发现并发修改</td>
+<td style="text-align:left">重复读取量、冲突率、合并耗时、任务完成质量</td>
+<td style="text-align:left">共享结构增加协调开销，却没有降低重复工作或冲突</td>
+</tr>
+<tr>
+<td style="text-align:left">政策与指令治理</td>
+<td style="text-align:left">组织、项目、用户政策分别映射为只读挂载层，Agent 只获得任务所需 capability</td>
+<td style="text-align:left">无权访问率、越权修改率、政策命中率、提示词开销</td>
+<td style="text-align:left">内容中的恶意指令仍越过政策层，或层间优先级无法确定</td>
+</tr>
+</tbody>
+</table>
+<p>第一项具有直接的实验动机：当前 13 个 OpenViking MCP 工具带来约 5,350 Token 的固定前缀。如果只常驻工具的 L0 索引，在确定需要后再加载完整 Schema，理论上可以降低短任务的固定成本。但这一方案只有在工具选择准确率不下降时才成立，不能仅以 Token 下降判定成功。</p>
+<h3 id="4-5-反向联想：LLM-的特化机制能否回流经典系统">4.5 反向联想：LLM 的特化机制能否回流经典系统</h3>
+<p>迁移并非只能从经典系统流向 LLM。OpenViking 为概率模型增加确定性边界时形成的机制，也可以反向用于传统信息系统：</p>
+<ul>
+<li><strong>语义寻址回流文档库或 IDE。</strong> 用户先用自然语言描述意图，系统返回可审计的规范路径、命中理由和遍历轨迹；语义检索负责发现，路径负责后续确定操作。</li>
+<li><strong>L0/L1 边车回流数据湖和归档系统。</strong> 为大文件生成一行摘要和结构概览，使人或自动化程序在打开全文前完成低成本筛选。</li>
+<li><strong>会话压缩回流客服与事故知识库。</strong> 将连续日志抽取为事件、实体、决策和待办，同时保留到原始记录的引用，降低复盘时的全量读取成本。</li>
+</ul>
+<p>反向迁移同样有边界：生成式摘要与语义寻址具有概率性，不应进入内核启动、账务一致性或安全授权等要求确定正确的关键路径。它们适合承担发现、导航和解释，最终修改仍应落到规范路径、版本和强校验接口上。</p>
+<h3 id="4-6-候选设计：稳定上下文身份与原子提交">4.6 候选设计：稳定上下文身份与原子提交</h3>
+<p>综合纵向和横向联想，可以提出一个可证伪的候选设计：<strong>稳定上下文身份 + 多父关系 + 原子上下文提交</strong>。该设计属于推断，不代表 OpenViking 当前已经实现。</p>
+<p>设计包含五项最小改动：</p>
+<ol>
+<li>每个上下文节点获得不可随移动和重命名变化的 <code>context_id</code>，<code>viking://</code> URI 退化为指向该节点的目录项。</li>
+<li>关系限定为少量有类型的边，例如 <code>contains</code>、<code>references</code>、<code>supersedes</code> 和 <code>derived_from</code>，避免无约束知识图谱膨胀。</li>
+<li>同一节点可以通过多个路径或链接出现，但正文只保存一份；反向链接可用于解释召回来源。</li>
+<li>一次 Commit 必须共同覆盖正文、L0/L1、向量记录和关系更新；失败时能够整体回滚或根据日志重放。</li>
+<li>提供 <code>fsck</code> 式对账，检查正文、目录树、向量索引和反向链接，并结合引用计数与保留策略回收孤儿节点。</li>
+</ol>
+<blockquote>
+<p>借用wiki的存储方法，可参考llm-wiki</p>
+</blockquote>
+<p>该设计应在生产基线 <code>v0.4.12</code> 上使用同一冻结的 288 条查询集验证，并增加跨目录引用、移动/重命名和故障注入三类测试。接受标准至少包括：Recall@5 与 MRR 不退化，跨目录子集的召回显著改善；移动或重命名不触发无必要的重新 Embedding；在正文写入与向量写入之间注入失败后，对账恢复的陈旧记录和孤儿记录均为 0；P95 检索延迟增幅不超过预先声明的 10%。精度差异应使用配对 Bootstrap 置信区间，而不是只比较单次点估计。</p>
+<p>如果多父关系没有改善跨目录召回，或一致性与延迟成本超过上述阈值，就应否决该设计，而不是因为它“更像文件系统”而保留。由此可见，OpenViking 最有价值的迁移不是目录界面本身，而是把不可控的上下文堆积改写为可寻址、可装载、可审计的问题；<strong>其下一阶段的关键，也不是增加更多文件系统术语，而是补足稳定身份、一致性和关系治理，并用可重复实验判断这些机制是否真正改善 Agent 工作。</strong></p>
+<h2 id="5-相关项目扩展分享">5 相关项目扩展分享</h2>
+<p>本节选择两个与 OpenViking 具有直接可比性的项目。它们都把 Agent 的长期状态从一次性 Prompt 中拆出来，但解决的问题并不相同：MemFS 解决“运行中的 Agent 如何组织和修改记忆”，<code>agent-file</code> 解决“一个已经形成的 Agent 如何被打包、迁移和复现”。前者偏运行时，后者偏交换格式。</p>
+<h3 id="5-1-Letta-MemFS：把记忆变成可提交的工作区">5.1 Letta MemFS：把记忆变成可提交的工作区</h3>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://docs.letta.com/concepts/memfs">MemFS | Letta Docs</a></p>
+<h4 id="5-1-1-核心概念">5.1.1 核心概念</h4>
+<p>MemFS（Memory File System）是 Letta Agent 使用的 Git-backed memory filesystem，也可以理解为 Agent 的上下文仓库。每个 Agent 拥有一个 Git 仓库，Letta 将仓库投影为 Agent 当前运行环境中的真实目录；Agent 通过普通的文件工具读取和修改 Markdown 文件，修改在提交前属于本地工作区，提交并推送后才成为其他运行位置可见的长期记忆。</p>
+<p>它的关键抽象不是“把聊天记录存成文件”，而是把记忆拆成三种状态：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">状态</th>
+<th style="text-align:left">典型位置或对象</th>
+<th style="text-align:left">对上下文的意义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">当前身份与硬约束</td>
+<td style="text-align:left"><code>system/</code> 下的 <code>persona.md</code>、<code>human.md</code> 等</td>
+<td style="text-align:left">每轮注入，保证 Agent 的基本身份和关键偏好稳定</td>
+</tr>
+<tr>
+<td style="text-align:left">可按需读取的长期知识</td>
+<td style="text-align:left"><code>reference/</code>、项目目录、主题目录</td>
+<td style="text-align:left">文件树常驻为路标，正文只有在需要时才读取</td>
+</tr>
+<tr>
+<td style="text-align:left">可复用的行为程序</td>
+<td style="text-align:left"><code>skills/</code> 下的技能文件</td>
+<td style="text-align:left">记忆与工具使用方法一起版本化，形成可迁移工作流</td>
+</tr>
+</tbody>
+</table>
+<p>每个记忆文件可以带 YAML frontmatter，用于描述其用途；文件名和目录名本身也承担索引作用。也就是说，MemFS 把“哪些内容始终在上下文中”和“哪些内容需要主动读取”编码进文件布局，而不是把所有历史对话都塞进上下文窗口。</p>
+<h4 id="5-1-2-实现原理">5.1.2 实现原理</h4>
+<p>MemFS 的运行链路可以概括为“工作区投影—文件编辑—Git 提交—跨位置同步”：</p>
+<ol>
+<li><strong>仓库投影。</strong> Letta 将 Agent 所属的 Git 仓库检出为运行时目录，Agent 看到的是普通路径，而不是专有记忆 API。</li>
+<li><strong>渐进式装载。</strong> <code>system/</code> 文件在每轮系统提示中加载；其他目录只把树结构作为路标，Agent 通过 <code>ls</code>、搜索和读取工具按需打开。</li>
+<li><strong>提交形成边界。</strong> 文件修改先留在工作区；提交后形成版本节点，云端 Agent 再将提交推送到托管仓库，从而在其他设备或运行环境中同步。</li>
+<li><strong>并发修改使用 Git 机制。</strong> 记忆子 Agent 可以使用 worktree 独立修改，主 Agent 通过提交、合并和冲突处理收敛结果，而不是直接覆盖同一份文本。</li>
+<li><strong>搜索与会话历史分离。</strong> 普通文件搜索可直接检索 MemFS；语义或混合搜索需要额外的 Search Mod 和 QMD 索引；聊天消息历史则是另一条检索链路，不能把两者的召回结果混为一谈。</li>
+</ol>
+<p>这种设计把“写入记忆”降格为 Agent 熟悉的文件编辑行为，使记忆治理可以复用 Git 的提交、差异、回滚和分支语义。需要注意，Git 只保证版本可追踪和冲突可见，并不保证写入内容正确；错误记忆同样可以被可靠地提交。</p>
+<h4 id="5-1-3-主要优点、缺点与预期收益">5.1.3 主要优点、缺点与预期收益</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">预期收益</th>
+<th style="text-align:left">形成原因</th>
+<th style="text-align:left">需要监测的边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">降低每轮上下文开销</td>
+<td style="text-align:left">仅将核心身份放入 <code>system/</code>，其余内容按需读取</td>
+<td style="text-align:left">文件树和摘要过长时仍会占用固定 Token</td>
+</tr>
+<tr>
+<td style="text-align:left">提高记忆可解释性</td>
+<td style="text-align:left">每条记忆有路径、正文、提交记录和差异</td>
+<td style="text-align:left">Agent 可能选择错误路径，文件存在不等于被正确使用</td>
+</tr>
+<tr>
+<td style="text-align:left">支持回滚与审计</td>
+<td style="text-align:left">Git commit、diff 和分支提供历史</td>
+<td style="text-align:left">合并冲突、重复事实和过期偏好仍需人工或规则治理</td>
+</tr>
+<tr>
+<td style="text-align:left">支持跨设备接续</td>
+<td style="text-align:left">提交推送后，其他投影可拉取同一仓库</td>
+<td style="text-align:left">本地 Agent 未提交的修改不会自动同步</td>
+</tr>
+<tr>
+<td style="text-align:left">复用现有工具链</td>
+<td style="text-align:left">文件读写、搜索和版本控制无需重新发明接口</td>
+<td style="text-align:left">仅有关键词搜索时，语义相关但词面不同的内容可能漏召回</td>
+</tr>
+</tbody>
+</table>
+<p><strong>主要优点</strong></p>
+<ul>
+<li><strong>记忆可审阅。</strong> 记忆就是普通 Markdown 文件，路径、正文和 Git diff 都可以直接检查，适合人工纠错。</li>
+<li><strong>版本可追踪。</strong> Commit、分支和 worktree 为修改提供时间线，能够回滚到已知状态，并显式暴露并发冲突。</li>
+<li><strong>上下文开销可控。</strong> <code>system/</code> 中的核心内容常驻，其余内容通过文件树和工具按需读取，不必将全部历史对话放入每轮 Prompt。</li>
+<li><strong>迁移成本较低。</strong> Agent 可以复用文件读写、搜索和 Git 工具，不需要为每一种记忆类型设计专用接口。</li>
+</ul>
+<p><strong>主要缺点</strong></p>
+<ul>
+<li><strong>检索能力依赖工具。</strong> MemFS 默认不是向量数据库；只使用关键词搜索时，表达不同但语义相近的记忆可能无法命中。</li>
+<li><strong>记忆质量不会自动提高。</strong> Git 能保证版本和差异可见，不能判断内容是否错误、重复、过期或相互矛盾。</li>
+<li><strong>提交存在同步窗口。</strong> 未提交或未推送的修改不会出现在其他运行环境；并发修改还需要处理合并冲突。</li>
+<li><strong>运行时边界偏单 Agent。</strong> MemFS 主要围绕一个 Agent 的仓库设计，多 Agent 共享、跨租户权限和统一索引需要额外系统支持。</li>
+</ul>
+<p>与 OpenViking 相比，MemFS 更强调“让 Agent 像开发者一样编辑记忆”，OpenViking 更强调“服务端统一管理多种上下文并进行分层检索”。MemFS 的确定性来自 Git 路径和提交历史，OpenViking 的发现能力更多来自摘要、Embedding 和目录路由；前者更容易审阅和回滚，后者更适合多租户、跨资源检索与集中治理。</p>
+<h3 id="5-2-Agent-File（-af）：把-Agent-状态做成可交换文件">5.2 Agent File（<code>.af</code>）：把 Agent 状态做成可交换文件</h3>
+<p>原文链接：<a target="_blank" rel="noopener" href="https://github.com/letta-ai/agent-file">letta-ai/agent-file</a></p>
+<h4 id="5-2-1-核心概念">5.2.1 核心概念</h4>
+<p>Agent File 是面向有状态 Agent 的开放文件格式。它不是一个运行时文件系统，而是一份可以导出、下载、导入和归档的 Agent 状态包。当前仓库中的 <code>.af</code> 示例本质上是结构化 JSON，顶层包含 <code>agents</code>、<code>groups</code>、<code>blocks</code>、<code>files</code>、<code>sources</code>、<code>tools</code>、<code>mcp_servers</code>、<code>metadata</code> 和 <code>created_at</code> 等对象。</p>
+<p>其目标是把重建一个 Agent 所需的关键状态集中到同一份文件中，典型内容包括：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">状态类别</th>
+<th style="text-align:left"><code>.af</code> 中的内容</th>
+<th style="text-align:left">迁移时的作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">模型配置</td>
+<td style="text-align:left">模型名称、上下文窗口、Embedding 模型等</td>
+<td style="text-align:left">指定运行时能力边界和默认配置</td>
+</tr>
+<tr>
+<td style="text-align:left">行为定义</td>
+<td style="text-align:left">System Prompt、Tool Rules、标签</td>
+<td style="text-align:left">保留 Agent 的身份、行为约束和工具调用顺序</td>
+</tr>
+<tr>
+<td style="text-align:left">记忆与历史</td>
+<td style="text-align:left">Memory Blocks、消息历史及 <code>in_context</code> 标记</td>
+<td style="text-align:left">恢复个性、用户信息和当前上下文窗口</td>
+</tr>
+<tr>
+<td style="text-align:left">工具实现</td>
+<td style="text-align:left">工具源码、JSON Schema、执行环境变量</td>
+<td style="text-align:left">让 Agent 不只“知道工具”，还携带工具契约</td>
+</tr>
+<tr>
+<td style="text-align:left">外部引用</td>
+<td style="text-align:left">files、sources、MCP server 配置等</td>
+<td style="text-align:left">描述 Agent 依赖的文件或外部服务</td>
+</tr>
+<tr>
+<td style="text-align:left">安全字段</td>
+<td style="text-align:left">导出时将 secrets 置为 <code>null</code></td>
+<td style="text-align:left">避免把凭据直接打包进可分享文件</td>
+</tr>
+</tbody>
+</table>
+<p>因此，<code>.af</code> 更接近“可移植的 Agent 镜像或检查点”，而不是单独的 Prompt 模板。它保存的不只是知识，还包括行为、工具和一部分运行历史。</p>
+<h4 id="5-2-2-实现原理">5.2.2 实现原理</h4>
+<p>Agent File 的实现重点在序列化协议和适配器，而不是检索算法：</p>
+<ol>
+<li><strong>导出。</strong> 从 Letta 服务中读取 Agent 的配置、记忆块、消息、工具和相关引用，按照统一 Schema 生成 <code>.af</code> JSON 文件。</li>
+<li><strong>验证。</strong> 导入方先校验版本、必填字段、对象 ID 和引用关系，再决定哪些字段能映射到本地框架。</li>
+<li><strong>映射。</strong> 将 <code>system</code>、blocks、tools、messages 等元素映射到目标框架的系统提示、记忆、工具注册和历史消息结构；无法一一对应的功能必须显式降级或拒绝导入。</li>
+<li><strong>重建。</strong> 创建新的 Agent 实例，重新绑定模型端点、执行环境和权限；<code>.af</code> 本身不应携带可直接使用的生产密钥。</li>
+<li><strong>版本化。</strong> <code>.af</code> 可以作为仓库中的二进制/文本资产进行版本控制，也可以作为发布物在不同环境中导入，形成“导出—修改—再导入”的检查点循环。</li>
+</ol>
+<p>这套机制的难点不是 JSON 能否解析，而是不同框架对“记忆块”“归档记忆”“工具状态”和“上下文窗口”的语义并不相同。项目 README 已将 Passages、数据源、MCP 配置迁移、多 Agent 文件和跨框架转换列为后续方向，说明当前格式仍主要围绕 Letta 的状态模型设计。</p>
+<h4 id="5-2-3-主要优点、缺点与预期收益">5.2.3 主要优点、缺点与预期收益</h4>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">预期收益</th>
+<th style="text-align:left">形成原因</th>
+<th style="text-align:left">需要监测的边界</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">Agent 可携带、可分发</td>
+<td style="text-align:left">一个文件集中描述行为、记忆和工具</td>
+<td style="text-align:left">外部模型、数据库、文件和网络服务仍需另行准备</td>
+</tr>
+<tr>
+<td style="text-align:left">检查点与回滚</td>
+<td style="text-align:left">导出文件可保存某一时刻的完整状态</td>
+<td style="text-align:left">导出时未包含的远程状态无法通过回滚恢复</td>
+</tr>
+<tr>
+<td style="text-align:left">跨环境部署</td>
+<td style="text-align:left">ADE、REST API 和 SDK 都可以导入</td>
+<td style="text-align:left">跨框架语义不一致时，导入可能只是近似重建</td>
+</tr>
+<tr>
+<td style="text-align:left">形成 Agent 生态</td>
+<td style="text-align:left">代理可以像模型、插件一样发布和复用</td>
+<td style="text-align:left">工具源码和提示词的供应链安全需要审核、签名和沙箱</td>
+</tr>
+<tr>
+<td style="text-align:left">便于研究复现</td>
+<td style="text-align:left">配置、历史和工具契约集中保存</td>
+<td style="text-align:left">相同文件在不同模型版本、采样参数和外部数据下不保证相同输出</td>
+</tr>
+</tbody>
+</table>
+<p><strong>主要优点</strong></p>
+<ul>
+<li><strong>状态打包完整。</strong> System Prompt、记忆块、消息历史、工具定义和模型配置可以放在同一个可传输对象中，比单独分享 Prompt 更接近完整 Agent。</li>
+<li><strong>部署和分发简单。</strong> <code>.af</code> 可通过 ADE、REST API 或 SDK 导入，适合制作模板、检查点和可下载的 Agent 资产。</li>
+<li><strong>便于版本化与归档。</strong> 文件可以进入 Git、制品库或研究数据集，支持差异比较、回滚和长期保存。</li>
+<li><strong>有利于生态互操作。</strong> 统一 Schema 为其他框架提供了适配入口，降低 Agent 在不同平台之间迁移的起始成本。</li>
+</ul>
+<p><strong>主要缺点</strong></p>
+<ul>
+<li><strong>跨框架迁移仍是近似转换。</strong> 不同系统对记忆块、归档记忆、工具生命周期和上下文窗口的定义不同，导入后可能需要人工修复。</li>
+<li><strong>外部依赖没有被真正封装。</strong> 模型端点、数据库、文件、网络服务和运行权限通常需要在目标环境重新配置。</li>
+<li><strong>行为不可完全复现。</strong> 模型版本、采样参数、工具返回值和外部数据变化，都可能让同一个 <code>.af</code> 产生不同结果。</li>
+<li><strong>供应链风险集中。</strong> 文件可能同时携带系统提示、个人记忆和工具代码；导入前必须进行来源、Schema、权限、沙箱和敏感信息审查。</li>
+<li><strong>状态覆盖仍不完整。</strong> 当前格式对 Passages、数据源、多 Agent 状态和跨框架自动转换等能力仍有限，不能等同于完整运行时快照。</li>
+</ul>
+<p><code>.af</code> 文件还存在一个容易被忽略的安全边界：它可能同时包含系统提示、用户信息和工具代码。导入不能等同于“打开一个文档”，而应经过来源校验、Schema 校验、工具权限审查、代码沙箱和密钥重新注入。尤其不能因为 secrets 被置为 <code>null</code>，就认为整个文件没有敏感信息；记忆块和历史消息本身仍可能包含个人数据、内部地址或业务机密。</p>
+<h3 id="5-3-两个项目与-OpenViking-的关系">5.3 两个项目与 OpenViking 的关系</h3>
+<p>三者可以按“运行时管理—记忆编辑—状态交换”划分，而不是简单按“谁更像文件系统”排序：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">系统</th>
+<th style="text-align:left">主要回答的问题</th>
+<th style="text-align:left">状态边界</th>
+<th style="text-align:left">核心机制</th>
+<th style="text-align:left">最适合的场景</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">OpenViking</td>
+<td style="text-align:left">如何在大量上下文中发现、分层读取和治理内容</td>
+<td style="text-align:left">Resource、Memory、Skill、Session 及其索引</td>
+<td style="text-align:left"><code>viking://</code> 命名空间、L0/L1/L2、向量检索、异步提交</td>
+<td style="text-align:left">长周期研发、跨会话记忆、多 Agent 共享资源</td>
+</tr>
+<tr>
+<td style="text-align:left">Letta MemFS</td>
+<td style="text-align:left">Agent 如何以文件方式编辑和版本化自己的记忆</td>
+<td style="text-align:left">单个 Agent 的 Git-backed memory repository</td>
+<td style="text-align:left">真实工作区、Markdown、Git commit、branch/worktree</td>
+<td style="text-align:left">需要人工审阅、回滚和跨设备同步的 Agent</td>
+</tr>
+<tr>
+<td style="text-align:left">Agent File</td>
+<td style="text-align:left">如何把一个有状态 Agent 打包和迁移</td>
+<td style="text-align:left">Agent 配置、记忆、历史、工具和元数据</td>
+<td style="text-align:left">Schema 序列化、导出/导入、检查点</td>
+<td style="text-align:left">发布代理、环境迁移、实验复现和归档</td>
+</tr>
+</tbody>
+</table>
+<p>一个更完整的组合架构可以是：<strong>用 <code>.af</code> 保存可迁移的 Agent 初始状态，用 MemFS 管理 Agent 的可审阅工作区，再用 OpenViking 承担跨 Agent、跨项目的长期资源检索。</strong> 这相当于把 Agent 状态拆为三层：</p>
+<figure class="highlight text"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Agent File (.af)  -&gt;  可迁移的初始快照：身份、工具、记忆块、历史</span><br><span class="line">        |</span><br><span class="line">        v</span><br><span class="line">MemFS             -&gt;  可编辑的工作区：文件、提交、分支、审阅、回滚</span><br><span class="line">        |</span><br><span class="line">        v</span><br><span class="line">OpenViking       -&gt;  可检索的上下文服务：URI、分层摘要、向量索引、跨范围召回</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>这种组合的收益不是简单叠加。<code>.af</code> 解决“带着 Agent 走”，MemFS 解决“看得见并改得回去”，OpenViking 解决“内容多了以后还能找得到”。但组合也引入了同步协议问题：<code>.af</code> 导入后的初始记忆与 MemFS 提交如何对应，MemFS 的文件修改何时进入 OpenViking 索引，OpenViking 召回的外部资源是否允许被重新导出，都需要明确版本号、来源和权限。</p>
+<h3 id="5-4-思想感悟：Agent-的“记忆”正在分化为多种可治理状态">5.4 思想感悟：Agent 的“记忆”正在分化为多种可治理状态</h3>
+<p>这两个项目与 OpenViking 放在一起，最值得关注的并不是又出现了两个文件格式，而是 Agent 状态正在从一个模糊的“Memory”概念分化为至少四类对象：</p>
+<ol>
+<li><strong>工作记忆。</strong> 当前对话和当前上下文窗口中的内容，追求低延迟和任务相关性。</li>
+<li><strong>长期知识。</strong> 可以跨会话复用的事实、偏好、项目资料和经验，追求可发现性与更新质量。</li>
+<li><strong>行为程序。</strong> System Prompt、技能、工具 Schema 和调用规则，决定 Agent 如何行动。</li>
+<li><strong>可迁移状态。</strong> 能被导出、审计、复制和恢复的配置与检查点，追求格式稳定性和边界清晰。</li>
+</ol>
+<p>文件系统的启发在于：不同状态不必全部塞进同一个地址空间，可以通过目录、权限、版本和装载策略进行分层。但 LLM 又提出了一个经典文件系统没有的要求：内容不仅被读取，还可能被模型解释为指令。因此，<strong>“可寻址”不等于“可信”，“可恢复”也不等于“行为完全复现”。</strong> 文件路径解决的是找到什么，版本记录解决的是何时改变，安全策略和评测才解决应该不应该采用。</p>
+<p>从工程角度看，未来更值得优先建设的不是统一一个巨大的 Agent 文件，而是统一以下元数据：来源、所有者、版本、有效期、敏感级别、可执行性、依赖模型和验证结果。这样，OpenViking 的检索、MemFS 的提交和 <code>.af</code> 的导入才能共享同一套治理语言。</p>
+<h3 id="5-5-可验证的扩展方向">5.5 可验证的扩展方向</h3>
+<p>可以围绕三类任务建立一个小型对照实验，而不是仅凭项目叙述判断优劣：</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">实验</th>
+<th style="text-align:left">对照</th>
+<th style="text-align:left">主要指标</th>
+<th style="text-align:left">预期观察</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">跨会话任务接续</td>
+<td style="text-align:left">OpenViking、MemFS、纯 Prompt 历史</td>
+<td style="text-align:left">任务完成率、首轮 Token、错误记忆率</td>
+<td style="text-align:left">长任务中，分层记忆应降低重复阅读；错误抽取率不能显著上升</td>
+</tr>
+<tr>
+<td style="text-align:left">Agent 迁移与恢复</td>
+<td style="text-align:left"><code>.af</code> 导入前后、不同模型端点</td>
+<td style="text-align:left">恢复成功率、工具调用正确率、人工修复项数</td>
+<td style="text-align:left">配置和记忆可恢复，但外部依赖与模型差异会造成部分降级</td>
+</tr>
+<tr>
+<td style="text-align:left">并发编辑与回滚</td>
+<td style="text-align:left">MemFS Git 提交、OpenViking 异步 Commit</td>
+<td style="text-align:left">冲突率、丢失更新数、索引陈旧时间</td>
+<td style="text-align:left">Git 更擅长发现冲突，OpenViking 更擅长集中检索；两者都需要一致性屏障</td>
+</tr>
+</tbody>
+</table>
+<p>实验结论应分别报告检索效果、上下文成本、行为一致性和安全事件，不能只用“能否成功回答”一个指标概括。对 Agent 系统而言，真正的工程收益是让状态具有清晰的生命周期：<strong>能够找到、能够解释、能够修改、能够回滚，也能够在不可信时拒绝加载。</strong></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/">http://cjh0220.github.io/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/LLM%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B/">LLM中的CS原型</a></div><div class="post_share"><div class="social-share" data-image="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/"><img class="prev-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of previous post"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</div></div></a></div><div class="next-post pull-right"><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E9%9B%B6%EF%BC%89/"><img class="next-cover" src="https://s1.imagehub.cc/images/2026/09/20/4f4cbd8414cd0a091509b30567f22686.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLM新技术中的CS原型（零）</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</div></div></a></div><div><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E9%9B%B6%EF%BC%89/" title="LLM新技术中的CS原型（零）"><img class="cover" src="https://s1.imagehub.cc/images/2026/09/20/4f4cbd8414cd0a091509b30567f22686.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2026-11-10</div><div class="title">LLM新技术中的CS原型（零）</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">LLM新技术中的CS原型（一）OpenViking：上下文像文件系统一样组织</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E9%A1%B9%E7%9B%AE%E4%BB%8B%E7%BB%8D"><span class="toc-number">1.1.</span> <span class="toc-text">1 项目介绍</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E7%B3%BB%E7%BB%9F%E6%A6%82%E8%BF%B0"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 系统概述</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9D%97"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 核心模块</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Service-%E5%B1%82"><span class="toc-number">1.1.3.</span> <span class="toc-text">1.3 Service 层</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-4%E5%8F%8C%E5%B1%82%E5%AD%98%E5%82%A8"><span class="toc-number">1.1.4.</span> <span class="toc-text">1.4双层存储</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-5-%E6%95%B0%E6%8D%AE%E6%B5%81%E6%A6%82%E8%A7%88"><span class="toc-number">1.1.5.</span> <span class="toc-text">1.5 数据流概览</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%B7%BB%E5%8A%A0%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">1.1.5.1.</span> <span class="toc-text">添加上下文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A3%80%E7%B4%A2%E4%B8%8A%E4%B8%8B%E6%96%87"><span class="toc-number">1.1.5.2.</span> <span class="toc-text">检索上下文</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BC%9A%E8%AF%9D%E6%8F%90%E4%BA%A4"><span class="toc-number">1.1.5.3.</span> <span class="toc-text">会话提交</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-6-%E8%AE%BE%E8%AE%A1%E5%8E%9F%E5%88%99"><span class="toc-number">1.1.6.</span> <span class="toc-text">1.6 设计原则</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E6%A0%B8%E5%BF%83%E6%A8%A1%E5%9E%8B"><span class="toc-number">1.2.</span> <span class="toc-text">2 核心模型</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-%E4%B8%8A%E4%B8%8B%E6%96%87%E7%B1%BB%E5%9E%8B"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 上下文类型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%8A%E4%B8%8B%E6%96%87%E5%B1%82%E7%BA%A7%EF%BC%88L0-L1-L2%EF%BC%89"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 上下文层级（L0&#x2F;L1&#x2F;L2）</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#L0%EF%BC%9A%E6%91%98%E8%A6%81"><span class="toc-number">1.2.2.1.</span> <span class="toc-text">L0：摘要</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#L1%EF%BC%9A%E6%A6%82%E8%A7%88"><span class="toc-number">1.2.2.2.</span> <span class="toc-text">L1：概览</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#L2%EF%BC%9A%E8%AF%A6%E6%83%85"><span class="toc-number">1.2.2.3.</span> <span class="toc-text">L2：详情</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E7%9B%AE%E5%BD%95%E7%BB%93%E6%9E%84"><span class="toc-number">1.2.2.4.</span> <span class="toc-text">目录结构</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-Viking-URI"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 Viking URI</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%A0%BC%E5%BC%8F"><span class="toc-number">1.2.3.1.</span> <span class="toc-text">格式</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E4%BD%9C%E7%94%A8%E5%9F%9F"><span class="toc-number">1.2.3.2.</span> <span class="toc-text">作用域</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-%E5%AE%9E%E9%99%85%E8%A1%A8%E7%8E%B0"><span class="toc-number">1.3.</span> <span class="toc-text">3 实际表现</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E5%AE%98%E6%96%B9%E5%AE%9E%E9%AA%8C%E6%88%AA%E5%9B%BE"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 官方实验截图</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E9%95%BF%E6%9C%9F%E8%AE%B0%E5%BF%86%E5%87%86%E7%A1%AE%E7%8E%87%E5%AF%B9%E6%AF%94"><span class="toc-number">1.3.1.1.</span> <span class="toc-text">长期记忆准确率对比</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%80%BB%E8%BE%93%E5%85%A5-Token-%E6%B6%88%E8%80%97%E5%AF%B9%E6%AF%94"><span class="toc-number">1.3.1.2.</span> <span class="toc-text">总输入 Token 消耗对比</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E8%87%AA%E6%B5%8B%E5%AE%9E%E9%AA%8C"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 自测实验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-1-%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%AE%9E%E9%AA%8C%E8%AE%BE%E8%AE%A1"><span class="toc-number">1.3.2.1.</span> <span class="toc-text">3.2.1 长任务实验设计</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-2-%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%AE%9E%E9%AA%8C%E7%BB%93%E6%9E%9C"><span class="toc-number">1.3.2.2.</span> <span class="toc-text">3.2.2 长任务实验结果</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-2-3-%E8%B5%84%E6%BA%90%E6%A3%80%E7%B4%A2%E7%BB%88%E9%AA%8C"><span class="toc-number">1.3.2.3.</span> <span class="toc-text">3.2.3 资源检索终验</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-%E4%BD%BF%E7%94%A8%E4%BD%93%E9%AA%8C"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 使用体验</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-1-%E6%8E%A5%E5%85%A5%E4%B8%8E%E6%97%A5%E5%B8%B8%E4%BD%BF%E7%94%A8"><span class="toc-number">1.3.3.1.</span> <span class="toc-text">3.3.1 接入与日常使用</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-2-%E4%BD%93%E9%AA%8C%E8%BE%83%E5%A5%BD%E7%9A%84%E9%83%A8%E5%88%86"><span class="toc-number">1.3.3.2.</span> <span class="toc-text">3.3.2 体验较好的部分</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-3-%E5%BD%93%E5%89%8D%E8%BE%B9%E7%95%8C"><span class="toc-number">1.3.3.3.</span> <span class="toc-text">3.3.3 当前边界</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3-3-4-%E9%80%82%E7%94%A8%E5%9C%BA%E6%99%AF%E5%88%A4%E6%96%AD"><span class="toc-number">1.3.3.4.</span> <span class="toc-text">3.3.4 适用场景判断</span></a></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%BF%81%E7%A7%BB%E8%A7%A3%E5%89%96%E4%B8%8E%E8%81%94%E6%83%B3%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E8%BF%98%E7%BC%BA%E4%BB%80%E4%B9%88"><span class="toc-number">1.4.</span> <span class="toc-text">4 迁移解剖与联想：上下文文件系统还缺什么</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E5%8E%9F%E5%9E%8B%E7%95%8C%E5%AE%9A%EF%BC%9A%E8%BF%81%E7%A7%BB%E7%9A%84%E4%B8%8D%E6%98%AF%E7%9B%AE%E5%BD%95%E5%A4%96%E8%A7%82%EF%BC%8C%E8%80%8C%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E7%AE%A1%E7%90%86%E7%BB%93%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 原型界定：迁移的不是目录外观，而是上下文管理结构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E9%98%BB%E6%8A%97%E5%A4%B1%E9%85%8D%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E5%81%87%E8%AE%BE%E8%BF%9B%E5%85%A5-LLM-%E5%9C%BA%E6%99%AF%E5%90%8E%E5%8F%91%E7%94%9F%E4%BA%86%E4%BB%80%E4%B9%88"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 阻抗失配：文件系统假设进入 LLM 场景后发生了什么</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E7%BA%B5%E5%90%91%E8%81%94%E6%83%B3%EF%BC%9A%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E8%BF%98%E6%9C%89%E5%93%AA%E4%BA%9B%E6%9C%BA%E5%88%B6%E5%8F%AF%E4%BB%A5%E7%BB%A7%E7%BB%AD%E8%BF%81%E7%A7%BB"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 纵向联想：文件系统还有哪些机制可以继续迁移</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E6%A8%AA%E5%90%91%E8%81%94%E6%83%B3%EF%BC%9A%E5%90%8C%E4%B8%80%E7%BB%93%E6%9E%84%E8%BF%98%E8%83%BD%E8%BF%81%E7%A7%BB%E5%88%B0%E5%93%AA%E4%BA%9B-LLM-%E9%97%AE%E9%A2%98"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 横向联想：同一结构还能迁移到哪些 LLM 问题</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%8F%8D%E5%90%91%E8%81%94%E6%83%B3%EF%BC%9ALLM-%E7%9A%84%E7%89%B9%E5%8C%96%E6%9C%BA%E5%88%B6%E8%83%BD%E5%90%A6%E5%9B%9E%E6%B5%81%E7%BB%8F%E5%85%B8%E7%B3%BB%E7%BB%9F"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 反向联想：LLM 的特化机制能否回流经典系统</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-%E5%80%99%E9%80%89%E8%AE%BE%E8%AE%A1%EF%BC%9A%E7%A8%B3%E5%AE%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E8%BA%AB%E4%BB%BD%E4%B8%8E%E5%8E%9F%E5%AD%90%E6%8F%90%E4%BA%A4"><span class="toc-number">1.4.6.</span> <span class="toc-text">4.6 候选设计：稳定上下文身份与原子提交</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%9B%B8%E5%85%B3%E9%A1%B9%E7%9B%AE%E6%89%A9%E5%B1%95%E5%88%86%E4%BA%AB"><span class="toc-number">1.5.</span> <span class="toc-text">5 相关项目扩展分享</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-Letta-MemFS%EF%BC%9A%E6%8A%8A%E8%AE%B0%E5%BF%86%E5%8F%98%E6%88%90%E5%8F%AF%E6%8F%90%E4%BA%A4%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8C%BA"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 Letta MemFS：把记忆变成可提交的工作区</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-1-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">1.5.1.1.</span> <span class="toc-text">5.1.1 核心概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-2-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.5.1.2.</span> <span class="toc-text">5.1.2 实现原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-1-3-%E4%B8%BB%E8%A6%81%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9%E4%B8%8E%E9%A2%84%E6%9C%9F%E6%94%B6%E7%9B%8A"><span class="toc-number">1.5.1.3.</span> <span class="toc-text">5.1.3 主要优点、缺点与预期收益</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-Agent-File%EF%BC%88-af%EF%BC%89%EF%BC%9A%E6%8A%8A-Agent-%E7%8A%B6%E6%80%81%E5%81%9A%E6%88%90%E5%8F%AF%E4%BA%A4%E6%8D%A2%E6%96%87%E4%BB%B6"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 Agent File（.af）：把 Agent 状态做成可交换文件</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-1-%E6%A0%B8%E5%BF%83%E6%A6%82%E5%BF%B5"><span class="toc-number">1.5.2.1.</span> <span class="toc-text">5.2.1 核心概念</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-2-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86"><span class="toc-number">1.5.2.2.</span> <span class="toc-text">5.2.2 实现原理</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5-2-3-%E4%B8%BB%E8%A6%81%E4%BC%98%E7%82%B9%E3%80%81%E7%BC%BA%E7%82%B9%E4%B8%8E%E9%A2%84%E6%9C%9F%E6%94%B6%E7%9B%8A"><span class="toc-number">1.5.2.3.</span> <span class="toc-text">5.2.3 主要优点、缺点与预期收益</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%B8%A4%E4%B8%AA%E9%A1%B9%E7%9B%AE%E4%B8%8E-OpenViking-%E7%9A%84%E5%85%B3%E7%B3%BB"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 两个项目与 OpenViking 的关系</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-4-%E6%80%9D%E6%83%B3%E6%84%9F%E6%82%9F%EF%BC%9AAgent-%E7%9A%84%E2%80%9C%E8%AE%B0%E5%BF%86%E2%80%9D%E6%AD%A3%E5%9C%A8%E5%88%86%E5%8C%96%E4%B8%BA%E5%A4%9A%E7%A7%8D%E5%8F%AF%E6%B2%BB%E7%90%86%E7%8A%B6%E6%80%81"><span class="toc-number">1.5.4.</span> <span class="toc-text">5.4 思想感悟：Agent 的“记忆”正在分化为多种可治理状态</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-5-%E5%8F%AF%E9%AA%8C%E8%AF%81%E7%9A%84%E6%89%A9%E5%B1%95%E6%96%B9%E5%90%91"><span class="toc-number">1.5.5.</span> <span class="toc-text">5.5 可验证的扩展方向</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Cairn-深度拆解-状态空间搜索与Decide-Execute"/></a><div class="content"><a class="title" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute">Cairn-深度拆解-状态空间搜索与Decide-Execute</a><time datetime="2026-11-10T12:51:53.000Z" title="发表于 2026-11-10 20:51:53">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</a><time datetime="2026-11-10T12:51:42.000Z" title="发表于 2026-11-10 20:51:42">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"><img src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</a><time datetime="2026-11-10T12:51:26.000Z" title="发表于 2026-11-10 20:51:26">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</a><time datetime="2026-11-10T12:48:50.000Z" title="发表于 2026-11-10 20:48:50">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织">LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织</a><time datetime="2026-11-10T12:48:35.000Z" title="发表于 2026-11-10 20:48:35">2026-11-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

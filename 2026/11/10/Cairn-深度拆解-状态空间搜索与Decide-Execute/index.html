@@ -1,0 +1,1086 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"><title>Cairn-深度拆解-状态空间搜索与Decide-Execute | CJH's blog</title><meta name="keywords" content="大模型学习"><meta name="author" content="CJH"><meta name="copyright" content="CJH"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Cairn 与面向目标的状态空间搜索 本文以本地克隆的 oritera&#x2F;Cairn（main 分支，提交 8e7e0ea，2026-09-07）为对象，逐文件阅读源码，对照仓库内的 docs&#x2F;specs&#x2F;*.md 协议文档与作者复盘，并在本机运行测试套件验证。论述重点为两项：其一，该系统如何把渗透测试重述为面向目标的状态空间搜索；其二，仅由决定与执行两类活动构成的极简循环，其运行条件与代价为何。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Cairn-深度拆解-状态空间搜索与Decide-Execute">
+<meta property="og:url" content="http://cjh0220.github.io/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/index.html">
+<meta property="og:site_name" content="CJH&#39;s blog">
+<meta property="og:description" content="Cairn 与面向目标的状态空间搜索 本文以本地克隆的 oritera&#x2F;Cairn（main 分支，提交 8e7e0ea，2026-09-07）为对象，逐文件阅读源码，对照仓库内的 docs&#x2F;specs&#x2F;*.md 协议文档与作者复盘，并在本机运行测试套件验证。论述重点为两项：其一，该系统如何把渗透测试重述为面向目标的状态空间搜索；其二，仅由决定与执行两类活动构成的极简循环，其运行条件与代价为何。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png">
+<meta property="article:published_time" content="2026-11-10T12:51:53.000Z">
+<meta property="article:modified_time" content="2026-11-10T13:04:50.524Z">
+<meta property="article:author" content="CJH">
+<meta property="article:tag" content="大模型学习">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png"><link rel="shortcut icon" href="/img/CJH.png"><link rel="canonical" href="http://cjh0220.github.io/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"/search.xml","preload":true,"languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/flickr-justified-gallery/dist/fjGallery.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Cairn-深度拆解-状态空间搜索与Decide-Execute',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2026-11-10 21:04:50'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.2"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">CJH's blog</a></span><div id="menus"><div id="search-button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友情链接</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Cairn-深度拆解-状态空间搜索与Decide-Execute</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="fa-fw post-meta-icon far fa-calendar-alt"></i><span class="post-meta-label">发表于</span><time datetime="2026-11-10T12:51:53.000Z" title="发表于 2026-11-10 20:51:53">2026-11-10</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/AI%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">AI应用开发</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Cairn-深度拆解-状态空间搜索与Decide-Execute"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1>Cairn 与面向目标的状态空间搜索</h1>
+<p>本文以本地克隆的 <code>oritera/Cairn</code>（main 分支，提交 <code>8e7e0ea</code>，2026-09-07）为对象，逐文件阅读源码，对照仓库内的 <code>docs/specs/*.md</code> 协议文档与作者复盘，并在本机运行测试套件验证。论述重点为两项：其一，该系统如何把渗透测试重述为面向目标的状态空间搜索；其二，仅由决定与执行两类活动构成的极简循环，其运行条件与代价为何。</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/oritera/Cairn">GitHub - oritera/Cairn: Cairn is a general-purpose AI state-space search engine, validated first on autonomous penetration testing. Sometimes misspelled as Carin. · GitHub</a></p>
+<p><strong>标注约定。</strong> 依照本专题的规则，文中区分三类陈述，以免将作者的声明与本文的推断混用：</p>
+<table>
+<thead>
+<tr>
+<th>标记</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>原作自述</td>
+<td>作者在 <code>README.md</code>、<code>docs/specs/*.md</code> 或复盘中明确写出</td>
+</tr>
+<tr>
+<td>源码推得</td>
+<td>作者未直接说明，但实现可逐项对应，由本文阅读代码得到</td>
+</tr>
+<tr>
+<td>本文推断</td>
+<td>本文提出、尚无上游依据的判断</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="1-对象与背景">1 对象与背景</h2>
+<h3 id="1-1-开源版与-Cairn-Y-的区分">1.1 开源版与 Cairn_Y 的区分</h3>
+<p>讨论 Cairn 时须先区分两个对象，否则容易把可读代码与公开成绩混为一谈。开源仓库 Cairn 是作者在腾讯云黑客松期间完成的一次工程实践。作者自述其定位「不是一个功能完备的渗透测试项目，而是当时我对极简主义、黑板架构、Fact-Intent 图的理解与运用的一次工程实践」。此后在同一架构上继续演进的版本称为 Cairn_Y，未开源。二者的差异集中于图结构的命名、目标层级的表达以及工程栈的选择：</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>开源 Cairn</th>
+<th>Cairn_Y</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图结构</td>
+<td>Fact–Intent</td>
+<td>FGS（Fact–Goal–Step）</td>
+</tr>
+<tr>
+<td>过程节点</td>
+<td><code>intent</code></td>
+<td><code>step</code></td>
+</tr>
+<tr>
+<td>目标表达</td>
+<td>单一 <code>goal</code> 节点</td>
+<td><code>goal</code> 与可动态增删的 Sub Goal</td>
+</tr>
+<tr>
+<td>搜索产物</td>
+<td>仅 Fact</td>
+<td>Fact 与 Finding</td>
+</tr>
+<tr>
+<td>两类活动</td>
+<td><code>reason</code> / <code>explore</code></td>
+<td>Decide / Execute</td>
+</tr>
+<tr>
+<td>Agent Loop</td>
+<td>Claude Code、Codex、Pi 适配层</td>
+<td>基于 Pi 的库，仅使用其 Agent Loop</td>
+</tr>
+<tr>
+<td>实现语言</td>
+<td>Python</td>
+<td>Node，后续倾向 Go 或 Rust</td>
+</tr>
+</tbody>
+</table>
+<p>公开榜单成绩属于 Cairn_Y：Cybench 满分第一，TSecBench v1 第一（63 题、74 个 flag），XBOW Validation Benchmarks 第一。作者同时说明，这些成绩未针对赛题优化提示词、未内嵌答案、未携带跨轮记忆，仅在 Harness 工程层面迭代；TSecBench 公开全部 LLM 记录并提供作弊举报通道。开源版本自身的成绩是腾讯云黑客松智能渗透挑战赛第二届的 54/54，为当场唯一 AK，总排名第三。</p>
+<p>值得记录的还有成本变化。同一评测集全解，半年前约需 7000 元，Cairn_Y 目前不足 50 元，而架构主体并未改变。这一数量级的差异并非来自性能优化，而来自若干机制的取消：不加载 Skill、不做 RAG、不做多 Agent 之间的上下文传递、不做跨题记忆。极简在此处表现为成本结构，而非风格偏好。</p>
+<h3 id="1-2-问题的形态">1.2 问题的形态</h3>
+<p>将目标、工具与历史消息一并交给模型并令其连续调用，是当前长任务 Agent 的主流形态。该形态假设路径可以被预先枚举，因而在任务偏离预设时出现三类失效：阶段划分刚性，已进入后置阶段便难以退回；规划与执行共享同一上下文，模型易将计划误判为已完成；终止条件通常由模型自行宣告，缺乏外部结构予以否证。</p>
+<p>Cairn 的回应是替换这一假设：路径不可枚举，但状态可枚举。由此，任务由「执行完预定流程」转为「在状态空间中寻找一条通向目标的路径」。这并非修辞上的改写，因为它同时提供了可执行的三项要素：下一步从何而来（frontier）、一步如何计为完成（后继）、何时终止（目标测试）。</p>
+<hr>
+<h2 id="2-问题的形式化">2 问题的形式化</h2>
+<h3 id="2-1-FGS：状态、算子与终止条件">2.1 FGS：状态、算子与终止条件</h3>
+<p>开源版本以 Fact–Intent 图表达状态空间，Cairn_Y 将其正式命名为 FGS 图。作者对三者给出了明确界定：Fact 描述当前已经确认的事实，即当前的世界状态；Goal 描述项目的完成条件，即搜索的终止条件，并允许存在可动态增删的 Sub Goal；Step 描述下一步要做什么，即如何由已有事实产生新的事实，是推动世界状态演化的因果过程（原作自述）。</p>
+<table>
+<thead>
+<tr>
+<th>概念</th>
+<th>语义</th>
+<th>开源实现位置</th>
+<th>Cairn_Y 的变化</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fact</td>
+<td>已确认的客观发现，只增不改</td>
+<td><code>server-protocol.md:47-58</code></td>
+<td>语义不变</td>
+</tr>
+<tr>
+<td>Intent / Step</td>
+<td>由若干 Fact 出发的一次探索，是图的边</td>
+<td><code>server-protocol.md:60-68</code></td>
+<td>更名 Step，强调因果过程</td>
+</tr>
+<tr>
+<td>Hint</td>
+<td>图外注入的人类判断，不参与因果</td>
+<td><code>server-protocol.md:89-95</code></td>
+<td>保留</td>
+</tr>
+<tr>
+<td>Goal</td>
+<td>特殊的 Fact，同时为终点节点</td>
+<td><code>server-protocol.md:53-58</code></td>
+<td>增加 Sub Goal</td>
+</tr>
+<tr>
+<td>Finding</td>
+<td>无</td>
+<td>—</td>
+<td>新增，搜索过程的结构化产物</td>
+</tr>
+</tbody>
+</table>
+<p>Intent 更名为 Step，其动因可从词义分辨：Intent 指行动者的主观意图，Step 指旧事实推出新事实的客观过程。更名后，图中不再记录 Agent 的打算，只记录世界演化的链条，与其「记忆外化」的主张一致。</p>
+<p>Finding 的引入回应了一个实际需求。CTF 场景中搜索产物与 Goal 重合，flag 即目标；但渗透测试与代码审计的交付物是过程中发现的漏洞，而非「已完成全部测试」这一终态。作者据此把过程产物单独建模，并允许按任务类型动态定义 Finding 的语义。就形式化而言，这一补充是必要的：只有 Goal 的搜索系统无法表达沿路径获得的中间成果。</p>
+<h3 id="2-2-与经典搜索的对应">2.2 与经典搜索的对应</h3>
+<p>下图以开源版本的数据结构表示一次搜索过程。尖角框为 Intent（边），圆角框为 Fact（状态）。<code>i003</code> 表示多源超边，即 f001 与 f002 共同支撑一次探索。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">flowchart LR</span><br><span class="line">    O((origin&lt;br/&gt;起点)):::origin</span><br><span class="line">    G((goal&lt;br/&gt;终点)):::goal</span><br><span class="line">    F1[f001]:::fact</span><br><span class="line">    F2[f002]:::fact</span><br><span class="line">    F3[f003]:::fact</span><br><span class="line">    I1&gt;i001]:::intent</span><br><span class="line">    I2&gt;i002]:::intent</span><br><span class="line">    I3&gt;i003&lt;br/&gt;多源超边]:::intent</span><br><span class="line">    I4&gt;i004&lt;br/&gt;complete]:::done</span><br><span class="line"></span><br><span class="line">    O --&gt; I1</span><br><span class="line">    I1 --&gt; F1</span><br><span class="line">    O --&gt; I2</span><br><span class="line">    I2 --&gt; F2</span><br><span class="line">    F1 --&gt; I3</span><br><span class="line">    F2 --&gt; I3</span><br><span class="line">    I3 --&gt; F3</span><br><span class="line">    F3 --&gt; I4</span><br><span class="line">    I4 --&gt; G</span><br><span class="line"></span><br><span class="line">    classDef origin fill:#14b8a6,color:#fff,stroke:none</span><br><span class="line">    classDef goal fill:#f43f5e,color:#fff,stroke:none</span><br><span class="line">    classDef fact fill:#eef2ff,stroke:#6366f1</span><br><span class="line">    classDef intent fill:#fff7ed,stroke:#f97316</span><br><span class="line">    classDef done fill:#ecfdf5,stroke:#10b981</span><br></pre></td></tr></table></figure>
+<p>该结构可逐项映射到教科书中的搜索要素，且每一项都有明确的代码落点，而非仅作类比：</p>
+<table>
+<thead>
+<tr>
+<th>搜索要素</th>
+<th>Cairn 的实现</th>
+<th>代码位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>状态</td>
+<td><code>facts</code> 表的一行，内容为自然语言</td>
+<td><code>db.py:32-37</code></td>
+</tr>
+<tr>
+<td>初始状态</td>
+<td>特殊 Fact <code>origin</code></td>
+<td><code>projects.py:83-94</code></td>
+</tr>
+<tr>
+<td>算子</td>
+<td><code>intents</code> 表的一行，<code>from</code> 指向待产出事实</td>
+<td><code>db.py:39-50</code></td>
+</tr>
+<tr>
+<td>后继</td>
+<td><code>conclude</code> 写入新 Fact</td>
+<td><code>routers/intents.py:118-147</code></td>
+</tr>
+<tr>
+<td>目标测试</td>
+<td><code>complete</code>，其 <code>from</code> 必须指向已存在事实</td>
+<td><code>contracts.py:81-86</code></td>
+</tr>
+<tr>
+<td>frontier</td>
+<td><code>to_fact_id IS NULL</code> 的意图集合</td>
+<td><code>loop.py:298-318</code></td>
+</tr>
+<tr>
+<td>扩展顺序</td>
+<td>最新优先，即栈式议程</td>
+<td><code>loop.py:315-318</code></td>
+</tr>
+<tr>
+<td>终止</td>
+<td>写入一条指向 <code>goal</code> 的边</td>
+<td><code>projects.py:257-300</code></td>
+</tr>
+</tbody>
+</table>
+<p><code>from</code> 允许数组，因此 Intent 在图上等价于一条超边，多个已知事实可共同支撑一次探索。这一点区别于线性日志：因果关系不必被压缩为单条链，上下文也不会因择一主事实而丢失。</p>
+<h3 id="2-3-完成即一条边">2.3 完成即一条边</h3>
+<p>多数 Agent 系统以模型输出的一句话作为完成判据。Cairn 将完成也纳入图结构。<code>complete_project</code> 执行三项操作：插入一条 <code>to_fact_id='goal'</code> 的意图、将 <code>from</code> 中的每个事实登记为该意图的源、将项目状态置为 <code>completed</code>（<code>projects.py:257-300</code>）。由此，成功等价于图上出现一条由既有事实指向 <code>goal</code> 的边。</p>
+<p>这一处理带来三项性质。其一，完成必须引用已存在的 Fact（<code>services.py:79-87</code>），不能凭空宣告。其二，完成在界面上表现为一条可见的边。其三，完成可被撤销，因为它是数据而非记忆。撤销机制由 <code>reopen</code> 实现：外部判定原完成结论有误时，系统删除该完成边，新增一条纠错 Fact，并以 <code>external_feedback</code> 为描述建立一条指向原源事实的超边，项目回到 <code>active</code>（<code>projects.py:303-357</code>）。错误结论未被删除，而是转为可用于后续规划的负样本。</p>
+<h3 id="2-4-界面证据">2.4 界面证据</h3>
+<p>仓库自带一张运行截图（<code>README/cairn.png</code>），可佐证上述机制在真实运行中的形态：</p>
+<p>图中左侧为 <code>Origin</code>、多条带意图描述的边、若干 <code>Fact</code> 与 <code>Goal</code>，节点与边的关系与前述形式化一致。右侧详情面板列出该事实的来源：<code>Intent i004</code>、<code>From f002</code>、<code>Creator</code>、<code>Worker</code>、<code>Concluded 00:21:11</code>，即任一结论均可回溯至产生它的那一步、所依赖的前提与执行者。</p>
+<p>更值得注意的是该事实的正文：<code>f002's claim that flag was at /var/www/html/flag.php was incorrect — flag.php is the app source, not the flag</code>。这印证了「事实只增不改、状态变化以追加表达」并非纸面约定：错误的断言未被删除，而是被后续事实修正。正文末尾的 <code>its content was not yet read before conclude phase</code> 则表明，该事实由收尾阶段写入，主阶段未及完成的观察仍得以保留。</p>
+<hr>
+<h2 id="3-Decide-与-Execute">3 Decide 与 Execute</h2>
+<h3 id="3-1-两类活动的定义">3.1 两类活动的定义</h3>
+<p>系统只有两类活动，且二者是独立的运行过程，而非固定角色的 SubAgent。按作者表述，可将二者理解为同一个运行器被注入了不同的提示词与工具：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Decide</th>
+<th>Execute</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>工具面</td>
+<td>仅查看与操作 FGS 图的工具</td>
+<td>读图工具，及可改变世界状态的工具（read、bash、edit、write）与 <code>submit_fact</code></td>
+</tr>
+<tr>
+<td>触发条件</td>
+<td>任务开始，或图上信息增加、变化</td>
+<td>存在可执行的 Step</td>
+</tr>
+<tr>
+<td>并发</td>
+<td>串行，全局同一时刻仅一个</td>
+<td>可并行</td>
+</tr>
+<tr>
+<td>上下文</td>
+<td>每次触发以干净上下文重新运行，不携带记忆</td>
+<td>无跨会话记忆</td>
+</tr>
+<tr>
+<td>职责</td>
+<td>评估 Step 的新增、废弃与优先级，增删 Sub Goal，判断 Goal 是否达成</td>
+<td>执行一步探索，产出新 Fact</td>
+</tr>
+</tbody>
+</table>
+<p>作者的补充说明了这套划分的实质：「两类活动的本质其实都是注入了不同 Tool 和 Prompt 的 Agent Loop，但都没有独立的跨会话记忆机制，FGS 图就是他们共同的、外化的记忆。」据此，记忆不再是一个独立子系统，没有向量库、摘要器或会话回放；需要记住的内容写入图，需要读取的内容重读图。</p>
+<h3 id="3-2-串行与并行的依据">3.2 串行与并行的依据</h3>
+<p>Decide 串行而 Execute 可并行，并非任意约定，其依据在于二者写入的对象不同。</p>
+<p>Decide 读取全图并写入议程，即新增、废弃或排序 Step。若两个 Decide 并行，它们将基于同一份旧图各自派生一批 Step，导致重复与优先级冲突，因此该环节必须是单写者。开源实现中对应的是项目级 reason 租约：<code>claim_project_reason</code> 检查 <code>reason_worker</code> 是否已被占用，冲突返回 409（<code>projects.py:191-216</code>）。</p>
+<p>Execute 读取全图但只追加一条 Fact，不修改历史。多写者之间的结果天然可合并，这一自由度正是「事实只增不改」换来的。实现中对应的是意图级认领：首次 heartbeat 写入 <code>worker</code> 即取得执行权（<code>loop.py:504</code>），粒度远细于项目级租约。</p>
+<p>概括而言，写入议程需要独占，写入事实可以并流。该划分使执行侧可横向扩展，同时避免议程本身出现竞争。</p>
+<h3 id="3-3-Decide-的输出契约">3.3 Decide 的输出契约</h3>
+<p><code>reason.md</code> 全文 55 行，将 Decide 的可能输出限定为三种。目标已达成时返回 <code>complete</code>，其中 <code>from</code> 必须来自合法事实列表；目标未达成时应推进时返回 <code>intents</code> 数组；目标未达成但当前不应派生新方向时返回空对象。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;accepted&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;complete&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;f001&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;...&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;accepted&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="attr">&quot;intents&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="punctuation">&#123;</span><span class="attr">&quot;from&quot;</span><span class="punctuation">:</span> <span class="punctuation">[</span><span class="string">&quot;f001&quot;</span><span class="punctuation">]</span><span class="punctuation">,</span> <span class="attr">&quot;description&quot;</span><span class="punctuation">:</span> <span class="string">&quot;方向 A&quot;</span><span class="punctuation">&#125;</span><span class="punctuation">]</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br><span class="line"><span class="punctuation">&#123;</span><span class="attr">&quot;accepted&quot;</span><span class="punctuation">:</span> <span class="literal"><span class="keyword">true</span></span><span class="punctuation">,</span> <span class="attr">&quot;data&quot;</span><span class="punctuation">:</span> <span class="punctuation">&#123;</span><span class="punctuation">&#125;</span><span class="punctuation">&#125;</span></span><br></pre></td></tr></table></figure>
+<p>输入亦仅三项：图快照、当前合法 Fact id 列表、尚未结论的意图列表（<code>reason.md:41-55</code>）。契约由代码强制，<code>validate_reason_payload</code> 实现五条约束（<code>contracts.py:62-101</code>）：</p>
+<table>
+<thead>
+<tr>
+<th>约束</th>
+<th>行为</th>
+<th>作用</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>complete</code> 与 <code>intents</code> 互斥</td>
+<td>同时出现即抛出异常</td>
+<td>排除「既宣告完成又继续搜索」的模糊状态</td>
+</tr>
+<tr>
+<td>frontier 为空时 <code>intents</code> 不得为空</td>
+<td>抛出异常</td>
+<td>避免无待办又不派生方向导致的停滞</td>
+</tr>
+<tr>
+<td>仅返回空对象且 frontier 非空</td>
+<td>允许</td>
+<td>已有足够待办时不必新增</td>
+</tr>
+<tr>
+<td><code>intents</code> 超出上限</td>
+<td>截断至 <code>max_intents</code></td>
+<td>抑制 frontier 膨胀</td>
+</tr>
+<tr>
+<td><code>from</code> 引用不存在的事实</td>
+<td>服务端返回 404</td>
+<td>保证引用完整性</td>
+</tr>
+</tbody>
+</table>
+<p>表中第二条与第三条共同界定了 frontier 为空与非空两种情形下的合法输出。当 frontier 为空时，模型若声称无可推进方向，即构成契约违规；系统记录 <code>reason created no intents</code> 并记为失败，由下一轮重试（<code>reason.py:263-272</code>）。据此，系统活性由契约的不可满足性保证，而不依赖模型的自觉。</p>
+<h3 id="3-4-Execute-的输出契约">3.4 Execute 的输出契约</h3>
+<p><code>explore</code> 的契约更窄，仅返回一个 <code>description</code> 字符串（<code>contracts.py:157-170</code>）。其中不含状态、边、置信度或证据对象。这一设计成立的前提是写图动作不在模型手中：模型只报告本次探索得到的增量，Dispatcher 代其调用 <code>POST /intents/&#123;id&#125;/conclude</code>，由服务端建立 Fact、建立边并将意图置为已结论（<code>routers/intents.py:118-147</code>）。</p>
+<p><code>explore.md</code> 另规定 <code>description</code> 只包含最新发现的增量事实，不重复图快照中已有信息（<code>explore.md:22</code>）。该规则实际承担事实原子化的职责：若每个 Worker 都复述全貌，图将被重复内容占据，Decide 每轮读到的信息熵随之下降。限定为增量，等价于要求每个 Fact 表示一次搜索步的净收益。</p>
+<h3 id="3-5-触发条件">3.5 触发条件</h3>
+<p>Decide 并非定时运行，而由图上状态的变化触发。<code>_reason_trigger</code> 维护一个三元组检查点，仅在三类变化发生时返回触发原因（<code>loop.py:704-718</code>）：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(project.facts) &gt; checkpoint.fact_count:</span><br><span class="line">    changes.append(<span class="string">f&quot;facts:<span class="subst">&#123;checkpoint.fact_count&#125;</span>-&gt;<span class="subst">&#123;<span class="built_in">len</span>(project.facts)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> <span class="built_in">len</span>(project.hints) &gt; checkpoint.hint_count:</span><br><span class="line">    changes.append(<span class="string">f&quot;hints:<span class="subst">&#123;checkpoint.hint_count&#125;</span>-&gt;<span class="subst">&#123;<span class="built_in">len</span>(project.hints)&#125;</span>&quot;</span>)</span><br><span class="line"><span class="keyword">if</span> checkpoint.open_intent_count &gt; <span class="number">0</span> <span class="keyword">and</span> open_intent_count == <span class="number">0</span>:</span><br><span class="line">    changes.append(<span class="string">f&quot;open_intents:<span class="subst">&#123;checkpoint.open_intent_count&#125;</span>-&gt;0&quot;</span>)</span><br></pre></td></tr></table></figure>
+<p>即：事实数量增加、人类注入新的 Hint、既有待办全部结论。设计文档明确指出，意图数量增加不作为触发条件，因为该变化通常仅反映上一次 Decide 自身派生了新方向，并不代表世界状态改变（<code>dispatcher-design.md:583</code>）。检查点的初始化时机亦有处理：若项目启动时已存在未结论意图，Dispatcher 先建立基线检查点，避免运行期间第一次新增事实被忽略（<code>loop.py:858-878</code>）。</p>
+<h3 id="3-6-单次执行的时序">3.6 单次执行的时序</h3>
+<p>一次 Execute 的完整过程涉及认领、续租与两阶段收尾，其复杂度高于单次模型调用：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">sequenceDiagram</span><br><span class="line">    autonumber</span><br><span class="line">    participant D as Dispatcher</span><br><span class="line">    participant S as Cairn Server</span><br><span class="line">    participant W as Worker</span><br><span class="line">    participant L as 心跳线程</span><br><span class="line">    D-&gt;&gt;S: 读取项目状态与图快照</span><br><span class="line">    D-&gt;&gt;S: heartbeat（同时完成认领）</span><br><span class="line">    D-&gt;&gt;L: 启动租约，周期 3s</span><br><span class="line">    D-&gt;&gt;W: 执行 CLI，提示词中仅给出快照路径</span><br><span class="line">    loop 每 3 秒</span><br><span class="line">        L-&gt;&gt;S: heartbeat</span><br><span class="line">    end</span><br><span class="line">    W--&gt;&gt;D: 返回 JSON 或超时</span><br><span class="line">    alt 返回合法结果</span><br><span class="line">        D-&gt;&gt;S: conclude，写入 Fact</span><br><span class="line">    else 超时或解析失败</span><br><span class="line">        D-&gt;&gt;W: 同一 session 再次下发收尾提示词</span><br><span class="line">        W--&gt;&gt;D: 仅总结已确认事实</span><br><span class="line">        D-&gt;&gt;S: conclude，写入 Fact</span><br><span class="line">    end</span><br></pre></td></tr></table></figure>
+<p>认领即首次 heartbeat，系统未设独立的认领接口。心跳失败的处理分两类：403 与 409 立即判失败，其他错误给予两倍 interval 的宽限；一旦判定失败，直接终止仍在运行的进程（<code>heartbeat.py:88-110</code>），以免失去租约的执行者继续写入。服务端则以心跳超时回收僵尸意图，默认 <code>intent_timeout</code> 为 15 秒（<code>db.py:13-18</code>、<code>services.py:222-237</code>），Dispatcher 启动时校验该值大于自身轮询间隔（<code>loop.py:906-929</code>）。</p>
+<p>两阶段收尾是本设计中较为特殊的一处。第一阶段按 300 秒超时正常探索；若超时或输出非法，则以同一 session 下发 <code>explore_conclude.md</code>，限时 90 秒，该提示词要求模型立即停止执行、不再等待未完成命令，仅总结已经确认的事实（<code>explore.py:241-384</code>、<code>explore_conclude.md:19-25</code>）。其作用是将超时由完全损失转为部分收益：一个未得出结论的执行，仍可交付「已确认 A、B、C」这一事实，供后续搜索使用。</p>
+<h3 id="3-7-写权限与记忆外置">3.7 写权限与记忆外置</h3>
+<p>三条边界共同构成系统的控制面：模型只输出 JSON，不解析自由文本；Dispatcher 是唯一协议写入者，Agent 不认领、不续租、不直接调用 API（<code>dispatcher-design.md:13</code>、<code>:20</code>）；状态迁移由服务端的一次 SQL 更新裁决，而非模型的陈述。模型的「我已完成」只是候选信号，使项目转为 <code>completed</code> 的是 <code>complete_project</code> 中的插入语句。</p>
+<p>图快照的处理亦值得说明。提示词中不内联图内容，仅给出容器内文件路径，由模型自行读取（<code>common.py:56-70</code>）。此举使提示词体积与图规模解耦，同时将「观察黑板」变为一次工具调用，使 Observe 成为显式步骤。代价是增加一次读取，且模型可能未完整读取。</p>
+<h3 id="3-8-实现位置">3.8 实现位置</h3>
+<table>
+<thead>
+<tr>
+<th>环节</th>
+<th>函数</th>
+<th>位置</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>主循环</td>
+<td><code>DispatcherLoop.run</code></td>
+<td><code>loop.py:80-110</code></td>
+</tr>
+<tr>
+<td>项目调度</td>
+<td><code>_try_dispatch_project</code></td>
+<td><code>loop.py:254-338</code></td>
+</tr>
+<tr>
+<td>触发判定</td>
+<td><code>_reason_trigger</code></td>
+<td><code>loop.py:704-718</code></td>
+</tr>
+<tr>
+<td>派发决定</td>
+<td><code>_dispatch_reason</code></td>
+<td><code>loop.py:366-428</code></td>
+</tr>
+<tr>
+<td>决定主体</td>
+<td><code>run_reason_task</code></td>
+<td><code>tasks/reason.py:33-284</code></td>
+</tr>
+<tr>
+<td>派发执行</td>
+<td><code>_dispatch_explore</code></td>
+<td><code>loop.py:488-546</code></td>
+</tr>
+<tr>
+<td>执行主体</td>
+<td><code>run_explore_task</code></td>
+<td><code>tasks/explore.py:30-238</code></td>
+</tr>
+<tr>
+<td>收尾兜底</td>
+<td><code>_try_conclude_fallback</code></td>
+<td><code>tasks/explore.py:241-384</code></td>
+</tr>
+<tr>
+<td>租约</td>
+<td><code>HeartbeatLease._run</code></td>
+<td><code>runtime/heartbeat.py:88-110</code></td>
+</tr>
+<tr>
+<td>完成落图</td>
+<td><code>complete_project</code></td>
+<td><code>routers/projects.py:257-300</code></td>
+</tr>
+<tr>
+<td>撤销与回溯</td>
+<td><code>reopen_project</code></td>
+<td><code>routers/projects.py:303-357</code></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h2 id="4-迁移解剖">4 迁移解剖</h2>
+<p>判断一次迁移的深度，可问：若将原型抽离，该系统会失去什么。就 Cairn 而言，失去的不是一个比喻，而是 frontier、后继与终止三项可执行要素。因此其核心属于问题迁移，而非概念迁移。以下逐项考察它取用的六个原型。</p>
+<h3 id="4-1-黑板架构">4.1 黑板架构</h3>
+<p>协议文档将设计渊源明确写为黑板架构，并点名 CMU 的 Hearsay-II（<code>server-protocol.md:15-21</code>）。该原型面对的问题是：语音识别中音素、音节、词与语法多层知识无法由固定流水线组合，局部歧义需由全局约束裁决。其机制由共享黑板、独立知识源与控制器构成，核心是机会式问题求解，控制流不预先固定。</p>
+<p>Cairn 的对应关系是：黑板为 SQLite 中的 facts 与 intents，知识源为 Worker（无固定技能，由提示词注入不同工具），控制器为 Dispatcher 的调度函数与 Decide，激活条件为新增事实、新增 Hint 或待办归零。</p>
+<p>关键改造在于控制器。经典黑板的控制器是人工编写的启发式优先级规则，可读、可审计、行为可预期；Cairn 将其整体替换为 LLM。收益是系统能够处理从未见过的任务，代价则是收敛性、最优性与可重复性均失去保证，只能依赖目标判据与人工停止兜底。就迁移深度而言，数据结构与控制流属于架构迁移，而控制策略层已不属于原型迁移，应归入对原型的特化。</p>
+<h3 id="4-2-图搜索">4.2 图搜索</h3>
+<p>作者直接使用「状态空间搜索」一词，但未引文献；其学术出处为 Newell 与 Simon 的问题空间假说、A* 算法及教科书中广度优先、深度优先与一致代价搜索（本文推断的出处）。原型面对的问题是：在仅知当前状态与可用算子的条件下，寻找一条到达目标的路径。</p>
+<p>Cairn 取用的是完整的问题形式化，而非词汇。状态、初始状态、算子、后继、目标测试、frontier 与扩展顺序均有对应实现（见 §2.2）。这也构成一次可证伪的迁移：既然形式化成立，便应能用搜索领域的指标衡量它，例如到达目标所需扩展的节点数、每解成本、重复扩展比例。</p>
+<p>未取用的部分同样明确：无 closed set，即不记录已扩展状态；无 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>g</mi></mrow><annotation encoding="application/x-tex">g</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.625em;vertical-align:-0.1944em;"></span><span class="mord mathnormal" style="margin-right:0.03588em;">g</span></span></span></span> 代价与 <span class="katex"><span class="katex-mathml"><math xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>h</mi></mrow><annotation encoding="application/x-tex">h</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.6944em;"></span><span class="mord mathnormal">h</span></span></span></span> 启发值；无剪枝、双向搜索与迭代加深。这些缺口构成 §6.1 的候选清单。</p>
+<h3 id="4-3-工作队列">4.3 工作队列</h3>
+<p>frontier 在语义上是一个任务队列：Decide 生产未结论的 Step，Execute 领取并消费，<code>to</code> 为空表示尚未完成。相较于成熟实现，它主动省略了三项机制：无优先级，栈式议程即全部策略；无公平性，不防饿死；无死信队列，失败的 Step 直接回到待领取状态（见 §8.2）。这属于简化式迁移，保留队列语义而移除调度策略，与「控制器交给模型」是同一取舍。</p>
+<h3 id="4-4-租约">4.4 租约</h3>
+<p>租约机制源自分布式系统，用于在持有者崩溃时避免锁被永久占用：授权附期限，到期自动失效，无需检测崩溃。Cairn 的实现与该机制逐项吻合，尽管文档未引出处（本文推断的出处）：</p>
+<table>
+<thead>
+<tr>
+<th>租约要素</th>
+<th>实现</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>授予</td>
+<td>首次 heartbeat 写入 <code>worker</code>（<code>loop.py:504</code>）</td>
+</tr>
+<tr>
+<td>续租</td>
+<td>后台线程每 3 秒续租（<code>heartbeat.py:88-110</code>）</td>
+</tr>
+<tr>
+<td>过期回收</td>
+<td>超过 <code>intent_timeout</code> 未续租则清空 <code>worker</code>（<code>services.py:222-237</code>）</td>
+</tr>
+<tr>
+<td>失效处置</td>
+<td>终止仍在运行的进程（<code>heartbeat.py:112-123</code>）</td>
+</tr>
+<tr>
+<td>写入校验</td>
+<td><code>conclude</code> 时校验 <code>worker</code> 是否为当前持有者，否则返回 409（<code>services.py:112-121</code>）</td>
+</tr>
+</tbody>
+</table>
+<p>最后一项承担了 fencing 的职责，其实现方式是写入前再校验持有者，而非使用单调递增的 token。该方式在单 Dispatcher 下足以拒绝过期持有者的写入，但若允许多实例则会出现经典的 fencing 缺陷，因此设计文档明确限定只支持单实例（<code>dispatcher-design.md:588-589</code>）。这属于以架构约束替代机制完备的做法。</p>
+<h3 id="4-5-只追加日志">4.5 只追加日志</h3>
+<p>事实只增不改，状态变化以追加表达，例如「shell 已断开」本身即一条新事实（<code>server-protocol.md:23-31</code>）。这与事件溯源、log-structured 存储及 Git 的只追加有向无环图同源，收益是历史可审计、错误可修正。§2.4 的截图提供了运行时的样本。</p>
+<p>但迁移只完成了一半：保留的是结论日志，即图；缺失的是过程日志。对照 ARTEX 的 <code>activity</code> 表，后者记录工具、参数与 Token 消耗，Cairn 无对应结构。因此系统能够回答「确认了什么」，不能回答「如何确认」。</p>
+<h3 id="4-6-Stigmergy-与单写者">4.6 Stigmergy 与单写者</h3>
+<p>协调机制采用 Stigmergy，即个体不直接通信，而通过改变共享环境留下痕迹。Agent 之间零通信，只读写同一张图；同时规定 Dispatcher 为唯一协议写入者。这一组合的实际效果是消解了多 Agent 协作中最困难的部分：通信协议与冲突合并不再需要设计，因为写入被串行化，冲突不会发生。就迁移深度而言，把协作问题重述为环境标记问题，带有问题迁移的性质。</p>
+<h3 id="4-7-迁移深度汇总">4.7 迁移深度汇总</h3>
+<table>
+<thead>
+<tr>
+<th>原型</th>
+<th>取用内容</th>
+<th>位置</th>
+<th>深度</th>
+<th>收益</th>
+<th>代价</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>黑板架构</td>
+<td>共享状态面、无角色知识源、机会式调度</td>
+<td><code>db.py</code>、<code>loop.py:254-338</code></td>
+<td>架构迁移</td>
+<td>无预定义流程</td>
+<td>控制器换为模型，收敛性无保证</td>
+</tr>
+<tr>
+<td>图搜索</td>
+<td>状态、算子、后继、目标测试、frontier</td>
+<td><code>db.py:32-58</code>、<code>contracts.py</code></td>
+<td>问题迁移</td>
+<td>可证伪的收敛判据</td>
+<td>缺 closed set、优先级与剪枝</td>
+</tr>
+<tr>
+<td>工作队列</td>
+<td>frontier 的生产与消费</td>
+<td><code>loop.py:298-318</code></td>
+<td>架构迁移（简化）</td>
+<td>执行侧可并行</td>
+<td>无优先级、公平性与死信</td>
+</tr>
+<tr>
+<td>租约</td>
+<td>授予、续租、过期回收、写入校验</td>
+<td><code>heartbeat.py</code>、<code>services.py:222-237</code></td>
+<td>架构迁移（完整）</td>
+<td>僵尸任务自动回收</td>
+<td>仅支持单实例</td>
+</tr>
+<tr>
+<td>只追加日志</td>
+<td>事实只增不改</td>
+<td><code>server-protocol.md:23-31</code></td>
+<td>架构迁移（半程）</td>
+<td>历史可审计</td>
+<td>无过程日志</td>
+</tr>
+<tr>
+<td>Stigmergy 与单写者</td>
+<td>零通信协调、单一写入者</td>
+<td><code>dispatcher-design.md:13,20</code></td>
+<td>架构迁移</td>
+<td>无需通信协议</td>
+<td>写吞吐受限于单进程</td>
+</tr>
+</tbody>
+</table>
+<p>另需记录其主动未取用的原型：向量检索、工作流引擎、多 Agent 消息总线、PDDL 或 HTN 式规划器、技能库。这五项恰为当前 Agent 工程的主流组件，作者属于有意不用，而非未曾考虑。</p>
+<hr>
+<h2 id="5-特化与代价">5 特化与代价</h2>
+<h3 id="5-1-为适配-LLM-所作的改造">5.1 为适配 LLM 所作的改造</h3>
+<p>第一项是控制器的替换。经典黑板的调度由人工规则完成，Cairn 改由模型完成，并以限制输出形状来控制风险：模型只能从三种动作中选择，开放决策被压缩为有限动作集（<code>contracts.py:62-101</code>）。</p>
+<p>第二项是算子性质的改变。同一 Step 重跑两次可能得到不同结果。系统未试图消除这一差异，而是接受它并让图承担后果：错误结论由后续事实修正，完成判断有误则由 <code>reopen</code> 撤销。它把算子的不可靠转化为状态的可修正。</p>
+<p>第三项是状态表示的改变。经典搜索的状态可哈希、可比对、可索引；Cairn 的状态是一段自然语言，模型可直接读懂，但机器无法判断两个状态是否等价。这一改变直接导致 closed set 无法实现（见 §6.1）。</p>
+<p>第四项是失败检测方式的改变。模型不会抛出异常，只会给出不合规的输出。系统将语义层面的失败降级为语法层面的失败，即解析失败或校验失败，从而复用工程上已有的重试与记录路径。</p>
+<h3 id="5-2-阻抗失配核对">5.2 阻抗失配核对</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>失配项</th>
+<th>处理方式</th>
+<th>判定</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>确定性</td>
+<td>不消除，改为可修正：事实只追加、完成可撤销</td>
+<td>部分处理，无法重放</td>
+</tr>
+<tr>
+<td>2</td>
+<td>寻址方式</td>
+<td>无索引，每轮全量读图，以「只写增量」抑制图规模</td>
+<td>未处理，是最脆弱环节</td>
+</tr>
+<tr>
+<td>3</td>
+<td>成本结构</td>
+<td>增量触发、干净上下文、12 KB 提示词</td>
+<td>处理较好，但与全量读图冲突</td>
+</tr>
+<tr>
+<td>4</td>
+<td>接口契约</td>
+<td>JSON 校验、服务端校验、契约级硬约束</td>
+<td>处理最好</td>
+</tr>
+<tr>
+<td>5</td>
+<td>状态可见性</td>
+<td>只外化结论，不外化推理过程</td>
+<td>明确接受限制</td>
+</tr>
+<tr>
+<td>6</td>
+<td>隔离基础</td>
+<td>以容器提供边界，而非提示词约束；local 模式放弃隔离</td>
+<td>架构层处理，local 模式下失效</td>
+</tr>
+<tr>
+<td>7</td>
+<td>测量噪声</td>
+<td>单次运行，无重复采样与置信区间</td>
+<td>未处理</td>
+</tr>
+</tbody>
+</table>
+<p>第 7 条需要单独说明。作者公布的榜单成绩是真实的，但「一次达到满分」与「稳定达到满分」是两项不同的性质。缺少方差信息时，无法区分架构有效与单次波动。这是当前 Agent 评测的普遍问题，但在一篇以架构领先为结论的论述中，该项限制应予披露。</p>
+<h3 id="5-3-代价汇总">5.3 代价汇总</h3>
+<table>
+<thead>
+<tr>
+<th>原型提供的能力</th>
+<th>系统放弃的部分</th>
+<th>换取的能力</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>可证明的完备性与最优性</td>
+<td>无 closed set、优先级与剪枝</td>
+<td>可处理无法枚举的开放任务</td>
+</tr>
+<tr>
+<td>确定性的算子语义</td>
+<td>同一步骤不可重现</td>
+<td>可用自然语言描述任意动作</td>
+</tr>
+<tr>
+<td>可哈希的状态</td>
+<td>无法判断状态等价、无法去重</td>
+<td>状态可被模型直接读取</td>
+</tr>
+<tr>
+<td>低成本的扩展</td>
+<td>每次扩展均为一次模型调用</td>
+<td>单步可完成传统算子无法完成的推理</td>
+</tr>
+<tr>
+<td>完整的过程记录</td>
+<td>无过程日志，无法复盘动作</td>
+<td>实现规模小，迁移成本低</td>
+</tr>
+</tbody>
+</table>
+<p>综合而言，该系统以放弃搜索算法的严谨性换取自然语言算子的表达能力，并以图结构、租约与契约三项工程约束，将这份自由度限制在仍可收敛的范围内。</p>
+<hr>
+<h2 id="6-联想推广">6 联想推广</h2>
+<h3 id="6-1-纵向：尚未取用的机制">6.1 纵向：尚未取用的机制</h3>
+<p>Cairn 只取用了状态、算子、后继、目标测试与 frontier 五项，其余机制仍未被使用。下表给出各项在经典搜索中的作用、在 Cairn 中可能的对应形态与落地障碍：</p>
+<table>
+<thead>
+<tr>
+<th>未被取用的机制</th>
+<th>经典作用</th>
+<th>可能的对应</th>
+<th>成本</th>
+<th>主要障碍</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>closed set</td>
+<td>避免重复扩展同一状态</td>
+<td>事实语义去重</td>
+<td>低</td>
+<td>自然语言状态难判等价</td>
+</tr>
+<tr>
+<td>失败记忆</td>
+<td>记录已排除分支</td>
+<td>为 Step 增加 <code>blocked</code> 终态</td>
+<td>极低</td>
+<td>仅需状态字段与一次更新</td>
+</tr>
+<tr>
+<td>优先级队列</td>
+<td>按价值排序扩展</td>
+<td>Decide 为 Step 评分</td>
+<td>中</td>
+<td>分值由模型给出，噪声较大</td>
+</tr>
+<tr>
+<td>剪枝</td>
+<td>超出预算的分支直接舍弃</td>
+<td>全局步数、Token 与深度上限</td>
+<td>低</td>
+<td>需定义超支判据</td>
+</tr>
+<tr>
+<td>双向搜索</td>
+<td>自目标反向扩展</td>
+<td>由 Goal 反推所需前置事实</td>
+<td>中</td>
+<td>反向算子仍需模型生成</td>
+</tr>
+<tr>
+<td>记忆化</td>
+<td>相同子问题只解一次</td>
+<td>子目标级结果复用</td>
+<td>中</td>
+<td>子问题等价性难判定</td>
+</tr>
+<tr>
+<td>事务</td>
+<td>一批操作原子生效</td>
+<td>一次 Decide 的多条 Step 原子提交</td>
+<td>中</td>
+<td>需 schema 支持</td>
+</tr>
+<tr>
+<td>死信队列</td>
+<td>多次失败的任务移出主队列</td>
+<td>失败 Step 归档供复盘</td>
+<td>低</td>
+<td>与失败记忆同源</td>
+</tr>
+<tr>
+<td>迭代加深</td>
+<td>小预算多次尝试</td>
+<td>预算内重启并提高探索温度</td>
+<td>中</td>
+<td>需可中断的会话</td>
+</tr>
+<tr>
+<td>租约优先级继承</td>
+<td>防止高优先任务饿死</td>
+<td>高价值 Step 优先续租或抢占</td>
+<td>低</td>
+<td>与栈式议程冲突</td>
+</tr>
+</tbody>
+</table>
+<p>其中两项的投入产出比最高。失败记忆仅需增加一个状态字段，即可消除「必然失败的方向被反复领取」这一实际成本，对应经典搜索中最简单的 closed-on-failure。双向搜索的价值在于任务形态：渗透任务的目标通常极为明确，因此可以直接询问「要达成该目标还缺哪条前置事实」，从而自目标反向派生 Step。经典搜索已证明，在分支因子可控时该策略可将指数级搜索降至平方级；而反推前置条件恰是语言模型的强项。本文将这一项视为最值得推进的未发生迁移（本文推断）。</p>
+<h3 id="6-2-横向：机制在其他问题上的适用性">6.2 横向：机制在其他问题上的适用性</h3>
+<p>先将 Cairn 的机制抽象为其所解决的问题形态：以一张只追加的外部化状态图，协调多个无状态、无通信、可替换的决策者，朝一个可判定的终点收敛。再对候选问题逐一询问四个角色：何者为状态，何者为算子，何者为目标测试，谁写状态。</p>
+<table>
+<thead>
+<tr>
+<th>候选问题</th>
+<th>状态</th>
+<th>算子</th>
+<th>目标测试</th>
+<th>写者</th>
+<th>缺口</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>代码审计</td>
+<td>代码事实、调用链、数据流结论</td>
+<td>一次追踪或验证性 PoC</td>
+<td>漏洞可复现</td>
+<td>Execute</td>
+<td>无</td>
+</tr>
+<tr>
+<td>漏洞研究</td>
+<td>二进制或协议观察</td>
+<td>一次动态或静态实验</td>
+<td>崩溃或越权可复现</td>
+<td>Execute</td>
+<td>无</td>
+</tr>
+<tr>
+<td>科研实验</td>
+<td>实验结果与文献结论</td>
+<td>一次实验</td>
+<td>假设获得数据支持</td>
+<td>Execute</td>
+<td>目标测试难以程序化</td>
+</tr>
+<tr>
+<td>数据分析</td>
+<td>数据画像与口径结论</td>
+<td>一次查询或建模</td>
+<td>业务问题获得回答</td>
+<td>Execute</td>
+<td>目标测试主观</td>
+</tr>
+<tr>
+<td>事故响应</td>
+<td>证据与时间线片段</td>
+<td>一次取证动作</td>
+<td>根因获得证实</td>
+<td>Execute</td>
+<td>证据可信度无对应字段</td>
+</tr>
+</tbody>
+</table>
+<p>前两行四项角色齐备，说明该机制具备横向迁移条件，社区中已有基于 Cairn 的二次开发可作佐证。后三行的缺口集中于同一位置：当目标测试无法程序化时，系统的收敛判据失效，需要补充人工裁决或「弱判据加复审」的角色。缺口所在即研究点所在。</p>
+<h3 id="6-3-反向：LLM-特化回流经典系统的条件">6.3 反向：LLM 特化回流经典系统的条件</h3>
+<p>该方向的成立概率最低，但自检标准明确：须指明 LLM 场景的特殊约束，并判断该约束在经典场景中是否同样成立。</p>
+<p>本文归纳的特殊约束有四条（本文推断）：算子成本极高，单次扩展可能达数美分至数美元，较经典搜索高若干数量级；结果不可重放，同一输入两次运行结果不同；状态为自然语言，不可哈希、不可精确比对；评价器本身亦为模型，目标测试带有噪声。</p>
+<p>据此筛选经典场景，符合「评估昂贵、不要求重放、状态天然为文本」三项条件者有三类：模糊测试的种子调度，可将已确认的覆盖与崩溃写入只追加事实图，并以模型作为变异算子生成器；程序合成的枚举搜索，可用事实图记录已尝试的片段组合与产出，避免重复枚举；材料或分子发现，单次实验昂贵、不要求重放、结果为结构化文本，与 LLM 搜索的成本结构最为接近。</p>
+<p>其失效条件亦须写明：需要确定性重放、强实时约束，或状态必须可精确哈希的场景不适用。编译器优化 pass 的搜索与数据库查询计划的枚举即属此类，其算子成本低且确定，引入语言模型反而增加不确定性。</p>
+<h3 id="6-4-自检">6.4 自检</h3>
+<table>
+<thead>
+<tr>
+<th>自检项</th>
+<th>结论</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>角色能否逐一指认</td>
+<td>能。§2.2 给出五项要素的代码落点，§6.2 给出横向迁移的四角色表</td>
+</tr>
+<tr>
+<td>何种条件下不成立</td>
+<td>指标为重复探索率、每解 Token 成本、失败 Step 重领率；基线为当前栈式议程且无失败记忆的 v0.2.1；失效条件为图规模超出上下文可承载范围后，全量读图方案先行失效</td>
+</tr>
+<tr>
+<td>是否被失配清单否决</td>
+<td>部分否决。「以向量相似度做状态去重」被失配项 2 阻断：语义相似不等价于状态等价，且合并操作具有破坏性，与只追加原则冲突</td>
+</tr>
+</tbody>
+</table>
+<p>最后一项是本文自行否决的联想。说明一条路径为何不可行与走通一条路径具有同等价值，因为它标定了该架构的边界：只追加的图不能执行破坏性合并。</p>
+<hr>
+<h2 id="7-与-ARTEX-的对照">7 与 ARTEX 的对照</h2>
+<p>二者同源于黑板架构，但在多数工程决策上取向相反。</p>
+<table>
+<thead>
+<tr>
+<th>维度</th>
+<th>ARTEX</th>
+<th>Cairn</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>图的数量</td>
+<td>双图：资产图与探索图</td>
+<td>单图：事实与意图</td>
+</tr>
+<tr>
+<td>状态表示</td>
+<td>结构化节点，七类节点、五类边</td>
+<td>自然语言文本与一条超边</td>
+</tr>
+<tr>
+<td>目标表达</td>
+<td><code>goal</code> 节点与逐条证明</td>
+<td><code>goal</code> 节点，Cairn_Y 增加 Sub Goal</td>
+</tr>
+<tr>
+<td>决策者</td>
+<td>Planner，读取有损摘要</td>
+<td>Decide，读取全图，串行、无状态</td>
+</tr>
+<tr>
+<td>执行者</td>
+<td>Worker，领取一条意图后停止</td>
+<td>Execute，一次一个 Step，可并行</td>
+</tr>
+<tr>
+<td>上下文策略</td>
+<td>有损摘要与冷节点压缩</td>
+<td>全量图快照外置为文件</td>
+</tr>
+<tr>
+<td>存储</td>
+<td>PostgreSQL，支持条件更新与行锁</td>
+<td>SQLite，单机单写者</td>
+</tr>
+<tr>
+<td>领取控制</td>
+<td>条件更新，等价于 CAS</td>
+<td>首次 heartbeat 覆盖写</td>
+</tr>
+<tr>
+<td>意图状态</td>
+<td>六种以上，含阻塞、耗尽、暂停</td>
+<td>两种，以 <code>to</code> 是否为空区分</td>
+</tr>
+<tr>
+<td>证据与置信度</td>
+<td><code>confidence</code> 字段、证据引用、流量记录</td>
+<td>无对应字段</td>
+</tr>
+<tr>
+<td>治理</td>
+<td>Guard、人工审批、流量代理</td>
+<td>容器隔离，无审批层</td>
+</tr>
+<tr>
+<td>过程日志</td>
+<td><code>activity</code> 表</td>
+<td>无</td>
+</tr>
+<tr>
+<td>交付形态</td>
+<td>平台与控制台</td>
+<td>引擎与协议</td>
+</tr>
+</tbody>
+</table>
+<p>分歧的实质在于对上下文的判断。ARTEX 视上下文为稀缺资源，故构建有损摘要，使模型仅看到热工作集；Cairn 视上下文为可重建对象，故每轮重新读入整图。两种选择各有前提：前者适用于图可持续增长至数万节点的情况，后者要求每个节点被约束为一至两句增量结论。Cairn 用以维持该前提的手段是提示词中的增量要求，属于由模型自觉维持的不变量，一旦失效，全量读取将首先崩溃。</p>
+<p>在抗幻觉问题上，二者的着力点不同。ARTEX 以置信度、证据与审批构成证据门，降低结论失真；Cairn 不设此类机制，其依据是渗透场景具备强反馈：shell 连不上、flag 不正确、下一跳不通，错误事实会被环境迅速否证。该依据在强反馈且可即时验证的任务中成立，在反馈稀疏或延迟的场景中不成立。因此 Cairn 的极简具有明确的环境前提，不能整体平移。</p>
+<hr>
+<h2 id="8-复现与实测">8 复现与实测</h2>
+<p>本机环境为 Windows 与 Python 3.14.7（仓库要求 3.12 以上）。仓库以 uv 管理依赖，本机未安装 uv，故采用虚拟环境直接安装依赖并以 <code>PYTHONPATH</code> 指向源码的等价方式：</p>
+<figure class="highlight powershell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">python <span class="literal">-m</span> venv ..\.venv</span><br><span class="line">..\.venv\Scripts\python <span class="literal">-m</span> pip install fastapi <span class="string">&quot;uvicorn[standard]&quot;</span> click pyyaml docker requests httpx pytest</span><br><span class="line"><span class="variable">$env:PYTHONPATH</span> = <span class="string">&#x27;D:\Cairn\Cairn\cairn\src&#x27;</span></span><br><span class="line">..\.venv\Scripts\python <span class="literal">-m</span> pytest cairn\tests <span class="literal">-q</span></span><br></pre></td></tr></table></figure>
+<table>
+<thead>
+<tr>
+<th>轮次</th>
+<th>条件</th>
+<th>结果</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>一</td>
+<td>直接运行全部用例</td>
+<td>84 通过，14 失败</td>
+</tr>
+<tr>
+<td>二</td>
+<td>排除依赖子进程的用例</td>
+<td>68 通过</td>
+</tr>
+<tr>
+<td>三</td>
+<td>增加 <code>python3</code> 兼容层后运行全部用例</td>
+<td>91 通过，7 失败</td>
+</tr>
+</tbody>
+</table>
+<p>第一轮失败的 14 项日志均为 <code>code=9009</code>，即 Windows 下找不到 <code>python3</code> 命令；原因在于 mock driver 将命令硬编码为 <code>python3</code>（<code>workers/adapters/mock.py:134</code>）。在虚拟环境的 <code>Scripts</code> 目录为 <code>python.exe</code> 建立 <code>python3.exe</code> 硬链接后，6 项 mock 端到端用例全部通过，其中包含 <code>reason → explore → reason → complete</code> 的完整链路。</p>
+<p>剩余 7 项失败集中于 <code>test_local_execution.py</code>，原因属平台语义而非逻辑缺陷：用例使用 <code>sleep</code>、<code>sh</code> 等 POSIX 命令；<code>local_process.py:121</code> 调用 <code>os.killpg</code> 终止进程组，Windows 不支持该接口。</p>
+<p>由此可得的结论是：核心协议、调度、契约与服务端接口均通过测试；容器模式下的 mock 全链路通过；local 模式仅支持 POSIX。不能由此得出的结论是：真实模型会严格按契约输出，或真实靶场下的解题率与 Token 成本。上述三项均需接入真实端点方可验证，本文未作此尝试。</p>
+<hr>
+<h2 id="9-评价">9 评价</h2>
+<h3 id="9-1-设计上的有效部分">9.1 设计上的有效部分</h3>
+<p>形式化清晰是首要优点。状态、算子与终止条件三项均有代码落点，读者无需借助类比即可理解系统行为。其次，两类活动的接口极窄：Decide 仅三种输出，Execute 仅一个字符串，窄接口降低了输出解析失败的概率，也使模型替换的成本很低。第三，收敛判据为数据而非陈述，完成必须引用既有事实并落为一条边，因而可审计、可撤销。第四，上下文可重建，模型可替换、会话可中断、进程可重启，长期状态不受影响。第五，触发条件基于增量，无新态势时不调用模型，这一项直接决定成本结构。</p>
+<p>此外，失败处理值得注意：收尾阶段将超时由完全损失转为部分收益，撤销机制将错误结论转为负样本。</p>
+<h3 id="9-2-设计代价与风险">9.2 设计代价与风险</h3>
+<p>以下各项均针对开源版 v0.2.1；Cairn_Y 未开源，除 Finding 与 Sub Goal 两项外无法核实。</p>
+<p>预算与状态语义方面存在两项限制。系统仅有单任务 300 秒超时与单次 Intent 数量上限，没有「本项目最多运行若干轮或消耗若干 Token」的约束；若目标始终无法判定达成且每轮均能派生新方向，系统将持续扩张，唯一的制动手段是人工停止。同时，意图仅有已结论与未结论两种状态，释放后仍回到待领取，因此必然失败的方向会被反复领取。排除某方向只能写入一条否定性事实，而此类负结论易被后续规划忽略。Cairn_Y 的 Sub Goal 不解决该问题，因其属于目标层次分解，而非动作结局状态。</p>
+<p>事实的可信度与可追溯性方面亦有两项。写入一条事实只需一段描述，模型推断与直接观察在数据结构上完全等价，后续规划均建立其上；作者明确表示不采纳幻觉门控类方案，故此项应视为自觉取舍而非疏漏，但该取舍依赖前文所述的环境前提。系统亦无过程日志，无法回答某条事实由哪条命令产生，复盘依赖模型在描述中自行记录路径。</p>
+<p>扩展性与部署方面，全量读图存在隐患：事实数量增至数百后，提示词与注意力成本将显著上升，而抑制图增长的手段仅为提示词中的增量要求。存储为单机单写者，所有并发控制均在进程内完成，无法水平扩展。平台方面，local 模式依赖 POSIX 的进程组语义，在 Windows 上不可用。</p>
+<p>正确性与安全方面，完成判定缺少验收器。收敛由 Decide 一次判断决定，虽有引用完整性校验，但「这些事实是否确实证明目标」没有程序化检查，人工撤销是唯一纠错通道。安全边界亦依赖容器而非系统，系统中没有 Guard、审批或流量记录；local 模式明确以用户权限运行且无沙箱。</p>
+<h3 id="9-3-适用边界">9.3 适用边界</h3>
+<p>适用于反馈强、结果可即时验证的任务，例如 CTF、靶场、漏洞研究与具备明确测试的代码修复；亦适用于需要过程可解释的探索型任务，因此整条路径均在图上。不适用于反馈稀疏或判断主观的任务，例如合规审查与写作；不适用于需要严格成本上限或逐动作审计的生产环境；不适用于需要确定性重放的场景；商用闭源亦受 AGPL 与作者附加条款限制。</p>
+<hr>
+<h2 id="10-结论">10 结论</h2>
+<p>Cairn 的贡献不在于提出新的注意力机制或提示词技巧，而在于给出一种可执行的问题重述：把长任务表示为状态空间中的定向搜索，并将全部状态外化为一张只追加的图。在此基础上，系统只需两类活动——一类维护议程，一类推进状态——即可运行，无需角色划分与预定义流程。</p>
+<p>按本专题的判据，这属于问题迁移而非概念迁移：它取用了搜索问题的完整形式化，因而也继承了该形式化的可证伪性。其代价同样来自这一取用：为使自然语言成为算子，系统放弃了状态等价判定、优先级调度与过程记录；为使控制器具备开放语义处理能力，系统放弃了收敛性的保证。这些放弃在强反馈环境中可由环境校验补偿，在弱反馈环境中则不能。</p>
+<p>作者对这套架构的自我限定值得引用：「大多数看起来很厉害很有道理的 Agent 架构设计其实并没有用，甚至会起反效果，真正厉害的是模型，不是外层臃肿的 Agent 架构，也不是那一堆冗余的 Skill。」该判断的准确含义并非架构无用，而是架构不应替代模型能力。按此标准，Cairn 只做三件事：外化状态、切分决策与执行、提供收敛判据；其余一概不做。</p>
+<p>若要从该系统中取用可迁移的部分，本文认为有四条：将完成表示为一条可审计的边；将决定的输出限制为有限形状；以增量触发替代定时轮询；写入议程时独占、写入事实时并流。</p>
+<hr>
+<h2 id="参考">参考</h2>
+<ul>
+<li>仓库：<a target="_blank" rel="noopener" href="https://github.com/oritera/Cairn">oritera/Cairn</a>（本地克隆，main @ <code>8e7e0ea</code>）</li>
+<li>方法论总纲：《LLM新技术中的CS原型（零）：专题介绍》，本地 <code>D:\PPT\LLM新技术中的CS原型\LLM新技术中的CS原型.md</code>；本文 §4–§6 的框架、三类迁移判据、阻抗失配清单与三向推广均依该文</li>
+<li>协议文档：<code>docs/specs/server-protocol.md</code>（864 行；黑板、Stigmergy 与 OODA 的设计渊源见 15-21 行）</li>
+<li>调度文档：<code>docs/specs/dispatcher-design.md</code>（1181 行；任务模型与调度策略见 207-600 行）</li>
+<li>作者复盘：《AI 自动化渗透架构 Cairn 满分登顶 TsecBench Cybench —— 众人向左，我偏向右》</li>
+<li>对照文章：《LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题》</li>
+<li>第三方概述（AI 生成，仅作背景参考）：<a target="_blank" rel="noopener" href="https://we5ter.github.io/ai-tools/cairn-state-space-search/">Wester · Cairn 拆解</a></li>
+<li>早前尝试的博客链接 <code>https://mp.weixin.qq.com/s/ZzKF_0MOb0cak9izhHqCUQ</code> 抓取时被微信验证码拦截（HTTP 200，内容为验证页），未采信；设计意图的判断改以本地保存的复盘与仓库文档为依据</li>
+</ul>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io">CJH</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://cjh0220.github.io/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/">http://cjh0220.github.io/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://cjh0220.github.io" target="_blank">CJH's blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%A4%A7%E6%A8%A1%E5%9E%8B%E5%AD%A6%E4%B9%A0/">大模型学习</a></div><div class="post_share"><div class="social-share" data-image="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/"><img class="next-cover" src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2024/08/27/Mamba%E5%AD%A6%E4%B9%A0/" title="Mamba学习"><img class="cover" src="https://pic2.zhimg.com/v2-826c73167557ddbb76f443ddcc990171_b.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-27</div><div class="title">Mamba学习</div></div></a></div><div><a href="/2024/08/27/Transformer%E5%AD%A6%E4%B9%A0/" title="Transformer学习"><img class="cover" src="https://s3.bmp.ovh/imgs/2024/08/16/850f2d603117259a.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-27</div><div class="title">Transformer学习</div></div></a></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://s1.ax1x.com/2022/09/08/vbOo6J.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">CJH</div><div class="author-info__description">Hello,my friends</div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">161</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">118</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">32</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/cjh0220"><i class="fab fa-github"></i><span>Gihhub</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/cjh0220" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:1005741898@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link"><span class="toc-number">1.</span> <span class="toc-text">Cairn 与面向目标的状态空间搜索</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E5%AF%B9%E8%B1%A1%E4%B8%8E%E8%83%8C%E6%99%AF"><span class="toc-number">1.1.</span> <span class="toc-text">1 对象与背景</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E5%BC%80%E6%BA%90%E7%89%88%E4%B8%8E-Cairn-Y-%E7%9A%84%E5%8C%BA%E5%88%86"><span class="toc-number">1.1.1.</span> <span class="toc-text">1.1 开源版与 Cairn_Y 的区分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E9%97%AE%E9%A2%98%E7%9A%84%E5%BD%A2%E6%80%81"><span class="toc-number">1.1.2.</span> <span class="toc-text">1.2 问题的形态</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-%E9%97%AE%E9%A2%98%E7%9A%84%E5%BD%A2%E5%BC%8F%E5%8C%96"><span class="toc-number">1.2.</span> <span class="toc-text">2 问题的形式化</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-FGS%EF%BC%9A%E7%8A%B6%E6%80%81%E3%80%81%E7%AE%97%E5%AD%90%E4%B8%8E%E7%BB%88%E6%AD%A2%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.2.1.</span> <span class="toc-text">2.1 FGS：状态、算子与终止条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-%E4%B8%8E%E7%BB%8F%E5%85%B8%E6%90%9C%E7%B4%A2%E7%9A%84%E5%AF%B9%E5%BA%94"><span class="toc-number">1.2.2.</span> <span class="toc-text">2.2 与经典搜索的对应</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-%E5%AE%8C%E6%88%90%E5%8D%B3%E4%B8%80%E6%9D%A1%E8%BE%B9"><span class="toc-number">1.2.3.</span> <span class="toc-text">2.3 完成即一条边</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-4-%E7%95%8C%E9%9D%A2%E8%AF%81%E6%8D%AE"><span class="toc-number">1.2.4.</span> <span class="toc-text">2.4 界面证据</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-Decide-%E4%B8%8E-Execute"><span class="toc-number">1.3.</span> <span class="toc-text">3 Decide 与 Execute</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#3-1-%E4%B8%A4%E7%B1%BB%E6%B4%BB%E5%8A%A8%E7%9A%84%E5%AE%9A%E4%B9%89"><span class="toc-number">1.3.1.</span> <span class="toc-text">3.1 两类活动的定义</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-2-%E4%B8%B2%E8%A1%8C%E4%B8%8E%E5%B9%B6%E8%A1%8C%E7%9A%84%E4%BE%9D%E6%8D%AE"><span class="toc-number">1.3.2.</span> <span class="toc-text">3.2 串行与并行的依据</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-3-Decide-%E7%9A%84%E8%BE%93%E5%87%BA%E5%A5%91%E7%BA%A6"><span class="toc-number">1.3.3.</span> <span class="toc-text">3.3 Decide 的输出契约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-4-Execute-%E7%9A%84%E8%BE%93%E5%87%BA%E5%A5%91%E7%BA%A6"><span class="toc-number">1.3.4.</span> <span class="toc-text">3.4 Execute 的输出契约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-5-%E8%A7%A6%E5%8F%91%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.3.5.</span> <span class="toc-text">3.5 触发条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-6-%E5%8D%95%E6%AC%A1%E6%89%A7%E8%A1%8C%E7%9A%84%E6%97%B6%E5%BA%8F"><span class="toc-number">1.3.6.</span> <span class="toc-text">3.6 单次执行的时序</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-7-%E5%86%99%E6%9D%83%E9%99%90%E4%B8%8E%E8%AE%B0%E5%BF%86%E5%A4%96%E7%BD%AE"><span class="toc-number">1.3.7.</span> <span class="toc-text">3.7 写权限与记忆外置</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-8-%E5%AE%9E%E7%8E%B0%E4%BD%8D%E7%BD%AE"><span class="toc-number">1.3.8.</span> <span class="toc-text">3.8 实现位置</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-%E8%BF%81%E7%A7%BB%E8%A7%A3%E5%89%96"><span class="toc-number">1.4.</span> <span class="toc-text">4 迁移解剖</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#4-1-%E9%BB%91%E6%9D%BF%E6%9E%B6%E6%9E%84"><span class="toc-number">1.4.1.</span> <span class="toc-text">4.1 黑板架构</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-2-%E5%9B%BE%E6%90%9C%E7%B4%A2"><span class="toc-number">1.4.2.</span> <span class="toc-text">4.2 图搜索</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-3-%E5%B7%A5%E4%BD%9C%E9%98%9F%E5%88%97"><span class="toc-number">1.4.3.</span> <span class="toc-text">4.3 工作队列</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-4-%E7%A7%9F%E7%BA%A6"><span class="toc-number">1.4.4.</span> <span class="toc-text">4.4 租约</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-5-%E5%8F%AA%E8%BF%BD%E5%8A%A0%E6%97%A5%E5%BF%97"><span class="toc-number">1.4.5.</span> <span class="toc-text">4.5 只追加日志</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-6-Stigmergy-%E4%B8%8E%E5%8D%95%E5%86%99%E8%80%85"><span class="toc-number">1.4.6.</span> <span class="toc-text">4.6 Stigmergy 与单写者</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-7-%E8%BF%81%E7%A7%BB%E6%B7%B1%E5%BA%A6%E6%B1%87%E6%80%BB"><span class="toc-number">1.4.7.</span> <span class="toc-text">4.7 迁移深度汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-%E7%89%B9%E5%8C%96%E4%B8%8E%E4%BB%A3%E4%BB%B7"><span class="toc-number">1.5.</span> <span class="toc-text">5 特化与代价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#5-1-%E4%B8%BA%E9%80%82%E9%85%8D-LLM-%E6%89%80%E4%BD%9C%E7%9A%84%E6%94%B9%E9%80%A0"><span class="toc-number">1.5.1.</span> <span class="toc-text">5.1 为适配 LLM 所作的改造</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-2-%E9%98%BB%E6%8A%97%E5%A4%B1%E9%85%8D%E6%A0%B8%E5%AF%B9"><span class="toc-number">1.5.2.</span> <span class="toc-text">5.2 阻抗失配核对</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-3-%E4%BB%A3%E4%BB%B7%E6%B1%87%E6%80%BB"><span class="toc-number">1.5.3.</span> <span class="toc-text">5.3 代价汇总</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-%E8%81%94%E6%83%B3%E6%8E%A8%E5%B9%BF"><span class="toc-number">1.6.</span> <span class="toc-text">6 联想推广</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#6-1-%E7%BA%B5%E5%90%91%EF%BC%9A%E5%B0%9A%E6%9C%AA%E5%8F%96%E7%94%A8%E7%9A%84%E6%9C%BA%E5%88%B6"><span class="toc-number">1.6.1.</span> <span class="toc-text">6.1 纵向：尚未取用的机制</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-2-%E6%A8%AA%E5%90%91%EF%BC%9A%E6%9C%BA%E5%88%B6%E5%9C%A8%E5%85%B6%E4%BB%96%E9%97%AE%E9%A2%98%E4%B8%8A%E7%9A%84%E9%80%82%E7%94%A8%E6%80%A7"><span class="toc-number">1.6.2.</span> <span class="toc-text">6.2 横向：机制在其他问题上的适用性</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-3-%E5%8F%8D%E5%90%91%EF%BC%9ALLM-%E7%89%B9%E5%8C%96%E5%9B%9E%E6%B5%81%E7%BB%8F%E5%85%B8%E7%B3%BB%E7%BB%9F%E7%9A%84%E6%9D%A1%E4%BB%B6"><span class="toc-number">1.6.3.</span> <span class="toc-text">6.3 反向：LLM 特化回流经典系统的条件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-4-%E8%87%AA%E6%A3%80"><span class="toc-number">1.6.4.</span> <span class="toc-text">6.4 自检</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-%E4%B8%8E-ARTEX-%E7%9A%84%E5%AF%B9%E7%85%A7"><span class="toc-number">1.7.</span> <span class="toc-text">7 与 ARTEX 的对照</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-%E5%A4%8D%E7%8E%B0%E4%B8%8E%E5%AE%9E%E6%B5%8B"><span class="toc-number">1.8.</span> <span class="toc-text">8 复现与实测</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#9-%E8%AF%84%E4%BB%B7"><span class="toc-number">1.9.</span> <span class="toc-text">9 评价</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#9-1-%E8%AE%BE%E8%AE%A1%E4%B8%8A%E7%9A%84%E6%9C%89%E6%95%88%E9%83%A8%E5%88%86"><span class="toc-number">1.9.1.</span> <span class="toc-text">9.1 设计上的有效部分</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-2-%E8%AE%BE%E8%AE%A1%E4%BB%A3%E4%BB%B7%E4%B8%8E%E9%A3%8E%E9%99%A9"><span class="toc-number">1.9.2.</span> <span class="toc-text">9.2 设计代价与风险</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#9-3-%E9%80%82%E7%94%A8%E8%BE%B9%E7%95%8C"><span class="toc-number">1.9.3.</span> <span class="toc-text">9.3 适用边界</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E7%BB%93%E8%AE%BA"><span class="toc-number">1.10.</span> <span class="toc-text">10 结论</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8F%82%E8%80%83"><span class="toc-number">1.11.</span> <span class="toc-text">参考</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Cairn-深度拆解-状态空间搜索与Decide-Execute"/></a><div class="content"><a class="title" href="/2026/11/10/Cairn-%E6%B7%B1%E5%BA%A6%E6%8B%86%E8%A7%A3-%E7%8A%B6%E6%80%81%E7%A9%BA%E9%97%B4%E6%90%9C%E7%B4%A2%E4%B8%8EDecide-Execute/" title="Cairn-深度拆解-状态空间搜索与Decide-Execute">Cairn-深度拆解-状态空间搜索与Decide-Execute</a><time datetime="2026-11-10T12:51:53.000Z" title="发表于 2026-11-10 20:51:53">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E5%9B%9B%EF%BC%89ARTEX%EF%BC%9A%E5%8F%8C%E5%9B%BE%E6%9E%B6%E6%9E%84%E8%A7%A3%E5%86%B3%E9%95%BF%E4%BB%BB%E5%8A%A1%E5%B9%BB%E8%A7%89%E9%97%AE%E9%A2%98/" title="LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题">LLM新技术中的CS原型（四）ARTEX：双图架构解决长任务幻觉问题</a><time datetime="2026-11-10T12:51:42.000Z" title="发表于 2026-11-10 20:51:42">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"><img src="https://s1.imagehub.cc/images/2026/09/22/b7fd01d1a0308bf4ac6cb1f872fa622d.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%89%EF%BC%89MemGPT%EF%BC%9A%E5%B0%86LLMs%E8%A7%86%E4%B8%BA%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" title="LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统">LLM新技术中的CS原型（三）MemGPT：将LLMs视为操作系统</a><time datetime="2026-11-10T12:51:26.000Z" title="发表于 2026-11-10 20:51:26">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"><img src="https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%BA%8C%EF%BC%89vLLM%EF%BC%9AKVCache%E7%9A%84%E8%99%9A%E6%8B%9F%E5%86%85%E5%AD%98%E5%88%86%E9%A1%B5/" title="LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页">LLM新技术中的CS原型（二）vLLM：KVCache的虚拟内存分页</a><time datetime="2026-11-10T12:48:50.000Z" title="发表于 2026-11-10 20:48:50">2026-11-10</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"><img src="https://s1.imagehub.cc/images/2026/09/08/cffea021f3bb7c707327b2552a45652e.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织"/></a><div class="content"><a class="title" href="/2026/11/10/LLM%E6%96%B0%E6%8A%80%E6%9C%AF%E4%B8%AD%E7%9A%84CS%E5%8E%9F%E5%9E%8B%EF%BC%88%E4%B8%80%EF%BC%89Openviking%EF%BC%9A%E4%B8%8A%E4%B8%8B%E6%96%87%E5%83%8F%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F%E4%B8%80%E6%A0%B7%E7%BB%84%E7%BB%87/" title="LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织">LLM新技术中的CS原型（一）Openviking：上下文像文件系统一样组织</a><time datetime="2026-11-10T12:48:35.000Z" title="发表于 2026-11-10 20:48:35">2026-11-10</time></div></div></div></div></div></div></main><footer id="footer" style="background-image: url('https://s3.bmp.ovh/imgs/2024/08/08/ae1ec012ccabe947.png')"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2026 By CJH</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div><div class="footer_custom_text">欢迎欢迎，热烈欢迎</div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div id="local-search"><div class="search-dialog"><nav class="search-nav"><span class="search-dialog-title">搜索</span><span id="loading-status"></span><button class="search-close-button"><i class="fas fa-times"></i></button></nav><div class="is-center" id="loading-database"><i class="fas fa-spinner fa-pulse"></i><span>  数据库加载中</span></div><div class="search-wrap"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div><hr/><div id="local-search-results"></div></div></div><div id="search-mask"></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.min.js"></script><script src="/js/search/local-search.js"></script><div class="js-pjax"><script>if (!window.MathJax) {
+  window.MathJax = {
+    tex: {
+      inlineMath: [ ['$','$'], ["\\(","\\)"]],
+      tags: 'ams'
+    },
+    chtml: {
+      scale: 1.2
+    },
+    options: {
+      renderActions: {
+        findScript: [10, doc => {
+          for (const node of document.querySelectorAll('script[type^="math/tex"]')) {
+            const display = !!node.type.match(/; *mode=display/)
+            const math = new doc.options.MathItem(node.textContent, doc.inputJax[0], display)
+            const text = document.createTextNode('')
+            node.parentNode.replaceChild(text, node)
+            math.start = {node: text, delim: '', n: 0}
+            math.end = {node: text, delim: '', n: 0}
+            doc.math.push(math)
+          }
+        }, ''],
+        insertScript: [200, () => {
+          document.querySelectorAll('mjx-container:not\([display]\)').forEach(node => {
+            const target = node.parentNode
+            if (target.nodeName.toLowerCase() === 'li') {
+              target.parentNode.classList.add('has-jax')
+            } else {
+              target.classList.add('has-jax')
+            }
+          });
+        }, '', false]
+      }
+    }
+  }
+  
+  const script = document.createElement('script')
+  script.src = 'https://cdn.jsdelivr.net/npm/mathjax/es5/tex-mml-chtml.min.js'
+  script.id = 'MathJax-script'
+  script.async = true
+  document.head.appendChild(script)
+} else {
+  MathJax.startup.document.state(0)
+  MathJax.texReset()
+  MathJax.typeset()
+}</script></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
